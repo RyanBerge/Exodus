@@ -1,9 +1,20 @@
-#include <SFML/Graphics.hpp>
+#include "settings.h"
+#include "game_manager.h"
+
+#ifdef DEBUG
 #include <iostream>
+#endif
 
 int main()
 {
-    sf::Window window(sf::VideoMode(800, 600, 32), "window");
+    #ifdef DEBUG
+    std::string settings_path("data/settings.txt");
+    #else
+    std::string settings_path("../data/settings.txt");
+    #endif
 
-    while (true);
+    Settings settings(settings_path);
+    GameManager game_manager();
+
+    return 0;
 }
