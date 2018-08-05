@@ -44,6 +44,11 @@ void CursorButton::Draw(sf::RenderWindow& window)
     spritesheet.Draw(window);
 }
 
+sf::Sprite& CursorButton::GetSprite()
+{
+    return spritesheet.GetSprite();
+}
+
 void CursorButton::RegisterOnClickDown(std::function<void(void)> f)
 {
     onClickDownVector.push_back(std::bind(f));

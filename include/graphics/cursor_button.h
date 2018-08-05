@@ -12,6 +12,9 @@ public:
 
     void Update(sf::Time elapsed, sf::RenderWindow& window);
     void Draw(sf::RenderWindow& window);
+
+    sf::Sprite& GetSprite();
+
     void RegisterOnClickDown(std::function<void(void)> f);
     void RegisterOnClickUp(std::function<void(void)> f);
     void RegisterOnHoverEnter(std::function<void(void)> f);
