@@ -3,7 +3,6 @@
 
 CursorButton::CursorButton()
 {
-
 }
 
 CursorButton::CursorButton(std::string filepath, Spritesheet::Config config) : spritesheet{filepath, config}

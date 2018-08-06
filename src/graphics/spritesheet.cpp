@@ -1,17 +1,36 @@
 #include "graphics/spritesheet.h"
 
-Spritesheet::Spritesheet() : config{}, texture{}, sprite{}, frame{-1}, is_valid{false}
+Spritesheet::Spritesheet() : config{}, texture{}, sprite{}, texture_filepath{""}, frame{-1}, is_valid{false}
 {
 }
 
 Spritesheet::Spritesheet(std::string filepath, Config config) : config{config}, texture{},
-        sprite{}, frame{-1}, is_valid{false}
+        sprite{}, texture_filepath{filepath}, frame{-1}, is_valid{false}
 {
-    if (texture.loadFromFile(filepath))
+    if (texture.loadFromFile(texture_filepath))
     {
         sprite.setTexture(texture);
         is_valid = true;
+        SetFrame(0);
     }
+}
+
+Spritesheet::Spritesheet(const Spritesheet& other) : config{}, texture{}, sprite{}, texture_filepath{""}, frame{-1}, is_valid{false}
+{
+    *this = Spritesheet(other);
+}
+
+Spritesheet& Spritesheet::operator=(const Spritesheet& other)
+{
+    config = other.config;
+    texture_filepath = other.texture_filepath;
+    if (texture.loadFromFile(texture_filepath))
+    {
+        sprite.setTexture(texture);
+        is_valid = true;
+        SetFrame(0);
+    }
+    return *this;
 }
 
 void Spritesheet::Draw(sf::RenderWindow& window)

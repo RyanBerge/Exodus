@@ -27,6 +27,9 @@ public:
 
     Spritesheet();
     Spritesheet(std::string filepath, Config config);
+    Spritesheet(const Spritesheet& other);
+
+    Spritesheet& operator=(const Spritesheet& other);
 
     void Draw(sf::RenderWindow& window);
     bool SetFrame(int frame);
@@ -37,6 +40,7 @@ private:
     Config config;
     sf::Texture texture;
     sf::Sprite sprite;
+    std::string texture_filepath;
     int frame;
     bool is_valid;
 
