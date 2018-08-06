@@ -26,6 +26,7 @@ public:
     };
 
     Spritesheet();
+    Spritesheet(std::string filepath);
     Spritesheet(std::string filepath, Config config);
     Spritesheet(const Spritesheet& other);
 
@@ -33,6 +34,7 @@ public:
 
     void Draw(sf::RenderWindow& window);
     bool SetFrame(int frame);
+    void SetConfig(Config config);
 
     sf::Sprite& GetSprite();
 

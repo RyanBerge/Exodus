@@ -1,6 +1,6 @@
 #include "game_manager.h"
 
-GameManager::GameManager(Settings& settings) : settings{settings}, current_scene{Scene::MainMenu}, main_menu{}
+GameManager::GameManager() : current_scene{Scene::MainMenu}, main_menu{}
 {
     main_menu.RegisterPlayRequest(std::bind(&GameManager::StartGame, this));
     main_menu.RegisterQuitRequest(std::bind(&GameManager::Quit, this));

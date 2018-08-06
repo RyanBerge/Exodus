@@ -14,7 +14,7 @@ enum class Scene
 class GameManager
 {
 public:
-    GameManager(Settings& settings);
+    GameManager();
 
     void Update(sf::Time& elapsed, sf::RenderWindow& window);
     void Draw(sf::RenderWindow& window);
@@ -23,7 +23,6 @@ public:
     void Quit();
 
 private:
-    Settings settings;
     Scene current_scene;
 
     MainMenu main_menu;

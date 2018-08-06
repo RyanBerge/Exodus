@@ -1,6 +1,8 @@
 #include "graphics/cursor_button.h"
 #include <SFML/Window/Mouse.hpp>
 
+#include <iostream>
+
 CursorButton::CursorButton()
 {
 }
@@ -14,6 +16,7 @@ void CursorButton::Update(sf::Time elapsed, sf::RenderWindow& window)
 {
     sf::FloatRect bounds = spritesheet.GetSprite().getGlobalBounds();
     auto mouse_position = sf::Mouse::getPosition(window);
+
     bool in_bounds = mouse_position.x >= bounds.left &&
                      mouse_position.x <= bounds.left + bounds.width &&
                      mouse_position.y >= bounds.top &&

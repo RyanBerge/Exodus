@@ -20,6 +20,22 @@ Spritesheet::Spritesheet(const Spritesheet& other) : config{}, texture{}, sprite
     *this = Spritesheet(other);
 }
 
+Spritesheet::Spritesheet(std::string filepath)
+{
+    if (texture.loadFromFile(texture_filepath))
+    {
+        sprite.setTexture(texture);
+        is_valid = true;
+    }
+}
+
+void Spritesheet::SetConfig(Config config)
+{
+    this->config = config;
+    SetFrame(0);
+}
+
+
 Spritesheet& Spritesheet::operator=(const Spritesheet& other)
 {
     config = other.config;

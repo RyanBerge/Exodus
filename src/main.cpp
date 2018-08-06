@@ -4,12 +4,11 @@
 
 int main()
 {
-    std::string settings_path("data/settings.txt");
+    Settings::LoadSettings("data/settings.txt");
 
-    Settings settings(settings_path);
-    GameManager game_manager(settings);
+    GameManager game_manager;
 
-    sf::RenderWindow window(sf::VideoMode(800, 600), "My window");
+    sf::RenderWindow window(sf::VideoMode(Settings::video_resolution.x, Settings::video_resolution.y), "My window");
 
     sf::Clock clock;
 
