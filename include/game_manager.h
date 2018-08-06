@@ -8,7 +8,7 @@
 
 enum class Scene
 {
-    MainMenu, Game
+    MainMenu, Game, Quit
 };
 
 class GameManager
@@ -18,6 +18,9 @@ public:
 
     void Update(sf::Time& elapsed, sf::RenderWindow& window);
     void Draw(sf::RenderWindow& window);
+
+    void StartGame();
+    void Quit();
 
 private:
     Settings settings;

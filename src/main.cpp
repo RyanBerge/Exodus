@@ -7,13 +7,11 @@ int main()
     std::string settings_path("data/settings.txt");
 
     Settings settings(settings_path);
-    //GameManager game_manager(settings);
+    GameManager game_manager(settings);
 
     sf::RenderWindow window(sf::VideoMode(800, 600), "My window");
 
     sf::Clock clock;
-
-    MainMenu menu;
 
     while (window.isOpen())
     {
@@ -27,11 +25,8 @@ int main()
 
         window.clear(sf::Color::Black);
 
-        //game_manager.Update(elapsed, window);
-        //game_manager.Draw(window);
-
-        menu.Update(elapsed, window);
-        menu.Draw(window);
+        game_manager.Update(elapsed, window);
+        game_manager.Draw(window);
 
         window.display();
     }

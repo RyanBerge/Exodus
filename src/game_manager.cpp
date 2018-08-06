@@ -2,6 +2,8 @@
 
 GameManager::GameManager(Settings& settings) : settings{settings}, current_scene{Scene::MainMenu}, main_menu{}
 {
+    main_menu.RegisterPlayRequest(std::bind(&GameManager::StartGame, this));
+    main_menu.RegisterQuitRequest(std::bind(&GameManager::Quit, this));
 }
 
 void GameManager::Update(sf::Time& elapsed, sf::RenderWindow& window)
@@ -16,6 +18,13 @@ void GameManager::Update(sf::Time& elapsed, sf::RenderWindow& window)
         case Scene::Game:
         {
 
+        }
+        break;
+        case Scene::Quit:
+        {
+            window.close();
+            // TODO: Save?
+            return;
         }
         break;
     }
@@ -35,5 +44,19 @@ void GameManager::Draw(sf::RenderWindow& window)
 
         }
         break;
+        case Scene::Quit:
+        {
+        }
+        break;
     }
+}
+
+void GameManager::StartGame()
+{
+    current_scene = Scene::Game;
+}
+
+void GameManager::Quit()
+{
+    current_scene = Scene::Quit;
 }

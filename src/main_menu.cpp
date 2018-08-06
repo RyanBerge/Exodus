@@ -25,6 +25,9 @@ MainMenu::MainMenu() : current_menu{Menu::Main}
 
     quit_button = CursorButton("assets/QuitButton.png", quit_button_config);
     quit_button.GetSprite().setPosition(sf::Vector2f(200, 400));
+
+    quit_button.RegisterOnClickUp(std::bind(&MainMenu::Quit, this));
+    play_button.RegisterOnClickUp(std::bind(&MainMenu::Play, this));
 }
 
 void MainMenu::Update(sf::Time& elapsed, sf::RenderWindow& window)
@@ -63,4 +66,29 @@ void MainMenu::Draw(sf::RenderWindow& window)
         }
         break;
     }
+}
+
+void MainMenu::Play()
+{
+    playRequest();
+}
+
+void MainMenu::Quit()
+{
+    quitRequest();
+}
+
+void MainMenu::OpenSettings()
+{
+
+}
+
+void MainMenu::RegisterPlayRequest(std::function<void(void)> f)
+{
+    playRequest = f;
+}
+
+void MainMenu::RegisterQuitRequest(std::function<void(void)> f)
+{
+    quitRequest = f;
 }

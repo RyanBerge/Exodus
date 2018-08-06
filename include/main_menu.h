@@ -16,12 +16,22 @@ public:
     void Update(sf::Time& elapsed, sf::RenderWindow& window);
     void Draw(sf::RenderWindow& window);
 
+    void Play();
+    void Quit();
+    void OpenSettings();
+
+    void RegisterPlayRequest(std::function<void(void)> f);
+    void RegisterQuitRequest(std::function<void(void)> f);
+
 private:
     Menu current_menu;
 
     CursorButton play_button;
     CursorButton settings_button;
     CursorButton quit_button;
+
+    std::function<void(void)> playRequest;
+    std::function<void(void)> quitRequest;
 
 };
 
