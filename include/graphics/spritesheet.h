@@ -17,7 +17,7 @@
 #include <string>
 #include <vector>
 
-class __declspec(dllexport) Spritesheet
+class Spritesheet
 {
 public:
     struct Config

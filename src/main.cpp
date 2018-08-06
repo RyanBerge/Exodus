@@ -19,7 +19,19 @@ int main()
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
+            {
                 window.close();
+            }
+            else if (event.type == sf::Event::Resized)
+            {
+                sf::Vector2u ratio = sf::Vector2u(event.size.width, event.size.height);
+
+                sf::View new_view = sf::View(sf::FloatRect(0, 0, ratio.x, ratio.y));
+
+                window.setView(new_view);
+
+                game_manager.Resize(ratio);
+            }
         }
 
         window.clear(sf::Color::Black);

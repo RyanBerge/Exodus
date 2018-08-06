@@ -4,7 +4,7 @@
 #include <functional>
 #include "graphics/spritesheet.h"
 
-class __declspec(dllexport) CursorButton
+class CursorButton
 {
 public:
     CursorButton();

@@ -17,6 +17,8 @@ void CursorButton::Update(sf::Time elapsed, sf::RenderWindow& window)
     sf::FloatRect bounds = spritesheet.GetSprite().getGlobalBounds();
     auto mouse_position = sf::Mouse::getPosition(window);
 
+    mouse_position = window.mapCoordsToPixel(sf::Vector2f(mouse_position));
+
     bool in_bounds = mouse_position.x >= bounds.left &&
                      mouse_position.x <= bounds.left + bounds.width &&
                      mouse_position.y >= bounds.top &&
