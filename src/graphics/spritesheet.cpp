@@ -7,7 +7,7 @@ Spritesheet::Spritesheet() : config{}, texture{}, sprite{}, texture_filepath{""}
 Spritesheet::Spritesheet(std::string filepath, Config config) : config{config}, texture{},
         sprite{}, texture_filepath{filepath}, frame{-1}, is_valid{false}
 {
-    if (texture.loadFromFile(texture_filepath))
+    if (texture_filepath != "" && texture.loadFromFile(texture_filepath))
     {
         sprite.setTexture(texture);
         is_valid = true;
@@ -17,12 +17,12 @@ Spritesheet::Spritesheet(std::string filepath, Config config) : config{config}, 
 
 Spritesheet::Spritesheet(const Spritesheet& other) : config{}, texture{}, sprite{}, texture_filepath{""}, frame{-1}, is_valid{false}
 {
-    *this = Spritesheet(other);
+    *this = other;
 }
 
 Spritesheet::Spritesheet(std::string filepath)
 {
-    if (texture.loadFromFile(texture_filepath))
+    if (texture_filepath != "" && texture.loadFromFile(texture_filepath))
     {
         sprite.setTexture(texture);
         is_valid = true;
@@ -38,9 +38,10 @@ void Spritesheet::SetConfig(Config config)
 
 Spritesheet& Spritesheet::operator=(const Spritesheet& other)
 {
+    sprite = other.sprite;
     config = other.config;
     texture_filepath = other.texture_filepath;
-    if (texture.loadFromFile(texture_filepath))
+    if (texture_filepath != "" && texture.loadFromFile(texture_filepath))
     {
         sprite.setTexture(texture);
         is_valid = true;

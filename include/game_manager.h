@@ -5,6 +5,7 @@
 #include <SFML/System/Time.hpp>
 #include "settings.h"
 #include "main_menu.h"
+#include "world_manager.h"
 
 enum class Scene
 {
@@ -28,6 +29,7 @@ private:
     Scene current_scene;
 
     MainMenu main_menu;
+    WorldManager world_manager;
 };
 
 #endif // GAME_MANAGER_H

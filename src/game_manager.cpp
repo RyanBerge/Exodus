@@ -17,7 +17,7 @@ void GameManager::Update(sf::Time& elapsed, sf::RenderWindow& window)
         break;
         case Scene::Game:
         {
-
+            world_manager.Update(elapsed, window);
         }
         break;
         case Scene::Quit:
@@ -41,7 +41,7 @@ void GameManager::Draw(sf::RenderWindow& window)
         break;
         case Scene::Game:
         {
-
+            world_manager.Draw(window);
         }
         break;
         case Scene::Quit:
@@ -54,11 +54,13 @@ void GameManager::Draw(sf::RenderWindow& window)
 void GameManager::Resize(sf::Vector2u ratio)
 {
     main_menu.Resize(ratio);
+    world_manager.Resize(ratio);
 }
 
 void GameManager::StartGame()
 {
     current_scene = Scene::Game;
+    world_manager.LoadSave();
 }
 
 void GameManager::Quit()

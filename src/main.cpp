@@ -16,6 +16,14 @@ int main()
     {
         sf::Time elapsed = clock.restart();
         sf::Event event;
+
+        window.clear(sf::Color::Black);
+
+        game_manager.Update(elapsed, window);
+        game_manager.Draw(window);
+
+        window.display();
+
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
@@ -33,13 +41,6 @@ int main()
                 game_manager.Resize(ratio);
             }
         }
-
-        window.clear(sf::Color::Black);
-
-        game_manager.Update(elapsed, window);
-        game_manager.Draw(window);
-
-        window.display();
     }
 
 
