@@ -8,11 +8,11 @@ Entity::Entity(std::string identifier)
     {
         Spritesheet::Config config;
         config.frames.push_back(sf::IntRect(0, 0, 100, 100));
-        config.frames.push_back(sf::IntRect(0, 100, 100, 100));
-        config.frames.push_back(sf::IntRect(0, 200, 100, 100));
+        config.frames.push_back(sf::IntRect(100, 0, 100, 100));
+        config.frames.push_back(sf::IntRect(200, 0, 100, 100));
         sprite = Spritesheet("assets/OverworldTree.png", config);
 
-        sprite.SetFrame(rand());
+        sprite.SetFrame(rand() % 3);
     }
 }
 

@@ -16,6 +16,7 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <string>
 #include <vector>
+#include <map>
 
 class Spritesheet
 {
@@ -23,6 +24,19 @@ public:
     struct Config
     {
         std::vector<sf::IntRect> frames;
+    };
+
+    struct Animation
+    {
+        std::string name;
+        int first_frame;
+        int second_frame;
+        float speed;
+    };
+
+    enum class Direction
+    {
+        Up, Down, Left, Right
     };
 
     Spritesheet();
@@ -33,8 +47,13 @@ public:
     Spritesheet& operator=(const Spritesheet& other);
 
     void Draw(sf::RenderWindow& window);
+    void Update(sf::Time elapsed, sf::RenderWindow& window);
+
     bool SetFrame(int frame);
     void SetConfig(Config config);
+    void AddAnimation(Animation animation);
+    bool SetAnimation(std::string name);
+    void AdvanceAnimation();
 
     sf::Sprite& GetSprite();
 
@@ -42,6 +61,9 @@ private:
     Config config;
     sf::Texture texture;
     sf::Sprite sprite;
+    std::map<std::string, Animation> animations;
+    std::string current_animation;
+    float animation_time;
     std::string texture_filepath;
     int frame;
     bool is_valid;

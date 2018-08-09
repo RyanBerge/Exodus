@@ -4,6 +4,7 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/System/Time.hpp>
 #include "room.h"
+#include "player.h"
 
 class WorldManager
 {
@@ -18,6 +19,7 @@ public:
 
 private:
     Room current_room;
+    Player player;
 };
 
 #endif // WORLD_MANAGER_H
