@@ -6,9 +6,10 @@ int main()
 {
     Settings::LoadSettings("data/settings.txt");
 
-    GameManager game_manager;
 
     sf::RenderWindow window(sf::VideoMode(Settings::video_resolution.x, Settings::video_resolution.y), "My window");
+
+    GameManager game_manager(window);
 
     sf::Clock clock;
 
@@ -33,10 +34,6 @@ int main()
             else if (event.type == sf::Event::Resized)
             {
                 sf::Vector2u ratio = sf::Vector2u(event.size.width, event.size.height);
-
-                sf::View new_view = sf::View(sf::FloatRect(0, 0, ratio.x, ratio.y));
-
-                window.setView(new_view);
 
                 game_manager.Resize(ratio);
             }

@@ -17,8 +17,6 @@ MainMenu::MainMenu() : current_menu{Menu::Main}
     play_button.RegisterOnClickUp(std::bind(&MainMenu::Play, this));
     settings_button.RegisterOnClickUp(std::bind(&MainMenu::OpenSettings, this));
     back_button.RegisterOnClickUp(std::bind(&MainMenu::Back, this));
-
-    Resize(sf::Vector2u(Settings::video_resolution.x, Settings::video_resolution.y));
 }
 
 void MainMenu::Update(sf::Time& elapsed, sf::RenderWindow& window)
@@ -59,8 +57,11 @@ void MainMenu::Draw(sf::RenderWindow& window)
     }
 }
 
-void MainMenu::Resize(sf::Vector2u ratio)
+void MainMenu::Resize(sf::Vector2u ratio, sf::RenderWindow& window)
 {
+    sf::View new_view = sf::View(sf::FloatRect(0, 0, ratio.x, ratio.y));
+    window.setView(new_view);
+
     float scale = 1;
     float x_scale = 1;
     float y_scale = 1;

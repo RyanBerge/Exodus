@@ -1,9 +1,10 @@
 #include "game_manager.h"
 
-GameManager::GameManager() : current_scene{Scene::MainMenu}, main_menu{}
+GameManager::GameManager(sf::RenderWindow& window) : current_scene{Scene::MainMenu}, main_menu{}, window{window}
 {
     main_menu.RegisterPlayRequest(std::bind(&GameManager::StartGame, this));
     main_menu.RegisterQuitRequest(std::bind(&GameManager::Quit, this));
+    main_menu.Resize(sf::Vector2u(Settings::video_resolution.x, Settings::video_resolution.y), window);
 }
 
 void GameManager::Update(sf::Time& elapsed, sf::RenderWindow& window)
@@ -53,14 +54,14 @@ void GameManager::Draw(sf::RenderWindow& window)
 
 void GameManager::Resize(sf::Vector2u ratio)
 {
-    main_menu.Resize(ratio);
-    world_manager.Resize(ratio);
+    main_menu.Resize(ratio, window);
+    world_manager.Resize(ratio, window);
 }
 
 void GameManager::StartGame()
 {
     current_scene = Scene::Game;
-    world_manager.LoadSave();
+    world_manager.LoadSave(window);
 }
 
 void GameManager::Quit()

@@ -16,7 +16,7 @@ public:
     void Update(sf::Time& elapsed, sf::RenderWindow& window);
     void Draw(sf::RenderWindow& window);
 
-    void Resize(sf::Vector2u ratio);
+    void Resize(sf::Vector2u ratio, sf::RenderWindow& window);
 
     void Play();
     void Quit();

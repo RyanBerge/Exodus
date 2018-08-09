@@ -15,7 +15,7 @@ enum class Scene
 class GameManager
 {
 public:
-    GameManager();
+    GameManager(sf::RenderWindow& render_window);
 
     void Update(sf::Time& elapsed, sf::RenderWindow& window);
     void Draw(sf::RenderWindow& window);
@@ -30,6 +30,7 @@ private:
 
     MainMenu main_menu;
     WorldManager world_manager;
+    sf::RenderWindow& window;
 };
 
 #endif // GAME_MANAGER_H
