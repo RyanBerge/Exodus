@@ -40,7 +40,7 @@ bool Room::Load()
         background.SetFrame(0);
     }
 
-    std::string filepath = "data/rooms/" + id.area + "/" + std::to_string(id.x) + "-" + std::to_string(id.y) + ".room";
+    std::string filepath = "data/rooms/" + id.area + "/" + std::to_string(id.x) + "-" + std::to_string(id.y) + ".txt";
     std::ifstream file(filepath);
 
     if (!file.is_open())

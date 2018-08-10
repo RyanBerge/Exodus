@@ -1,0 +1,4 @@
+Sprite: OverworldTree.png
+Collisions: True
+Frames: [0 0 100 100] [100 0 100 100] [200 0 100 100]
+RandomFrame: True

@@ -14,7 +14,10 @@ public:
     sf::Sprite& GetSprite();
 
 private:
+    void load(std::string filepath);
+
     Spritesheet sprite;
+    bool collisions;
 };
 
 #endif // ENTITY_H
