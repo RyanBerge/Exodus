@@ -117,7 +117,7 @@ bool Spritesheet::SetFrame(int new_frame)
         return false;
     }
 
-    if (static_cast<int>(config.frames.size()) > new_frame)
+    if (static_cast<int>(config.frames.size()) > 0 && static_cast<int>(config.frames.size()) > new_frame)
     {
         frame = new_frame;
         sprite.setTextureRect(config.frames[new_frame]);

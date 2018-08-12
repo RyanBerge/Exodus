@@ -7,17 +7,6 @@
 Entity::Entity(std::string identifier)
 {
     load("data/entities/" + identifier + ".txt");
-
-    // if (identifier == "tree")
-    // {
-    //     Spritesheet::Config config;
-    //     config.frames.push_back(sf::IntRect(0, 0, 100, 100));
-    //     config.frames.push_back(sf::IntRect(100, 0, 100, 100));
-    //     config.frames.push_back(sf::IntRect(200, 0, 100, 100));
-    //     sprite = Spritesheet("assets/OverworldTree.png", config);
-
-    //     sprite.SetFrame(rand() % 3);
-    // }
 }
 
 void Entity::load(std::string filepath)

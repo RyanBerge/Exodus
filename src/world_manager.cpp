@@ -1,9 +1,12 @@
 #include "world_manager.h"
 #include "settings.h"
 
+#include <iostream>
+
 WorldManager::WorldManager() : current_room{RoomID{"Overworld", 5, 5}}
 {
     player.GetSprite().setPosition(sf::Vector2f(500, 500));
+    player.RegisterCollisionCheck(std::bind(&WorldManager::checkCollisions, this, std::placeholders::_1));
 }
 
 void WorldManager::Update(sf::Time elapsed, sf::RenderWindow& window)
@@ -49,6 +52,18 @@ void WorldManager::Resize(sf::Vector2u ratio, sf::RenderWindow& window)
     sf::View view(sf::FloatRect(0, 0, 1200, 800));
     view.setViewport(sf::FloatRect(viewport_x, viewport_y, viewport_width, viewport_height));
     window.setView(view);
-    //current_room.Resize(ratio);
 }
 
+bool WorldManager::checkCollisions(sf::IntRect new_position)
+{
+    for (auto& entity : current_room.GetEntities())
+    {
+        auto bounds = entity.GetSprite().getGlobalBounds();
+        if (new_position.left < bounds.left + bounds.width && new_position.left + new_position.width > bounds.left &&
+            new_position.top < bounds.top + bounds.height && new_position.top + new_position.height > bounds.top)
+        {
+            return true;
+        }
+    }
+    return false;
+}

@@ -25,9 +25,9 @@ void Room::Draw(sf::RenderWindow& window)
     }
 }
 
-void Room::Resize(sf::Vector2u ratio)
+std::list<Entity>& Room::GetEntities()
 {
-
+    return entities;
 }
 
 bool Room::Load()

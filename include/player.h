@@ -3,7 +3,9 @@
 
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/System/Time.hpp>
+#include <SFML/Graphics/Rect.hpp>
 #include "graphics/spritesheet.h"
+#include <functional>
 
 class Player
 {
@@ -14,9 +16,13 @@ public:
     void Draw(sf::RenderWindow& window);
 
     sf::Sprite& GetSprite();
+    void RegisterCollisionCheck(std::function<bool(sf::IntRect)> f);
 
 private:
+    void load(std::string filepath);
     void determineMovement(sf::Time elapsed);
+
+    std::function<bool(sf::IntRect)> checkCollisions;
 
     Spritesheet sprite;
     Spritesheet::Direction direction;

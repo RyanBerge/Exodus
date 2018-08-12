@@ -18,6 +18,8 @@ public:
     void Resize(sf::Vector2u ratio, sf::RenderWindow& window);
 
 private:
+    bool checkCollisions(sf::IntRect new_position);
+
     Room current_room;
     Player player;
 };
