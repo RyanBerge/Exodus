@@ -10,33 +10,6 @@
 Player::Player() : sprite{Spritesheet("assets/Player.png")}, direction{Spritesheet::Direction::Down}
 {
     load("data/player/animations.txt");
-    // Spritesheet::Config config;
-    // config.frames.push_back(sf::IntRect(0, 0, 50, 50));
-    // config.frames.push_back(sf::IntRect(50, 0, 50, 50));
-    // config.frames.push_back(sf::IntRect(100, 0, 50, 50));
-
-    // config.frames.push_back(sf::IntRect(0, 50, 50, 50));
-    // config.frames.push_back(sf::IntRect(50, 50, 50, 50));
-    // config.frames.push_back(sf::IntRect(100, 50, 50, 50));
-
-    // config.frames.push_back(sf::IntRect(0, 100, 50, 50));
-    // config.frames.push_back(sf::IntRect(50, 100, 50, 50));
-
-    // config.frames.push_back(sf::IntRect(0, 150, 50, 50));
-    // config.frames.push_back(sf::IntRect(50, 150, 50, 50));
-
-    // sprite.SetConfig(config);
-
-    // sprite.AddAnimation(Spritesheet::Animation{"IdleDown", 0, 0, 0});
-    // sprite.AddAnimation(Spritesheet::Animation{"IdleUp", 3, 3, 0});
-    // sprite.AddAnimation(Spritesheet::Animation{"IdleLeft", 6, 6, 0});
-    // sprite.AddAnimation(Spritesheet::Animation{"IdleRight", 8, 8, 0});
-    // sprite.AddAnimation(Spritesheet::Animation{"WalkDown", 1, 2, 2.0/5});
-    // sprite.AddAnimation(Spritesheet::Animation{"WalkUp", 4, 5, 2.0/5});
-    // sprite.AddAnimation(Spritesheet::Animation{"WalkLeft", 6, 7, 1.0/5});
-    // sprite.AddAnimation(Spritesheet::Animation{"WalkRight", 8, 9, 1.0/5});
-
-    // sprite.SetAnimation("IdleDown");
 }
 
 void Player::determineMovement(sf::Time elapsed)
@@ -85,6 +58,32 @@ void Player::determineMovement(sf::Time elapsed)
     {
         sprite.GetSprite().move(velocity.x, velocity.x * -1);
     }
+    else
+    {
+        float min = 0;
+        float max = velocity.x;
+        float distance = velocity.x;
+
+        while (abs(min - max) > 1)
+        {
+            distance = (min + max) / 2;
+            new_position.left = sprite.GetSprite().getPosition().x + distance;
+            if (checkCollisions(new_position))
+            {
+                max = distance;
+            }
+            else
+            {
+                min = distance;
+            }
+        }
+
+        new_position.left = sprite.GetSprite().getPosition().x + distance;
+        if (!checkCollisions(new_position))
+        {
+            sprite.GetSprite().move(distance, 0);
+        }
+    }
 
     new_position = sf::IntRect(sprite.GetSprite().getGlobalBounds());
     new_position.left = sprite.GetSprite().getPosition().x;
@@ -101,6 +100,32 @@ void Player::determineMovement(sf::Time elapsed)
     else if (!checkCollisions(sf::IntRect(new_position.left - velocity.y, new_position.top, new_position.width, new_position.height)))
     {
         sprite.GetSprite().move(velocity.y * -1, velocity.y);
+    }
+    else
+    {
+        float min = 0;
+        float max = velocity.y;
+        float distance = velocity.y;
+
+        while (abs(min - max) > 1)
+        {
+            distance = (min + max) / 2;
+            new_position.top = sprite.GetSprite().getPosition().y + distance;
+            if (checkCollisions(new_position))
+            {
+                max = distance;
+            }
+            else
+            {
+                min = distance;
+            }
+        }
+
+        new_position.top = sprite.GetSprite().getPosition().y + distance;
+        if (!checkCollisions(new_position))
+        {
+            sprite.GetSprite().move(0, distance);
+        }
     }
 
     Spritesheet::Direction old_direction = direction;

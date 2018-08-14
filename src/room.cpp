@@ -51,36 +51,42 @@ bool Room::Load()
 
     std::string line;
 
-    int x = 0;
-    int y = 0;
-
     while (!file.eof())
     {
         std::getline(file, line);
-
-        std::istringstream iss(line);
-
-        while (iss)
+        if (line == "")
         {
-            std::string identifier;
-            iss >> identifier;
-
-            if (identifier == "")
-            {
-                x = 0;
-                break;
-            }
-
-            if (identifier != ".")
-            {
-                Entity new_entity(identifier);
-                new_entity.GetSprite().setPosition(x, y);
-                entities.push_back(new_entity);
-            }
-
-            x += 100;
+            continue;
         }
-        y += 100;
+
+        auto sit = line.begin();
+        std::string key;
+        while (sit != line.end() && *sit != ':')
+        {
+            key += *sit;
+            ++sit;
+        }
+
+        while (sit != line.end() && (*sit == ' ' || *sit == ':'))
+        {
+            ++sit;
+        }
+
+        if (key == "Entity")
+        {
+            std::stringstream ss(std::string(sit, line.end()));
+            std::string identifier;
+            int x;
+            int y;
+
+            ss >> identifier;
+            ss >> x;
+            ss >> y;
+
+            Entity entity(identifier);
+            entity.GetSprite().setPosition(x, y);
+            entities.push_back(entity);
+        }
     }
 
     return true;
