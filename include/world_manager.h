@@ -6,6 +6,11 @@
 #include "room.h"
 #include "player.h"
 
+enum class RoomTransition
+{
+    None, Up, Down, Left, Right
+};
+
 class WorldManager
 {
 public:
@@ -19,8 +24,11 @@ public:
 
 private:
     bool checkCollisions(sf::IntRect new_position);
+    void changeRoom(sf::Vector2f position);
 
     Room current_room;
+    Room new_room;
+    RoomTransition room_transition{RoomTransition::None};
     Player player;
 };
 

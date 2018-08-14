@@ -2,34 +2,28 @@
 
 #include <iostream>
 
-Spritesheet::Spritesheet() : config{}, texture{}, sprite{}, animations{}, current_animation{""},
+Spritesheet::Spritesheet() : config{}, texture{new sf::Texture()}, sprite{}, animations{}, current_animation{""},
         animation_time{0}, texture_filepath{""}, frame{-1}, is_valid{false}
 {
 }
 
-Spritesheet::Spritesheet(std::string filepath, Config config) : config{config}, texture{}, sprite{}, animations{}, current_animation{""},
+Spritesheet::Spritesheet(std::string filepath, Config config) : config{config}, texture{new sf::Texture()}, sprite{}, animations{}, current_animation{""},
         animation_time{0}, texture_filepath{filepath}, frame{-1}, is_valid{false}
 {
-    if (texture_filepath != "" && texture.loadFromFile(texture_filepath))
+    if (texture_filepath != "" && texture->loadFromFile(texture_filepath))
     {
-        sprite.setTexture(texture);
+        sprite.setTexture(*texture);
         is_valid = true;
         SetFrame(0);
     }
 }
 
-Spritesheet::Spritesheet(const Spritesheet& other) : config{}, texture{}, sprite{}, animations{}, current_animation{""},
-        animation_time{0}, texture_filepath{""}, frame{-1}, is_valid{false}
-{
-    *this = other;
-}
-
-Spritesheet::Spritesheet(std::string filepath) : config{}, texture{}, sprite{}, animations{}, current_animation{""},
+Spritesheet::Spritesheet(std::string filepath) : config{}, texture{new sf::Texture()}, sprite{}, animations{}, current_animation{""},
         animation_time{0}, texture_filepath{filepath}, frame{-1}, is_valid{false}
 {
-    if (texture_filepath != "" && texture.loadFromFile(texture_filepath))
+    if (texture_filepath != "" && texture->loadFromFile(texture_filepath))
     {
-        sprite.setTexture(texture);
+        sprite.setTexture(*texture);
         is_valid = true;
     }
 }
@@ -91,23 +85,6 @@ void Spritesheet::AdvanceAnimation()
             SetFrame(frame + 1);
         }
     }
-}
-
-Spritesheet& Spritesheet::operator=(const Spritesheet& other)
-{
-    config = other.config;
-    sprite = other.sprite;
-    animations = other.animations;
-    current_animation = other.current_animation;
-    animation_time = other.animation_time;
-    texture_filepath = other.texture_filepath;
-    if (texture_filepath != "" && texture.loadFromFile(texture_filepath))
-    {
-        sprite.setTexture(texture);
-        is_valid = true;
-        SetFrame(other.frame);
-    }
-    return *this;
 }
 
 bool Spritesheet::SetFrame(int new_frame)

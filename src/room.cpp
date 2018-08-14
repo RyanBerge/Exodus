@@ -4,6 +4,10 @@
 #include <sstream>
 #include <iostream>
 
+Room::Room()
+{
+}
+
 Room::Room(RoomID id) : id{id}
 {
 }
@@ -28,6 +32,11 @@ void Room::Draw(sf::RenderWindow& window)
 std::list<Entity>& Room::GetEntities()
 {
     return entities;
+}
+
+RoomID Room::GetID()
+{
+    return id;
 }
 
 bool Room::Load()

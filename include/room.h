@@ -16,6 +16,7 @@ struct RoomID
 class Room
 {
 public:
+    Room();
     Room(RoomID id);
 
     void Update(sf::Time elapsed, sf::RenderWindow& window);
@@ -23,6 +24,7 @@ public:
 
     bool Load();
     std::list<Entity>& GetEntities();
+    RoomID GetID();
 
 private:
     RoomID id;

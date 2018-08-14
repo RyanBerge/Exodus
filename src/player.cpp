@@ -60,29 +60,29 @@ void Player::determineMovement(sf::Time elapsed)
     }
     else
     {
-        float min = 0;
-        float max = velocity.x;
-        float distance = velocity.x;
+        // float min = 0;
+        // float max = velocity.x;
+        // float distance = velocity.x;
 
-        while (abs(min - max) > 1)
-        {
-            distance = (min + max) / 2;
-            new_position.left = sprite.GetSprite().getPosition().x + distance;
-            if (checkCollisions(new_position))
-            {
-                max = distance;
-            }
-            else
-            {
-                min = distance;
-            }
-        }
+        // while (abs(min - max) > 1)
+        // {
+        //     distance = (min + max) / 2;
+        //     new_position.left = sprite.GetSprite().getPosition().x + distance;
+        //     if (checkCollisions(new_position))
+        //     {
+        //         max = distance;
+        //     }
+        //     else
+        //     {
+        //         min = distance;
+        //     }
+        // }
 
-        new_position.left = sprite.GetSprite().getPosition().x + distance;
-        if (!checkCollisions(new_position))
-        {
-            sprite.GetSprite().move(distance, 0);
-        }
+        // new_position.left = sprite.GetSprite().getPosition().x + distance;
+        // if (!checkCollisions(new_position))
+        // {
+        //     sprite.GetSprite().move(distance, 0);
+        // }
     }
 
     new_position = sf::IntRect(sprite.GetSprite().getGlobalBounds());
@@ -103,29 +103,29 @@ void Player::determineMovement(sf::Time elapsed)
     }
     else
     {
-        float min = 0;
-        float max = velocity.y;
-        float distance = velocity.y;
+        // float min = 0;
+        // float max = velocity.y;
+        // float distance = velocity.y;
 
-        while (abs(min - max) > 1)
-        {
-            distance = (min + max) / 2;
-            new_position.top = sprite.GetSprite().getPosition().y + distance;
-            if (checkCollisions(new_position))
-            {
-                max = distance;
-            }
-            else
-            {
-                min = distance;
-            }
-        }
+        // while (abs(min - max) > 1)
+        // {
+        //     distance = (min + max) / 2;
+        //     new_position.top = sprite.GetSprite().getPosition().y + distance;
+        //     if (checkCollisions(new_position))
+        //     {
+        //         max = distance;
+        //     }
+        //     else
+        //     {
+        //         min = distance;
+        //     }
+        // }
 
-        new_position.top = sprite.GetSprite().getPosition().y + distance;
-        if (!checkCollisions(new_position))
-        {
-            sprite.GetSprite().move(0, distance);
-        }
+        // new_position.top = sprite.GetSprite().getPosition().y + distance;
+        // if (!checkCollisions(new_position))
+        // {
+        //     sprite.GetSprite().move(0, distance);
+        // }
     }
 
     Spritesheet::Direction old_direction = direction;
@@ -287,4 +287,9 @@ void Player::load(std::string filepath)
 void Player::RegisterCollisionCheck(std::function<bool(sf::IntRect)> f)
 {
     checkCollisions = f;
+}
+
+void Player::RegisterChangeRoom(std::function<void(sf::Vector2f)> f)
+{
+    changeRoom = f;
 }

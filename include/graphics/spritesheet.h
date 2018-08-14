@@ -17,6 +17,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <memory>
 
 class Spritesheet
 {
@@ -42,9 +43,6 @@ public:
     Spritesheet();
     Spritesheet(std::string filepath);
     Spritesheet(std::string filepath, Config config);
-    Spritesheet(const Spritesheet& other);
-
-    Spritesheet& operator=(const Spritesheet& other);
 
     void Draw(sf::RenderWindow& window);
     void Update(sf::Time elapsed, sf::RenderWindow& window);
@@ -59,7 +57,7 @@ public:
 
 private:
     Config config;
-    sf::Texture texture;
+    std::shared_ptr<sf::Texture> texture;
     sf::Sprite sprite;
     std::map<std::string, Animation> animations;
     std::string current_animation;

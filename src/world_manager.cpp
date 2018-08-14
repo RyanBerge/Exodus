@@ -67,3 +67,14 @@ bool WorldManager::checkCollisions(sf::IntRect new_position)
     }
     return false;
 }
+
+void WorldManager::changeRoom(sf::Vector2f position)
+{
+    if (position.x < 0)
+    {
+        RoomID id = current_room.GetID();
+        id.x -= 1;
+        new_room = Room(id);
+        new_room.Load();
+    }
+}
