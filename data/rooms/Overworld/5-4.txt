@@ -4,6 +4,7 @@ Entity: tree 200 0
 Entity: tree 300 0
 Entity: tree 400 0
 Entity: tree 500 0
+Entity: tree 600 0
 Entity: tree 700 0
 Entity: tree 800 0
 Entity: tree 900 0
@@ -12,12 +13,13 @@ Entity: tree 1100 0
 Entity: tree 0 100
 Entity: tree 100 100
 Entity: tree 200 100
-Entity: tree 300 100
 Entity: tree 1100 100
 Entity: tree 0 200
-Entity: tree 100 200
+Entity: tree 1100 200
 Entity: tree 0 300
+Entity: tree 1100 300
 Entity: tree 0 400
+Entity: tree 1100 400
 Entity: tree 0 500
 Entity: tree 1100 500
 Entity: tree 0 600
@@ -30,7 +32,6 @@ Entity: tree 200 700
 Entity: tree 300 700
 Entity: tree 400 700
 Entity: tree 500 700
-Entity: tree 600 700
 Entity: tree 700 700
 Entity: tree 800 700
 Entity: tree 900 700

@@ -7,18 +7,57 @@ WorldManager::WorldManager() : current_room{RoomID{"Overworld", 5, 5}}
 {
     player.GetSprite().setPosition(sf::Vector2f(500, 500));
     player.RegisterCollisionCheck(std::bind(&WorldManager::checkCollisions, this, std::placeholders::_1));
+    player.RegisterChangeRoom(std::bind(&WorldManager::changeRoom, this, std::placeholders::_1));
 }
 
 void WorldManager::Update(sf::Time elapsed, sf::RenderWindow& window)
 {
-    current_room.Update(elapsed, window);
-    player.Update(elapsed, window);
+    elapsed_seconds = elapsed;
+    if (room_transition == sf::Vector2i{0, 0})
+    {
+        current_room.Update(elapsed, window);
+        player.Update(elapsed, window);
+    }
 }
 
 void WorldManager::Draw(sf::RenderWindow& window)
 {
-    current_room.Draw(window);
-    player.Draw(window);
+    if (room_transition == sf::Vector2i{0, 0})
+    {
+        current_room.Draw(window);
+        player.Draw(window);
+    }
+    else
+    {
+        float transition_speed = (room_transition.x == 0 ? 400 : 600) * elapsed_seconds.asSeconds();
+
+        sf::View current_room_view = window.getView();
+        sf::View new_room_view = window.getView();
+        new_room_view.move(1200 * -room_transition.x, 800 * -room_transition.y);
+
+        new_room_view.move(transition_speed * room_transition.x, transition_speed * room_transition.y);
+        window.setView(new_room_view);
+        new_room.Draw(window);
+
+        current_room_view.move(transition_speed * room_transition.x, transition_speed * room_transition.y);
+        window.setView(current_room_view);
+        current_room.Draw(window);
+
+        player.Draw(window);
+
+        if (((room_transition.x > 0) ? window.getView().getCenter().x >= 1800 : window.getView().getCenter().x <= -600) ||
+            ((room_transition.y > 0) ? window.getView().getCenter().y >= 1200 : window.getView().getCenter().y <= -400))
+        {
+            current_room = new_room;
+            player.GetSprite().move(1200 * -room_transition.x, 800 * -room_transition.y);
+            sf::View view = window.getView();
+            view.move(1200 * -room_transition.x, 800 * -room_transition.y);
+            window.setView(view);
+            current_room.Draw(window);
+            room_transition.x = 0;
+            room_transition.y = 0;
+        }
+    }
 }
 
 void WorldManager::LoadSave(sf::RenderWindow& window)
@@ -49,7 +88,11 @@ void WorldManager::Resize(sf::Vector2u ratio, sf::RenderWindow& window)
         viewport_y = (1 - viewport_height) / 2;
     }
 
-    sf::View view(sf::FloatRect(0, 0, 1200, 800));
+    sf::FloatRect view_rect{0, 0, 1200, 800};
+    view_rect.left = window.getView().getCenter().x - window.getView().getSize().x / 2;
+    view_rect.top = window.getView().getCenter().y - window.getView().getSize().y / 2;
+
+    sf::View view(view_rect);
     view.setViewport(sf::FloatRect(viewport_x, viewport_y, viewport_width, viewport_height));
     window.setView(view);
 }
@@ -68,13 +111,12 @@ bool WorldManager::checkCollisions(sf::IntRect new_position)
     return false;
 }
 
-void WorldManager::changeRoom(sf::Vector2f position)
+void WorldManager::changeRoom(sf::Vector2i room_offset)
 {
-    if (position.x < 0)
-    {
-        RoomID id = current_room.GetID();
-        id.x -= 1;
-        new_room = Room(id);
-        new_room.Load();
-    }
+    RoomID id = current_room.GetID();
+    id.x += room_offset.x;
+    id.y += room_offset.y;
+    new_room = Room(id);
+    new_room.Load();
+    room_transition = room_offset;
 }

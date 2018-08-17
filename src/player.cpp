@@ -195,6 +195,22 @@ void Player::Update(sf::Time elapsed, sf::RenderWindow& window)
 {
     determineMovement(elapsed);
     sprite.Update(elapsed, window);
+    if (sprite.GetSprite().getPosition().x < 0 - sprite.GetSprite().getGlobalBounds().width)
+    {
+        changeRoom(sf::Vector2i(-1, 0));
+    }
+    else if (sprite.GetSprite().getPosition().y < 0 - sprite.GetSprite().getGlobalBounds().height)
+    {
+        changeRoom(sf::Vector2i(0, -1));
+    }
+    else if (sprite.GetSprite().getPosition().x > 1200)
+    {
+        changeRoom(sf::Vector2i(1, 0));
+    }
+    else if (sprite.GetSprite().getPosition().y > 800)
+    {
+        changeRoom(sf::Vector2i(0, 1));
+    }
 }
 
 void Player::Draw(sf::RenderWindow& window)
@@ -289,7 +305,7 @@ void Player::RegisterCollisionCheck(std::function<bool(sf::IntRect)> f)
     checkCollisions = f;
 }
 
-void Player::RegisterChangeRoom(std::function<void(sf::Vector2f)> f)
+void Player::RegisterChangeRoom(std::function<void(sf::Vector2i)> f)
 {
     changeRoom = f;
 }

@@ -54,8 +54,23 @@ void GameManager::Draw(sf::RenderWindow& window)
 
 void GameManager::Resize(sf::Vector2u ratio)
 {
-    main_menu.Resize(ratio, window);
-    world_manager.Resize(ratio, window);
+    switch (current_scene)
+    {
+        case Scene::MainMenu:
+        {
+            main_menu.Resize(ratio, window);
+        }
+        break;
+        case Scene::Game:
+        {
+            world_manager.Resize(ratio, window);
+        }
+        break;
+        case Scene::Quit:
+        {
+        }
+        break;
+    }
 }
 
 void GameManager::StartGame()

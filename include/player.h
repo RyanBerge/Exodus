@@ -17,14 +17,14 @@ public:
 
     sf::Sprite& GetSprite();
     void RegisterCollisionCheck(std::function<bool(sf::IntRect)> f);
-    void RegisterChangeRoom(std::function<void(sf::Vector2f)> f);
+    void RegisterChangeRoom(std::function<void(sf::Vector2i)> f);
 
 private:
     void load(std::string filepath);
     void determineMovement(sf::Time elapsed);
 
     std::function<bool(sf::IntRect)> checkCollisions;
-    std::function<void(sf::Vector2f)> changeRoom;
+    std::function<void(sf::Vector2i)> changeRoom;
 
     Spritesheet sprite;
     Spritesheet::Direction direction;
