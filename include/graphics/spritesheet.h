@@ -65,7 +65,6 @@ private:
     std::string texture_filepath;
     int frame;
     bool is_valid;
-
 };
 
 #endif // SPRITESHEET_H
