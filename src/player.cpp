@@ -39,8 +39,21 @@ void Player::determineMovement(sf::Time elapsed)
 
     sf::Vector2f old_velocity(velocity);
 
-    velocity.x = horizontal_direction * MOVESPEED * elapsed.asSeconds();
-    velocity.y = vertical_direction * MOVESPEED * elapsed.asSeconds();
+    // Knockback
+    velocity.x = knockback_direction.x * knockback_magnitude * elapsed.asSeconds();
+    velocity.y = knockback_direction.y * knockback_magnitude * elapsed.asSeconds();
+
+    knockback_magnitude -= knockback_decay * elapsed.asSeconds();
+    if (knockback_magnitude <= 0)
+    {
+        knockback_magnitude = 0;
+        knockback_direction.x = 0;
+        knockback_direction.y = 0;
+        knockback_decay = 0;
+    }
+
+    velocity.x += horizontal_direction * MOVESPEED * elapsed.asSeconds();
+    velocity.y += vertical_direction * MOVESPEED * elapsed.asSeconds();
 
     sf::IntRect new_position(sprite.GetSprite().getGlobalBounds());
     new_position.left = sprite.GetSprite().getPosition().x + velocity.x;
@@ -211,11 +224,41 @@ void Player::Update(sf::Time elapsed, sf::RenderWindow& window)
     {
         changeRoom(sf::Vector2i(0, 1));
     }
+
+    if (invincible)
+    {
+        invincible_timer -= elapsed.asSeconds();
+        if (invincible_timer <= 0)
+        {
+            invincible = false;
+            invincible_timer = 0;
+        }
+    }
 }
 
 void Player::Draw(sf::RenderWindow& window)
 {
     sprite.Draw(window);
+}
+
+void Player::Damage(int damage, int knockback, sf::Vector2f direction)
+{
+    if (!invincible)
+    {
+        health -= damage;
+        if (health <= 0)
+        {
+            //TODO: die
+        }
+
+        sprite.SetFlash(sf::Color(255, 0, 0), 0.5, 10);
+
+        knockback_magnitude = knockback;
+        knockback_direction = direction;
+        knockback_decay = knockback * 5;
+        invincible = true;
+        invincible_timer = 0.5;
+    }
 }
 
 sf::Sprite& Player::GetSprite()

@@ -37,3 +37,4 @@ Entity: tree 800 700
 Entity: tree 900 700
 Entity: tree 1000 700
 Entity: tree 1100 700
+Enemy: Spiny 200 400

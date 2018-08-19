@@ -52,6 +52,7 @@ public:
     void AddAnimation(Animation animation);
     bool SetAnimation(std::string name);
     void AdvanceAnimation();
+    void SetFlash(sf::Color, float duration, float rate);
 
     sf::Sprite& GetSprite();
 
@@ -65,6 +66,10 @@ private:
     std::string texture_filepath;
     int frame;
     bool is_valid;
+    sf::Color flash_color{255, 255, 255};
+    float flash_rate{0};
+    float flash_timer{0};
+    float flash_complete_timer{0};
 };
 
 #endif // SPRITESHEET_H

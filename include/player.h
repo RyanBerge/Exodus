@@ -15,6 +15,8 @@ public:
     void Update(sf::Time elapsed, sf::RenderWindow& window);
     void Draw(sf::RenderWindow& window);
 
+    void Damage(int damage, int knockback, sf::Vector2f direction);
+
     sf::Sprite& GetSprite();
     void RegisterCollisionCheck(std::function<bool(sf::IntRect)> f);
     void RegisterChangeRoom(std::function<void(sf::Vector2i)> f);
@@ -29,6 +31,13 @@ private:
     Spritesheet sprite;
     Spritesheet::Direction direction;
     sf::Vector2f velocity;
+
+    int health{5};
+    float knockback_magnitude{0};
+    sf::Vector2f knockback_direction{0, 0};
+    float knockback_decay{0};
+    bool invincible{false};
+    float invincible_timer{0};
 
 };
 

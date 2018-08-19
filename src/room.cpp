@@ -12,26 +12,42 @@ Room::Room(RoomID id) : id{id}
 {
 }
 
-void Room::Update(sf::Time elapsed, sf::RenderWindow& window)
+void Room::Update(sf::Time elapsed, sf::RenderWindow& window, Player& player)
 {
-    for (auto entity : entities)
+    for (auto& entity : entities)
     {
         entity.Update(elapsed, window);
+    }
+
+    for (auto& enemy : enemies)
+    {
+        enemy.Update(elapsed, window, player);
     }
 }
 
 void Room::Draw(sf::RenderWindow& window)
 {
     background.Draw(window);
-    for (auto entity : entities)
+
+    for (auto& entity : entities)
     {
         entity.Draw(window);
+    }
+
+    for (auto& enemy : enemies)
+    {
+        enemy.Draw(window);
     }
 }
 
 std::list<Entity>& Room::GetEntities()
 {
     return entities;
+}
+
+std::list<Enemy>& Room::GetEnemies()
+{
+    return enemies;
 }
 
 RoomID Room::GetID()
@@ -95,6 +111,21 @@ bool Room::Load()
             Entity entity(identifier);
             entity.GetSprite().setPosition(x, y);
             entities.push_back(entity);
+        }
+        else if (key == "Enemy")
+        {
+            std::stringstream ss(std::string(sit, line.end()));
+            std::string identifier;
+            int x;
+            int y;
+
+            ss >> identifier;
+            ss >> x;
+            ss >> y;
+
+            Enemy enemy(identifier);
+            enemy.GetSprite().setPosition(x, y);
+            enemies.push_back(enemy);
         }
     }
 

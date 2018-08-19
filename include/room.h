@@ -5,6 +5,7 @@
 #include <SFML/System/Time.hpp>
 #include <list>
 #include "entity.h"
+#include "enemy.h"
 
 struct RoomID
 {
@@ -19,17 +20,19 @@ public:
     Room();
     Room(RoomID id);
 
-    void Update(sf::Time elapsed, sf::RenderWindow& window);
+    void Update(sf::Time elapsed, sf::RenderWindow& window, Player& player);
     void Draw(sf::RenderWindow& window);
 
     bool Load();
     std::list<Entity>& GetEntities();
+    std::list<Enemy>& GetEnemies();
     RoomID GetID();
 
 private:
     RoomID id;
     Spritesheet background;
     std::list<Entity> entities;
+    std::list<Enemy> enemies;
 
 };
 

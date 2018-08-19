@@ -1,29 +1,32 @@
-#include "entity.h"
+#include "enemy.h"
+
+#include "utilities.h"
 
 #include <iostream>
 #include <cstdlib>
 #include <fstream>
 #include <sstream>
 
-Entity::Entity(std::string identifier)
+#define SPINY_SPEED 60
+
+Enemy::Enemy(std::string identifier)
 {
-    load("data/entities/" + identifier + ".txt");
+    load("data/enemies/" + identifier + ".txt");
 }
 
-void Entity::load(std::string filepath)
+void Enemy::load(std::string filepath)
 {
     std::ifstream file(filepath);
     std::string line;
 
-    std::string sprite_path("assets/");
-    Spritesheet::Config config;
-    bool random_frame;
-
     if (!file.is_open())
     {
-        std::cerr << "Exodus: Entity was not loaded: " << filepath << std::endl;
+        std::cerr << "Exodus: Enemy was not loaded: " << filepath << std::endl;
         return;
     }
+
+    std::string sprite_path("assets/");
+    Spritesheet::Config config;
 
     while (!file.eof())
     {
@@ -91,37 +94,72 @@ void Entity::load(std::string filepath)
                 config.frames.push_back(sf::IntRect(left, right, width, height));
             }
         }
-        else if (key == "RandomFrame")
+        else if (key == "Behavior")
         {
-            if (std::string(sit, line.end()) == "True")
+            if (std::string(sit, line.end()) == "None")
             {
-                random_frame = true;
+                behavior = Behavior::None;
             }
-            else if (std::string(sit, line.end()) == "False")
+            else if (std::string(sit, line.end()) == "Spiny")
             {
-                random_frame = false;
+                behavior = Behavior::Spiny;
             }
+        }
+        else if (key == "Damage")
+        {
+            std::stringstream ss(std::string(sit, line.end()));
+            ss >> damage;
+        }
+        else if (key == "Knockback")
+        {
+            std::stringstream ss(std::string(sit, line.end()));
+            ss >> knockback;
         }
     }
 
     sprite = Spritesheet(sprite_path, config);
-    if (random_frame)
+}
+
+void Enemy::Update(sf::Time elapsed, sf::RenderWindow& window, Player& player)
+{
+    sprite.Update(elapsed, window);
+    switch (behavior)
     {
-        sprite.SetFrame(rand() % config.frames.size());
+        case Behavior::None:
+        {
+        }
+        case Behavior::Spiny:
+        {
+            spinyUpdate(elapsed, window, player);
+        }
     }
 }
 
-void Entity::Update(sf::Time elapsed, sf::RenderWindow& window)
+void Enemy::spinyUpdate(sf::Time elapsed, sf::RenderWindow& window, Player& player)
 {
-
+    auto direction = follow(player.GetSprite().getPosition(), elapsed);
+    if (Utilities::CheckCollision(sprite.GetSprite().getGlobalBounds(), player.GetSprite().getGlobalBounds()))
+    {
+        player.Damage(damage, knockback, direction);
+    }
 }
 
-void Entity::Draw(sf::RenderWindow& window)
+sf::Vector2f Enemy::follow(sf::Vector2f player_position, sf::Time elapsed)
+{
+    sf::Vector2f position = sprite.GetSprite().getPosition();
+    sf::Vector2f direction = player_position - position;
+    direction = Utilities::Normalize(direction);
+
+    sprite.GetSprite().move(direction.x * SPINY_SPEED * elapsed.asSeconds(), direction.y * SPINY_SPEED * elapsed.asSeconds());
+    return direction;
+}
+
+void Enemy::Draw(sf::RenderWindow& window)
 {
     sprite.Draw(window);
 }
 
-sf::Sprite& Entity::GetSprite()
+sf::Sprite& Enemy::GetSprite()
 {
     return sprite.GetSprite();
 }

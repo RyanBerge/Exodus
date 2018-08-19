@@ -39,6 +39,33 @@ void Spritesheet::Update(sf::Time elapsed, sf::RenderWindow& window)
             AdvanceAnimation();
         }
     }
+
+    if (flash_color != sf::Color::White)
+    {
+        flash_timer -= elapsed.asSeconds();
+        if (flash_timer <= 0)
+        {
+            if (sprite.getColor() == flash_color)
+            {
+                sprite.setColor(sf::Color::White);
+            }
+            else
+            {
+                sprite.setColor(flash_color);
+            }
+            flash_timer = flash_rate;
+        }
+
+        flash_complete_timer -= elapsed.asSeconds();
+        if (flash_complete_timer <= 0)
+        {
+            flash_color = sf::Color::White;
+            sprite.setColor(flash_color);
+            flash_complete_timer = 0;
+            flash_timer = 0;
+            flash_rate = 0;
+        }
+    }
 }
 
 void Spritesheet::Draw(sf::RenderWindow& window)
@@ -105,6 +132,15 @@ bool Spritesheet::SetFrame(int new_frame)
     }
 
     return true;
+}
+
+void Spritesheet::SetFlash(sf::Color color, float duration, float rate)
+{
+    flash_color = color;
+    flash_rate = (duration / rate) / 2;;
+    flash_timer = flash_rate;
+    flash_complete_timer = duration;
+    sprite.setColor(color);
 }
 
 sf::Sprite& Spritesheet::GetSprite()

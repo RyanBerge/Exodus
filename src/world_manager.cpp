@@ -1,5 +1,6 @@
 #include "world_manager.h"
 #include "settings.h"
+#include "utilities.h"
 
 #include <iostream>
 
@@ -15,7 +16,7 @@ void WorldManager::Update(sf::Time elapsed, sf::RenderWindow& window)
     elapsed_seconds = elapsed;
     if (room_transition == sf::Vector2i{0, 0})
     {
-        current_room.Update(elapsed, window);
+        current_room.Update(elapsed, window, player);
         player.Update(elapsed, window);
     }
 }
@@ -101,9 +102,7 @@ bool WorldManager::checkCollisions(sf::IntRect new_position)
 {
     for (auto& entity : current_room.GetEntities())
     {
-        auto bounds = entity.GetSprite().getGlobalBounds();
-        if (new_position.left < bounds.left + bounds.width && new_position.left + new_position.width > bounds.left &&
-            new_position.top < bounds.top + bounds.height && new_position.top + new_position.height > bounds.top)
+        if (Utilities::CheckCollision(entity.GetSprite().getGlobalBounds(), sf::FloatRect(new_position)))
         {
             return true;
         }
