@@ -1,0 +1,4 @@
+Sprite: Heart.png
+Frames: [0 0 29 32] [29 0 29 32]
+Animation: Lit 0 0 0
+Animation: Unlit 1 1 0

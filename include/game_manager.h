@@ -17,6 +17,8 @@ class GameManager
 public:
     GameManager(sf::RenderWindow& render_window);
 
+    void InitializeWorldManager();
+
     void Update(sf::Time& elapsed, sf::RenderWindow& window);
     void Draw(sf::RenderWindow& window);
 
@@ -24,6 +26,7 @@ public:
 
     void StartGame();
     void Quit();
+    void Death();
 
 private:
     Scene current_scene;
@@ -31,6 +34,8 @@ private:
     MainMenu main_menu;
     WorldManager world_manager;
     sf::RenderWindow& window;
+
+    bool reset{false};
 };
 
 #endif // GAME_MANAGER_H

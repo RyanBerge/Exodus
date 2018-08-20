@@ -4,7 +4,8 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/System/Time.hpp>
 #include <SFML/Graphics/Rect.hpp>
-#include "graphics/spritesheet.h"
+
+#include "hud.h"
 #include <functional>
 
 class Player
@@ -18,8 +19,11 @@ public:
     void Damage(int damage, int knockback, sf::Vector2f direction);
 
     sf::Sprite& GetSprite();
+    void SetHudViewport(sf::FloatRect viewport);
+
     void RegisterCollisionCheck(std::function<bool(sf::IntRect)> f);
     void RegisterChangeRoom(std::function<void(sf::Vector2i)> f);
+    void RegisterDeathCallback(std::function<void(void)> f);
 
 private:
     void load(std::string filepath);
@@ -27,6 +31,7 @@ private:
 
     std::function<bool(sf::IntRect)> checkCollisions;
     std::function<void(sf::Vector2i)> changeRoom;
+    std::function<void(void)> deathCallback;
 
     Spritesheet sprite;
     Spritesheet::Direction direction;
@@ -38,6 +43,7 @@ private:
     float knockback_decay{0};
     bool invincible{false};
     float invincible_timer{0};
+    Hud hud;
 
 };
 

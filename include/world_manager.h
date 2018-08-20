@@ -11,15 +11,22 @@ class WorldManager
 public:
     WorldManager();
 
+    void Initialize();
+
     void Update(sf::Time elapsed, sf::RenderWindow& window);
     void Draw(sf::RenderWindow& window);
 
     void LoadSave(sf::RenderWindow& window);
     void Resize(sf::Vector2u ratio, sf::RenderWindow& window);
 
+    void RegisterDeathCallback(std::function<void(void)> f);
+    void Death();
+
 private:
     bool checkCollisions(sf::IntRect new_position);
     void changeRoom(sf::Vector2i position);
+
+    std::function<void(void)> deathCallback;
 
     Room current_room;
     Room new_room;

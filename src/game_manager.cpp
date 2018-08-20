@@ -5,10 +5,26 @@ GameManager::GameManager(sf::RenderWindow& window) : current_scene{Scene::MainMe
     main_menu.RegisterPlayRequest(std::bind(&GameManager::StartGame, this));
     main_menu.RegisterQuitRequest(std::bind(&GameManager::Quit, this));
     main_menu.Resize(sf::Vector2u(Settings::video_resolution.x, Settings::video_resolution.y), window);
+
+    InitializeWorldManager();
+}
+
+void GameManager::InitializeWorldManager()
+{
+    Resize(window.getSize());
+    world_manager = WorldManager();
+    world_manager.Initialize();
+    world_manager.RegisterDeathCallback(std::bind(&GameManager::Death, this));
+    reset = false;
 }
 
 void GameManager::Update(sf::Time& elapsed, sf::RenderWindow& window)
 {
+    if (reset)
+    {
+        InitializeWorldManager();
+    }
+
     switch (current_scene)
     {
         case Scene::MainMenu:
@@ -82,4 +98,10 @@ void GameManager::StartGame()
 void GameManager::Quit()
 {
     current_scene = Scene::Quit;
+}
+
+void GameManager::Death()
+{
+    current_scene = Scene::MainMenu;
+    reset = true;
 }

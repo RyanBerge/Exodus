@@ -7,12 +7,18 @@
 WorldManager::WorldManager() : current_room{RoomID{"Overworld", 5, 5}}
 {
     player.GetSprite().setPosition(sf::Vector2f(500, 500));
+}
+
+void WorldManager::Initialize()
+{
     player.RegisterCollisionCheck(std::bind(&WorldManager::checkCollisions, this, std::placeholders::_1));
     player.RegisterChangeRoom(std::bind(&WorldManager::changeRoom, this, std::placeholders::_1));
+    player.RegisterDeathCallback(std::bind(&WorldManager::Death, this));
 }
 
 void WorldManager::Update(sf::Time elapsed, sf::RenderWindow& window)
 {
+    checkCollisions(sf::IntRect(0, 0, 50, 50));
     elapsed_seconds = elapsed;
     if (room_transition == sf::Vector2i{0, 0})
     {
@@ -61,6 +67,11 @@ void WorldManager::Draw(sf::RenderWindow& window)
     }
 }
 
+void WorldManager::RegisterDeathCallback(std::function<void(void)> f)
+{
+    deathCallback = f;
+}
+
 void WorldManager::LoadSave(sf::RenderWindow& window)
 {
     current_room = RoomID{"Overworld", 5, 5};
@@ -71,7 +82,7 @@ void WorldManager::LoadSave(sf::RenderWindow& window)
 void WorldManager::Resize(sf::Vector2u ratio, sf::RenderWindow& window)
 {
     float aspect_ratio = 1200.f / 800.f;
-    float window_ratio = static_cast<float>(ratio.x) / static_cast<float>(ratio.y);
+    float window_ratio = static_cast<float>(ratio.x) / (static_cast<float>(ratio.y) - 72);
 
     float viewport_width = 1;
     float viewport_height = 1;
@@ -94,8 +105,9 @@ void WorldManager::Resize(sf::Vector2u ratio, sf::RenderWindow& window)
     view_rect.top = window.getView().getCenter().y - window.getView().getSize().y / 2;
 
     sf::View view(view_rect);
-    view.setViewport(sf::FloatRect(viewport_x, viewport_y, viewport_width, viewport_height));
+    view.setViewport(sf::FloatRect(viewport_x, viewport_y + (72.0 / 800.0), viewport_width, viewport_height - (72.0 / 800.0)));
     window.setView(view);
+    player.SetHudViewport(sf::FloatRect(viewport_x, viewport_y, viewport_width, viewport_height));
 }
 
 bool WorldManager::checkCollisions(sf::IntRect new_position)
@@ -118,4 +130,9 @@ void WorldManager::changeRoom(sf::Vector2i room_offset)
     new_room = Room(id);
     new_room.Load();
     room_transition = room_offset;
+}
+
+void WorldManager::Death()
+{
+    deathCallback();
 }

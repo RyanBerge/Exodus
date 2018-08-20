@@ -208,6 +208,8 @@ void Player::Update(sf::Time elapsed, sf::RenderWindow& window)
 {
     determineMovement(elapsed);
     sprite.Update(elapsed, window);
+    hud.Update(elapsed, window);
+
     if (sprite.GetSprite().getPosition().x < 0 - sprite.GetSprite().getGlobalBounds().width)
     {
         changeRoom(sf::Vector2i(-1, 0));
@@ -239,6 +241,7 @@ void Player::Update(sf::Time elapsed, sf::RenderWindow& window)
 void Player::Draw(sf::RenderWindow& window)
 {
     sprite.Draw(window);
+    hud.Draw(window);
 }
 
 void Player::Damage(int damage, int knockback, sf::Vector2f direction)
@@ -246,9 +249,11 @@ void Player::Damage(int damage, int knockback, sf::Vector2f direction)
     if (!invincible)
     {
         health -= damage;
+        hud.SetHealth(health);
         if (health <= 0)
         {
-            //TODO: die
+            deathCallback();
+            return;
         }
 
         sprite.SetFlash(sf::Color(255, 0, 0), 0.5, 10);
@@ -351,4 +356,14 @@ void Player::RegisterCollisionCheck(std::function<bool(sf::IntRect)> f)
 void Player::RegisterChangeRoom(std::function<void(sf::Vector2i)> f)
 {
     changeRoom = f;
+}
+
+void Player::RegisterDeathCallback(std::function<void(void)> f)
+{
+    deathCallback = f;
+}
+
+void Player::SetHudViewport(sf::FloatRect viewport)
+{
+    hud.SetViewport(viewport);
 }
