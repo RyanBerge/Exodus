@@ -27,6 +27,7 @@ public:
     void StartGame();
     void Quit();
     void Death();
+    void Fullscreen(bool full);
 
 private:
     Scene current_scene;

@@ -1,0 +1,8 @@
+Sprite: FullscreenButton.png
+Frames: [0 0 489 59] [0 59 489 59] [0 118 489 59] [0 177 489 59] [0 236 489 59] [0 295 489 59]
+Animation: Up 0 0 0
+Animation: Hover 1 1 0
+Animation: Down 2 2 0
+Animation: UpChecked 3 3 0
+Animation: HoverChecked 4 4 0
+Animation: DownChecked 5 5 0

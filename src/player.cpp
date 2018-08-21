@@ -2,14 +2,14 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <fstream>
 #include <sstream>
-
 #include <iostream>
+#include "data_file.h"
 
 #define MOVESPEED 125
 
 Player::Player() : sprite{Spritesheet("assets/Player.png")}, direction{Spritesheet::Direction::Down}
 {
-    load("data/player/animations.txt");
+    load("data/player/player.txt");
 }
 
 void Player::determineMovement(sf::Time elapsed)
@@ -273,78 +273,52 @@ sf::Sprite& Player::GetSprite()
 
 void Player::load(std::string filepath)
 {
-    std::ifstream file(filepath);
-    std::string line;
-
-    std::string sprite_path("assets/Player.png");
+    std::string sprite_path("assets/");
     Spritesheet::Config config;
+    std::vector<Spritesheet::Animation> animations;
 
-    sprite = Spritesheet(sprite_path);
-
-    while (!file.eof())
+    DataFile data_file;
+    if (!data_file.Open(filepath))
     {
-        std::getline(file, line);
-        if (line == "")
+        std::cerr << "Exodus: Player could not be loaded: " << filepath << std::endl;
+        return;
+    }
+
+    while (data_file.MoreKeys())
+    {
+        auto data = data_file.GetKey();
+        if (data.key == "Sprite")
         {
-            continue;
+            auto ss = data.ss;
+            std::string path;
+            *ss >> path;
+            sprite_path += std::string(path);
         }
-
-        auto sit = line.begin();
-        std::string key;
-        while (sit != line.end() && *sit != ':')
+        else if (data.key == "Frames")
         {
-            key += *sit;
-            ++sit;
+            auto ss = data.ss;
+            *ss >> config;
         }
-
-        while (sit != line.end() && (*sit == ' ' || *sit == ':'))
+        else if (data.key == "Animation")
         {
-            ++sit;
-        }
-
-        if (key == "Frames")
-        {
-            while (sit != line.end())
-            {
-                while (sit != line.end() && *sit != '[')
-                {
-                    ++sit;
-                }
-
-                if (sit == line.end())
-                {
-                    break;
-                }
-
-                auto s_sit = ++sit;
-
-                while (sit != line.end() && *sit != ']')
-                {
-                    ++sit;
-                }
-
-                std::stringstream ss(std::string(s_sit, sit));
-                int left, right, width, height;
-                ss >> left;
-                ss >> right;
-                ss >> width;
-                ss >> height;
-                config.frames.push_back(sf::IntRect(left, right, width, height));
-            }
-            sprite.SetConfig(config);
-        }
-        else
-        {
-            std::string animation_name = key;
-            std::stringstream ss(std::string(sit, line.end()));
+            auto ss = data.ss;
             int start_frame;
             int end_frame;
             float animation_speed;
-            ss >> start_frame;
-            ss >> end_frame;
-            ss >> animation_speed;
-            sprite.AddAnimation(Spritesheet::Animation{animation_name, start_frame, end_frame, animation_speed});
+            std::string animation_name;
+            *ss >> animation_name;
+            *ss >> start_frame;
+            *ss >> end_frame;
+            *ss >> animation_speed;
+
+            animations.push_back(Spritesheet::Animation{animation_name, start_frame, end_frame, animation_speed});
         }
+    }
+
+    sprite = Spritesheet(sprite_path, config);
+    for (auto animation : animations)
+    {
+        sprite.AddAnimation(animation);
     }
 }
 

@@ -114,11 +114,26 @@ bool WorldManager::checkCollisions(sf::IntRect new_position)
 {
     for (auto& entity : current_room.GetEntities())
     {
-        if (Utilities::CheckCollision(entity.GetSprite().getGlobalBounds(), sf::FloatRect(new_position)))
+        if (entity.HasCollisions())
         {
-            return true;
+            if (Utilities::CheckCollision(entity.GetSprite().getGlobalBounds(), sf::FloatRect(new_position)))
+            {
+                return true;
+            }
         }
     }
+
+    for (auto& enemy : current_room.GetEnemies())
+    {
+        if (enemy.HasCollisions())
+        {
+            if (Utilities::CheckCollision(enemy.GetSprite().getGlobalBounds(), sf::FloatRect(new_position)))
+            {
+                return true;
+            }
+        }
+    }
+
     return false;
 }
 

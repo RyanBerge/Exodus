@@ -7,7 +7,7 @@ int main()
     Settings::LoadSettings("data/settings.txt");
 
 
-    sf::RenderWindow window(sf::VideoMode(Settings::video_resolution.x, Settings::video_resolution.y), "My window");
+    sf::RenderWindow window(sf::VideoMode(Settings::video_resolution.x, Settings::video_resolution.y), "Exodus");
 
     GameManager game_manager(window);
 
@@ -39,7 +39,6 @@ int main()
             }
         }
     }
-
 
     return 0;
 }

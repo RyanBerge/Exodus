@@ -1,0 +1,5 @@
+Button: play 400 200
+Button: settings 400 350
+Button: quit 400 500
+Button: back 400 500
+CheckboxButton: fullscreen 180 150

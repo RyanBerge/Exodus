@@ -1,4 +1,4 @@
 Sprite: OverworldTree.png
-Collisions: True
+Collisions: 1
 Frames: [0 0 102 128] [102 0 102 128] [204 0 102 128]
-RandomFrame: True
+RandomFrame: 1

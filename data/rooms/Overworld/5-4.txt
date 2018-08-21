@@ -1,3 +1,5 @@
+Background: assets/Grass.png
+
 Entity: tree 0 0
 Entity: tree 100 0
 Entity: tree 200 0
@@ -37,4 +39,5 @@ Entity: tree 800 700
 Entity: tree 900 700
 Entity: tree 1000 700
 Entity: tree 1100 700
+
 Enemy: Spiny 200 400

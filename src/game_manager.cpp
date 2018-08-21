@@ -4,6 +4,7 @@ GameManager::GameManager(sf::RenderWindow& window) : current_scene{Scene::MainMe
 {
     main_menu.RegisterPlayRequest(std::bind(&GameManager::StartGame, this));
     main_menu.RegisterQuitRequest(std::bind(&GameManager::Quit, this));
+    main_menu.RegisterFullscreenRequest(std::bind(&GameManager::Fullscreen, this, std::placeholders::_1));
     main_menu.Resize(sf::Vector2u(Settings::video_resolution.x, Settings::video_resolution.y), window);
 
     InitializeWorldManager();
@@ -104,4 +105,16 @@ void GameManager::Death()
 {
     current_scene = Scene::MainMenu;
     reset = true;
+}
+
+void GameManager::Fullscreen(bool full)
+{
+    if (full)
+    {
+        window.create(sf::VideoMode(Settings::video_resolution.x, Settings::video_resolution.y), "Exodus", sf::Style::Fullscreen);
+    }
+    else
+    {
+        window.create(sf::VideoMode(Settings::video_resolution.x, Settings::video_resolution.y), "Exodus");
+    }
 }

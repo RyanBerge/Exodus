@@ -4,6 +4,8 @@
 #include <sstream>
 #include <iostream>
 
+#include "data_file.h"
+
 Room::Room()
 {
 }
@@ -57,75 +59,60 @@ RoomID Room::GetID()
 
 bool Room::Load()
 {
-    if (id.area == "Overworld")
-    {
-        Spritesheet::Config config;
-        config.frames.push_back(sf::IntRect(0, 0, 1200, 800));
-        background = Spritesheet("assets/Grass.png", config);
-        background.SetFrame(0);
-    }
-
     std::string filepath = "data/rooms/" + id.area + "/" + std::to_string(id.x) + "-" + std::to_string(id.y) + ".txt";
-    std::ifstream file(filepath);
 
-    if (!file.is_open())
+    DataFile data_file;
+    if (!data_file.Open(filepath))
     {
         std::cerr << "Exodus: Room could not be loaded: " << filepath << std::endl;
         return false;
     }
 
-    std::string line;
-
-    while (!file.eof())
+    while (data_file.MoreKeys())
     {
-        std::getline(file, line);
-        if (line == "")
+        auto data = data_file.GetKey();
+        if (data.key == "Entity")
         {
-            continue;
-        }
+            auto ss = data.ss;
 
-        auto sit = line.begin();
-        std::string key;
-        while (sit != line.end() && *sit != ':')
-        {
-            key += *sit;
-            ++sit;
-        }
-
-        while (sit != line.end() && (*sit == ' ' || *sit == ':'))
-        {
-            ++sit;
-        }
-
-        if (key == "Entity")
-        {
-            std::stringstream ss(std::string(sit, line.end()));
             std::string identifier;
-            int x;
-            int y;
+            int x, y;
 
-            ss >> identifier;
-            ss >> x;
-            ss >> y;
+            *ss >> identifier;
+            *ss >> x;
+            *ss >> y;
 
             Entity entity(identifier);
             entity.GetSprite().setPosition(x, y);
             entities.push_back(entity);
         }
-        else if (key == "Enemy")
+        else if (data.key == "Enemy")
         {
-            std::stringstream ss(std::string(sit, line.end()));
-            std::string identifier;
-            int x;
-            int y;
+            auto ss = data.ss;
 
-            ss >> identifier;
-            ss >> x;
-            ss >> y;
+            std::string identifier;
+            int x, y;
+
+            *ss >> identifier;
+            *ss >> x;
+            *ss >> y;
 
             Enemy enemy(identifier);
             enemy.GetSprite().setPosition(x, y);
             enemies.push_back(enemy);
+        }
+        else if (data.key == "Background")
+        {
+            auto ss = data.ss;
+
+            std::string sprite_path;
+
+            *ss >> sprite_path;
+
+            Spritesheet::Config config;
+            config.frames.push_back(sf::IntRect(0, 0, 1200, 800));
+            background = Spritesheet(sprite_path, config);
+            background.SetFrame(0);
         }
     }
 

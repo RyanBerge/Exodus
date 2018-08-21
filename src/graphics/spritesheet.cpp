@@ -1,6 +1,7 @@
 #include "graphics/spritesheet.h"
 
 #include <iostream>
+#include <sstream>
 
 Spritesheet::Spritesheet() : config{}, texture{new sf::Texture()}, sprite{}, animations{}, current_animation{""},
         animation_time{0}, texture_filepath{""}, frame{-1}, is_valid{false}
@@ -146,4 +147,39 @@ void Spritesheet::SetFlash(sf::Color color, float duration, float rate)
 sf::Sprite& Spritesheet::GetSprite()
 {
     return sprite;
+}
+
+std::stringstream& operator>>(std::stringstream& ss, Spritesheet::Config& config)
+{
+    std::string line = ss.str();
+    auto sit = line.begin();
+    while (sit != line.end())
+    {
+        while (sit != line.end() && *sit != '[')
+        {
+            ++sit;
+        }
+
+        if (sit == line.end())
+        {
+            break;
+        }
+
+        auto s_sit = ++sit;
+
+        while (sit != line.end() && *sit != ']')
+        {
+            ++sit;
+        }
+
+        std::stringstream ss(std::string(s_sit, sit));
+        int left, right, width, height;
+        ss >> left;
+        ss >> right;
+        ss >> width;
+        ss >> height;
+        config.frames.push_back(sf::IntRect(left, right, width, height));
+    }
+
+    return ss;
 }

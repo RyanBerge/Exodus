@@ -5,6 +5,8 @@
 #include <fstream>
 #include <sstream>
 
+#include "data_file.h"
+
 Entity::Entity(std::string identifier)
 {
     load("data/entities/" + identifier + ".txt");
@@ -12,95 +14,45 @@ Entity::Entity(std::string identifier)
 
 void Entity::load(std::string filepath)
 {
-    std::ifstream file(filepath);
-    std::string line;
-
     std::string sprite_path("assets/");
     Spritesheet::Config config;
     bool random_frame;
 
-    if (!file.is_open())
+    DataFile data_file;
+    if (!data_file.Open(filepath))
     {
-        std::cerr << "Exodus: Entity was not loaded: " << filepath << std::endl;
+        std::cerr << "Exodus: Entity could not be loaded: " << filepath << std::endl;
         return;
     }
 
-    while (!file.eof())
+    while (data_file.MoreKeys())
     {
-        std::getline(file, line);
-        if (line == "")
+        auto data = data_file.GetKey();
+        if (data.key == "Sprite")
         {
-            continue;
+            auto ss = data.ss;
+            std::string path;
+
+            *ss >> path;
+            sprite_path += path;
         }
-
-        auto sit = line.begin();
-        std::string key;
-        while (sit != line.end() && *sit != ':')
+        else if (data.key == "Collisions")
         {
-            key += *sit;
-            ++sit;
+            auto ss = data.ss;
+
+            *ss >> collisions;
         }
-
-        while (sit != line.end() && (*sit == ' ' || *sit == ':'))
+        else if (data.key == "Frames")
         {
-            ++sit;
+            auto ss = data.ss;
+            *ss >> config;
         }
-
-        if (key == "Sprite")
+        else if (data.key == "RandomFrame")
         {
-            sprite_path += std::string(sit, line.end());
-        }
-        else if (key == "Collisions")
-        {
-            if (std::string(sit, line.end()) == "True")
-            {
-                collisions = true;
-            }
-            else if (std::string(sit, line.end()) == "False")
-            {
-                collisions = false;
-            }
-        }
-        else if (key == "Frames")
-        {
-            while (sit != line.end())
-            {
-                while (sit != line.end() && *sit != '[')
-                {
-                    ++sit;
-                }
-
-                if (sit == line.end())
-                {
-                    break;
-                }
-
-                auto s_sit = ++sit;
-
-                while (sit != line.end() && *sit != ']')
-                {
-                    ++sit;
-                }
-
-                std::stringstream ss(std::string(s_sit, sit));
-                int left, right, width, height;
-                ss >> left;
-                ss >> right;
-                ss >> width;
-                ss >> height;
-                config.frames.push_back(sf::IntRect(left, right, width, height));
-            }
-        }
-        else if (key == "RandomFrame")
-        {
-            if (std::string(sit, line.end()) == "True")
-            {
-                random_frame = true;
-            }
-            else if (std::string(sit, line.end()) == "False")
-            {
-                random_frame = false;
-            }
+            auto ss = data.ss;
+            std::string asd;
+            //*ss >> asd;
+            *ss >> random_frame;
         }
     }
 
@@ -124,4 +76,9 @@ void Entity::Draw(sf::RenderWindow& window)
 sf::Sprite& Entity::GetSprite()
 {
     return sprite.GetSprite();
+}
+
+bool Entity::HasCollisions()
+{
+    return collisions;
 }

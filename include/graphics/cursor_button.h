@@ -8,7 +8,7 @@ class CursorButton
 {
 public:
     CursorButton();
-    CursorButton(std::string filepath, Spritesheet::Config config);
+    CursorButton(std::string filepath);
 
     void Update(sf::Time elapsed, sf::RenderWindow& window);
     void Draw(sf::RenderWindow& window);
@@ -20,13 +20,14 @@ public:
     void RegisterOnHoverEnter(std::function<void(void)> f);
     void RegisterOnHoverExit(std::function<void(void)> f);
 
-private:
-    void onClickUp();
-    void onClickDown();
-    void onHoverEnter();
-    void onHoverExit();
+protected:
+    void load(std::string filepath);
+    virtual void onClickUp();
+    virtual void onClickDown();
+    virtual void onHoverEnter();
+    virtual void onHoverExit();
 
-    Spritesheet spritesheet;
+    Spritesheet sprite;
     bool mouse_hover = false;
     bool mouse_pressed = false;
 

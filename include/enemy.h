@@ -17,6 +17,7 @@ public:
     void Draw(sf::RenderWindow& window);
 
     sf::Sprite& GetSprite();
+    bool HasCollisions();
 
 private:
     void load(std::string filepath);

@@ -1,6 +1,7 @@
 #include "enemy.h"
 
 #include "utilities.h"
+#include "data_file.h"
 
 #include <iostream>
 #include <cstdlib>
@@ -16,104 +17,62 @@ Enemy::Enemy(std::string identifier)
 
 void Enemy::load(std::string filepath)
 {
-    std::ifstream file(filepath);
-    std::string line;
-
-    if (!file.is_open())
+    DataFile data_file;
+    if (!data_file.Open(filepath))
     {
-        std::cerr << "Exodus: Enemy was not loaded: " << filepath << std::endl;
+        std::cerr << "Exodus: Enemy could not be loaded: " << filepath << std::endl;
         return;
     }
 
-    std::string sprite_path("assets/");
     Spritesheet::Config config;
+    std::string sprite_path("assets/");
 
-    while (!file.eof())
+    while (data_file.MoreKeys())
     {
-        std::getline(file, line);
-        if (line == "")
+        auto data = data_file.GetKey();
+        if (data.key == "Sprite")
         {
-            continue;
+            auto ss = data.ss;
+            std::string path;
+
+            *ss >> path;
+            sprite_path += path;
         }
-
-        auto sit = line.begin();
-        std::string key;
-        while (sit != line.end() && *sit != ':')
+        else if (data.key == "Collisions")
         {
-            key += *sit;
-            ++sit;
+            auto ss = data.ss;
+
+            *ss >> collisions;
         }
-
-        while (sit != line.end() && (*sit == ' ' || *sit == ':'))
+        else if (data.key == "Frames")
         {
-            ++sit;
+            auto ss = data.ss;
+            *ss >> config;
         }
-
-        if (key == "Sprite")
+        else if (data.key == "Behavior")
         {
-            sprite_path += std::string(sit, line.end());
-        }
-        else if (key == "Collisions")
-        {
-            if (std::string(sit, line.end()) == "True")
-            {
-                collisions = true;
-            }
-            else if (std::string(sit, line.end()) == "False")
-            {
-                collisions = false;
-            }
-        }
-        else if (key == "Frames")
-        {
-            while (sit != line.end())
-            {
-                while (sit != line.end() && *sit != '[')
-                {
-                    ++sit;
-                }
+            auto ss = data.ss;
+            std::string identifier;
+            *ss >> identifier;
 
-                if (sit == line.end())
-                {
-                    break;
-                }
-
-                auto s_sit = ++sit;
-
-                while (sit != line.end() && *sit != ']')
-                {
-                    ++sit;
-                }
-
-                std::stringstream ss(std::string(s_sit, sit));
-                int left, right, width, height;
-                ss >> left;
-                ss >> right;
-                ss >> width;
-                ss >> height;
-                config.frames.push_back(sf::IntRect(left, right, width, height));
-            }
-        }
-        else if (key == "Behavior")
-        {
-            if (std::string(sit, line.end()) == "None")
+            if (identifier == "None")
             {
                 behavior = Behavior::None;
             }
-            else if (std::string(sit, line.end()) == "Spiny")
+            else if (identifier == "Spiny")
             {
                 behavior = Behavior::Spiny;
             }
         }
-        else if (key == "Damage")
+        else if (data.key == "Damage")
         {
-            std::stringstream ss(std::string(sit, line.end()));
-            ss >> damage;
+            auto ss = data.ss;
+            *ss >> damage;
         }
-        else if (key == "Knockback")
+        else if (data.key == "Knockback")
         {
-            std::stringstream ss(std::string(sit, line.end()));
-            ss >> knockback;
+            auto ss = data.ss;
+            *ss >> knockback;
         }
     }
 
@@ -162,4 +121,9 @@ void Enemy::Draw(sf::RenderWindow& window)
 sf::Sprite& Enemy::GetSprite()
 {
     return sprite.GetSprite();
+}
+
+bool Enemy::HasCollisions()
+{
+    return collisions;
 }

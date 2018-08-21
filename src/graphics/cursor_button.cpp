@@ -2,22 +2,73 @@
 #include <SFML/Window/Mouse.hpp>
 
 #include <iostream>
+#include "data_file.h"
 
 CursorButton::CursorButton()
 {
 }
 
-CursorButton::CursorButton(std::string filepath, Spritesheet::Config config) : spritesheet{filepath, config}
+CursorButton::CursorButton(std::string filepath)
 {
-    spritesheet.SetFrame(0);
+    load(filepath);
+    sprite.SetAnimation("Up");
+}
+
+void CursorButton::load(std::string filepath)
+{
+    std::string sprite_path("assets/");
+    Spritesheet::Config config;
+    std::vector<Spritesheet::Animation> animations;
+
+    DataFile data_file;
+    if (!data_file.Open(filepath))
+    {
+        std::cerr << "Exodus: Button could not be loaded: " << filepath << std::endl;
+        return;
+    }
+
+    while (data_file.MoreKeys())
+    {
+        auto data = data_file.GetKey();
+        if (data.key == "Sprite")
+        {
+            auto ss = data.ss;
+            std::string path;
+            *ss >> path;
+            sprite_path += std::string(path);
+        }
+        else if (data.key == "Frames")
+        {
+            auto ss = data.ss;
+            *ss >> config;
+        }
+        else if (data.key == "Animation")
+        {
+            auto ss = data.ss;
+            int start_frame;
+            int end_frame;
+            float animation_speed;
+            std::string animation_name;
+            *ss >> animation_name;
+            *ss >> start_frame;
+            *ss >> end_frame;
+            *ss >> animation_speed;
+
+            animations.push_back(Spritesheet::Animation{animation_name, start_frame, end_frame, animation_speed});
+        }
+    }
+
+    sprite = Spritesheet(sprite_path, config);
+    for (auto animation : animations)
+    {
+        sprite.AddAnimation(animation);
+    }
 }
 
 void CursorButton::Update(sf::Time elapsed, sf::RenderWindow& window)
 {
-    sf::FloatRect bounds = spritesheet.GetSprite().getGlobalBounds();
-    auto mouse_position = sf::Mouse::getPosition(window);
-
-    mouse_position = window.mapCoordsToPixel(sf::Vector2f(mouse_position));
+    sf::FloatRect bounds = sprite.GetSprite().getGlobalBounds();
+    auto mouse_position = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
     bool in_bounds = mouse_position.x >= bounds.left &&
                      mouse_position.x <= bounds.left + bounds.width &&
@@ -45,12 +96,12 @@ void CursorButton::Update(sf::Time elapsed, sf::RenderWindow& window)
 
 void CursorButton::Draw(sf::RenderWindow& window)
 {
-    spritesheet.Draw(window);
+    sprite.Draw(window);
 }
 
 sf::Sprite& CursorButton::GetSprite()
 {
-    return spritesheet.GetSprite();
+    return sprite.GetSprite();
 }
 
 void CursorButton::RegisterOnClickDown(std::function<void(void)> f)
@@ -75,44 +126,44 @@ void CursorButton::RegisterOnHoverExit(std::function<void(void)> f)
 
 void CursorButton::onClickUp()
 {
+    mouse_pressed = false;
+    sprite.SetAnimation("Hover");
+
     for (auto callback : onClickUpVector)
     {
         callback();
     }
-
-    mouse_pressed = false;
-    spritesheet.SetFrame(1);
 }
 
 void CursorButton::onClickDown()
 {
+    mouse_pressed = true;
+    sprite.SetAnimation("Down");
+
     for (auto callback : onClickDownVector)
     {
         callback();
     }
-
-    mouse_pressed = true;
-    spritesheet.SetFrame(2);
 }
 
 void CursorButton::onHoverEnter()
 {
+    mouse_hover = true;
+    sprite.SetAnimation("Hover");
+
     for (auto callback : onHoverEnterVector)
     {
         callback();
     }
-
-    mouse_hover = true;
-    spritesheet.SetFrame(1);
 }
 
 void CursorButton::onHoverExit()
 {
+    mouse_hover = false;
+    sprite.SetAnimation("Up");
+
     for (auto callback : onHoverExitVector)
     {
         callback();
     }
-
-    mouse_hover = false;
-    spritesheet.SetFrame(0);
 }

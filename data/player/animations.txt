@@ -1,9 +1,0 @@
-Frames: [0 0 42 48] [42 0 42 48] [84 0 42 48] [0 48 42 48] [42 48 42 48] [84 48 42 48] [0 96 42 48] [42 96 42 48] [0 144 42 48] [42 144 42 48]
-IdleDown: 0 0 0
-IdleUp: 3 3 0
-IdleLeft: 6 6 0
-IdleRight: 8 8 0
-WalkDown: 1 2 0.4
-WalkUp: 4 5 0.4
-WalkLeft: 6 7 0.2
-WalkRight: 8 9 0.2

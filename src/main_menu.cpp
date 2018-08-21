@@ -1,22 +1,78 @@
 #include "main_menu.h"
 #include "settings.h"
 
+#include "data_file.h"
+#include <iostream>
+
 MainMenu::MainMenu() : current_menu{Menu::Main}
 {
-    Spritesheet::Config button_config;
-    button_config.frames.push_back(sf::IntRect(0, 0, 400, 100));
-    button_config.frames.push_back(sf::IntRect(0, 100, 400, 100));
-    button_config.frames.push_back(sf::IntRect(0, 200, 400, 100));
-
-    play_button = CursorButton("assets/PlayButton.png", button_config);
-    settings_button = CursorButton("assets/SettingsButton.png", button_config);
-    quit_button = CursorButton("assets/QuitButton.png", button_config);
-    back_button = CursorButton("assets/BackButton.png", button_config);
+    load("data/ui/menu/main_menu.txt");
 
     quit_button.RegisterOnClickUp(std::bind(&MainMenu::Quit, this));
     play_button.RegisterOnClickUp(std::bind(&MainMenu::Play, this));
     settings_button.RegisterOnClickUp(std::bind(&MainMenu::OpenSettings, this));
+    fullscreen_button.RegisterOnClickUp(std::bind(&MainMenu::Fullscreen, this));
     back_button.RegisterOnClickUp(std::bind(&MainMenu::Back, this));
+}
+
+void MainMenu::load(std::string filepath)
+{
+    DataFile data_file;
+    if (!data_file.Open(filepath))
+    {
+        std::cerr << "Exodus: Menu could not be loaded: " << filepath << std::endl;
+        return;
+    }
+
+    while (data_file.MoreKeys())
+    {
+        auto data = data_file.GetKey();
+        if (data.key == "Button")
+        {
+            auto ss = data.ss;
+            std::string path;
+            float x, y;
+            *ss >> path;
+            *ss >> x;
+            *ss >> y;
+
+            if (path == "play")
+            {
+                play_button = CursorButton("data/ui/menu/" + path + ".txt");
+                play_button.GetSprite().setPosition(x, y);
+            }
+            else if (path == "settings")
+            {
+                settings_button = CursorButton("data/ui/menu/" + path + ".txt");
+                settings_button.GetSprite().setPosition(x, y);
+            }
+            else if (path == "quit")
+            {
+                quit_button = CursorButton("data/ui/menu/" + path + ".txt");
+                quit_button.GetSprite().setPosition(x, y);
+            }
+            else if (path == "back")
+            {
+                back_button = CursorButton("data/ui/menu/" + path + ".txt");
+                back_button.GetSprite().setPosition(x, y);
+            }
+        }
+        else if (data.key == "CheckboxButton")
+        {
+            auto ss = data.ss;
+            std::string path;
+            float x, y;
+            *ss >> path;
+            *ss >> x;
+            *ss >> y;
+
+            if (path == "fullscreen")
+            {
+                fullscreen_button = CheckboxButton("data/ui/menu/" + path + ".txt");
+                fullscreen_button.GetSprite().setPosition(x, y);
+            }
+        }
+    }
 }
 
 void MainMenu::Update(sf::Time& elapsed, sf::RenderWindow& window)
@@ -33,6 +89,7 @@ void MainMenu::Update(sf::Time& elapsed, sf::RenderWindow& window)
         case Menu::Settings:
         {
             back_button.Update(elapsed, window);
+            fullscreen_button.Update(elapsed, window);
         }
         break;
     }
@@ -52,6 +109,7 @@ void MainMenu::Draw(sf::RenderWindow& window)
         case Menu::Settings:
         {
             back_button.Draw(window);
+            fullscreen_button.Draw(window);
         }
         break;
     }
@@ -59,41 +117,32 @@ void MainMenu::Draw(sf::RenderWindow& window)
 
 void MainMenu::Resize(sf::Vector2u ratio, sf::RenderWindow& window)
 {
-    sf::View new_view = sf::View(sf::FloatRect(0, 0, ratio.x, ratio.y));
-    window.setView(new_view);
+    float aspect_ratio = 1200.f / 800.f;
+    float window_ratio = static_cast<float>(ratio.x) / (static_cast<float>(ratio.y));
 
-    float scale = 1;
-    float x_scale = 1;
-    float y_scale = 1;
+    float viewport_width = 1;
+    float viewport_height = 1;
+    float viewport_x = 0;
+    float viewport_y = 0;
 
-    if (ratio.y < 500)
+    if (window_ratio > aspect_ratio)
     {
-        y_scale = static_cast<float>(ratio.y) / 500;
+        viewport_width = aspect_ratio / window_ratio;
+        viewport_x = (1 - viewport_width) / 2;
+    }
+    else if (window_ratio < aspect_ratio)
+    {
+        viewport_height = window_ratio / aspect_ratio;
+        viewport_y = (1 - viewport_height) / 2;
     }
 
-    if (ratio.x < 500)
-    {
-        x_scale = static_cast<float>(ratio.x) / 500;
-    }
+    sf::FloatRect view_rect{0, 0, 1200, 800};
+    view_rect.left = window.getView().getCenter().x - window.getView().getSize().x / 2;
+    view_rect.top = window.getView().getCenter().y - window.getView().getSize().y / 2;
 
-    scale = (x_scale < y_scale) ? x_scale : y_scale;
-
-    unsigned horizontal_offset = ((ratio.x - 400 * scale) / 2);
-    unsigned vertical_offset = ((ratio.y - 400 * scale) / 2);
-    if (vertical_offset > 100 * scale)
-    {
-        vertical_offset = 100 * scale;
-    }
-
-    play_button.GetSprite().setPosition(sf::Vector2f(horizontal_offset, vertical_offset));
-    settings_button.GetSprite().setPosition(sf::Vector2f(horizontal_offset, vertical_offset + 150 * scale));
-    quit_button.GetSprite().setPosition(sf::Vector2f(horizontal_offset, vertical_offset + 300 * scale));
-    back_button.GetSprite().setPosition(sf::Vector2f(horizontal_offset, vertical_offset + 300 * scale));
-
-    play_button.GetSprite().setScale(sf::Vector2f(scale, scale));
-    settings_button.GetSprite().setScale(sf::Vector2f(scale, scale));
-    quit_button.GetSprite().setScale(sf::Vector2f(scale, scale));
-    back_button.GetSprite().setScale(sf::Vector2f(scale, scale));
+    sf::View view(view_rect);
+    view.setViewport(sf::FloatRect(viewport_x, viewport_y, viewport_width, viewport_height));
+    window.setView(view);
 }
 
 void MainMenu::Play()
@@ -111,6 +160,12 @@ void MainMenu::OpenSettings()
     current_menu = Menu::Settings;
 }
 
+void MainMenu::Fullscreen()
+{
+    is_fullscreen = !is_fullscreen;
+    fullscreenRequest(is_fullscreen);
+}
+
 void MainMenu::Back()
 {
     current_menu = Menu::Main;
@@ -124,4 +179,9 @@ void MainMenu::RegisterPlayRequest(std::function<void(void)> f)
 void MainMenu::RegisterQuitRequest(std::function<void(void)> f)
 {
     quitRequest = f;
+}
+
+void MainMenu::RegisterFullscreenRequest(std::function<void(bool)> f)
+{
+    fullscreenRequest = f;
 }

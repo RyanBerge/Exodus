@@ -1,5 +1,5 @@
 Sprite: Spiny.png
-Collisions: False
+Collisions: 0
 Frames: [0 0 42 41]
 Behavior: Spiny
 Damage: 1

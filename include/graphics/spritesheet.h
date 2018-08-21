@@ -72,4 +72,6 @@ private:
     float flash_complete_timer{0};
 };
 
+std::stringstream& operator>>(std::stringstream& ss, Spritesheet::Config& config);
+
 #endif // SPRITESHEET_H

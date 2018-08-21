@@ -1,0 +1,5 @@
+Sprite: QuitButton.png
+Frames: [0 0 400 100] [0 100 400 100] [0 200 400 100]
+Animation: Up 0 0 0
+Animation: Hover 1 1 0
+Animation: Down 2 2 0
