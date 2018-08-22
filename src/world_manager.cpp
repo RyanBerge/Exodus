@@ -2,6 +2,7 @@
 #include "settings.h"
 #include "utilities.h"
 
+#include <SFML/Window/Keyboard.hpp>
 #include <iostream>
 
 WorldManager::WorldManager() : current_room{RoomID{"Overworld", 5, 5}}
@@ -14,16 +15,41 @@ void WorldManager::Initialize()
     player.RegisterCollisionCheck(std::bind(&WorldManager::checkCollisions, this, std::placeholders::_1));
     player.RegisterChangeRoom(std::bind(&WorldManager::changeRoom, this, std::placeholders::_1));
     player.RegisterDeathCallback(std::bind(&WorldManager::Death, this));
+
+    pause_menu.Initialize();
+    pause_menu.RegisterResumeRequest(std::bind(&WorldManager::Resume, this));
+    pause_menu.RegisterQuitRequest(std::bind(&WorldManager::QuitToMenu, this));
 }
 
 void WorldManager::Update(sf::Time elapsed, sf::RenderWindow& window)
 {
-    checkCollisions(sf::IntRect(0, 0, 50, 50));
-    elapsed_seconds = elapsed;
-    if (room_transition == sf::Vector2i{0, 0})
+    if (!paused && !window.hasFocus())
     {
-        current_room.Update(elapsed, window, player);
-        player.Update(elapsed, window);
+        paused = true;
+    }
+
+    if (paused)
+    {
+        auto old_view = window.getView();
+        window.setView(sf::View(sf::FloatRect(0, 0, 1200, 800)));
+        Resize(window.getSize(), window);
+        pause_menu.Update(elapsed, window);
+        window.setView(old_view);
+    }
+    else
+    {
+        checkCollisions(sf::IntRect(0, 0, 50, 50));
+        elapsed_seconds = elapsed;
+        if (room_transition == sf::Vector2i{0, 0})
+        {
+            current_room.Update(elapsed, window, player);
+            player.Update(elapsed, window);
+        }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+        {
+            paused = true;
+        }
     }
 }
 
@@ -36,17 +62,21 @@ void WorldManager::Draw(sf::RenderWindow& window)
     }
     else
     {
-        float transition_speed = (room_transition.x == 0 ? 400 : 600) * elapsed_seconds.asSeconds();
-
         sf::View current_room_view = window.getView();
         sf::View new_room_view = window.getView();
+
         new_room_view.move(1200 * -room_transition.x, 800 * -room_transition.y);
 
-        new_room_view.move(transition_speed * room_transition.x, transition_speed * room_transition.y);
+        if (!paused)
+        {
+            float transition_speed = (room_transition.x == 0 ? 400 : 600) * elapsed_seconds.asSeconds();
+            new_room_view.move(transition_speed * room_transition.x, transition_speed * room_transition.y);
+            current_room_view.move(transition_speed * room_transition.x, transition_speed * room_transition.y);
+        }
+
         window.setView(new_room_view);
         new_room.Draw(window);
 
-        current_room_view.move(transition_speed * room_transition.x, transition_speed * room_transition.y);
         window.setView(current_room_view);
         current_room.Draw(window);
 
@@ -64,6 +94,15 @@ void WorldManager::Draw(sf::RenderWindow& window)
             room_transition.x = 0;
             room_transition.y = 0;
         }
+    }
+
+    if (paused)
+    {
+        auto old_view = window.getView();
+        window.setView(sf::View(sf::FloatRect(0, 0, 1200, 800)));
+        Resize(window.getSize(), window);
+        pause_menu.Draw(window);
+        window.setView(old_view);
     }
 }
 
@@ -148,6 +187,16 @@ void WorldManager::changeRoom(sf::Vector2i room_offset)
 }
 
 void WorldManager::Death()
+{
+    deathCallback();
+}
+
+void WorldManager::Resume()
+{
+    paused = false;
+}
+
+void WorldManager::QuitToMenu()
 {
     deathCallback();
 }

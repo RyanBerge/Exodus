@@ -5,6 +5,7 @@
 #include <SFML/System/Time.hpp>
 #include "room.h"
 #include "player.h"
+#include "pause_menu.h"
 
 class WorldManager
 {
@@ -21,6 +22,8 @@ public:
 
     void RegisterDeathCallback(std::function<void(void)> f);
     void Death();
+    void Resume();
+    void QuitToMenu();
 
 private:
     bool checkCollisions(sf::IntRect new_position);
@@ -33,6 +36,8 @@ private:
     sf::Vector2i room_transition{0, 0};
     Player player;
     sf::Time elapsed_seconds;
+    PauseMenu pause_menu;
+    bool paused{false};
 };
 
 #endif // WORLD_MANAGER_H

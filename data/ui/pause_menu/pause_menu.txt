@@ -1,0 +1,3 @@
+Background: PauseBackground.png 200 0
+Button: resume 400 100
+Button: quit_to_menu 400 550
