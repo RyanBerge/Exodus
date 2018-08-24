@@ -38,6 +38,7 @@ private:
     sf::Vector2f velocity;
 
     int health{5};
+    int movespeed{0};
     float knockback_magnitude{0};
     sf::Vector2f knockback_direction{0, 0};
     float knockback_decay{0};

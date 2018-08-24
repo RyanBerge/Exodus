@@ -1,0 +1,67 @@
+Background: assets/Grass.png
+
+Entity: water 0 -30 NoBank
+Entity: water 100 -30 NoBank
+Entity: water 0 70 NoBank
+Entity: water 100 70 NoBank
+Entity: water 200 -30 NoBank
+Entity: water 300 -30 NoBank
+Entity: water 200 70 NoBank
+Entity: water 300 70 NoBank
+Entity: water 0 170 NoBank
+Entity: water 100 170 NoBank
+Entity: water 0 270 NoBank
+Entity: water 100 270 NoBank
+Entity: water 200 170 NoBank
+Entity: water 300 170 NoBank
+Entity: water 200 270 NoBank
+Entity: water 300 270 NoBank
+Entity: water 400 -30 NoBank
+Entity: water 500 -30 NoBank
+Entity: water 400 70 NoBank
+Entity: water 500 70 NoBank
+Entity: water 600 -30 NoBank
+Entity: water 600 70 NoBank
+Entity: water 400 170 NoBank
+Entity: water 500 170 NoBank
+Entity: water 600 170 NoBank
+Entity: water 600 270 BottomRight
+Entity: water 700 170 BottomRight
+Entity: water 300 370 BottomRight
+Entity: water 700 70 Right
+Entity: water 700 -30 Right
+Entity: water 200 370 Bottom
+Entity: water 0 370 Bottom
+Entity: water 100 370 Bottom
+Entity: water 400 270 Bottom
+Entity: water 500 270 Bottom
+
+Entity: tree 200 500
+Entity: tree 1100 0
+Entity: tree 0 400
+Entity: tree 100 400
+Entity: tree 0 500
+Entity: tree 0 600
+Entity: tree 100 500
+Entity: tree copy 100 600
+Entity: tree 1100 100
+Entity: tree 1100 200
+Entity: tree 1100 500
+Entity: tree 1100 600
+Entity: tree 1000 600
+Entity: tree 900 600
+Entity: tree 900 0
+Entity: tree 800 0
+Entity: tree 1000 0
+Entity: tree 900 100
+Entity: tree 1000 100
+Entity: tree 0 700
+Entity: tree 100 700
+Entity: tree 400 700
+Entity: tree 500 700
+Entity: tree 600 700
+Entity: tree 700 700
+Entity: tree 800 700
+Entity: tree 900 700
+Entity: tree 1000 700
+Entity: tree 1100 700

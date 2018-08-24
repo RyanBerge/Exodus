@@ -16,6 +16,7 @@ void Entity::load(std::string filepath)
 {
     std::string sprite_path("assets/");
     Spritesheet::Config config;
+    std::vector<Spritesheet::Animation> animations;
     bool random_frame;
 
     DataFile data_file;
@@ -47,6 +48,20 @@ void Entity::load(std::string filepath)
             auto ss = data.ss;
             *ss >> config;
         }
+        else if (data.key == "Animation")
+        {
+            auto ss = data.ss;
+            int start_frame;
+            int end_frame;
+            float animation_speed;
+            std::string animation_name;
+            *ss >> animation_name;
+            *ss >> start_frame;
+            *ss >> end_frame;
+            *ss >> animation_speed;
+
+            animations.push_back(Spritesheet::Animation{animation_name, start_frame, end_frame, animation_speed});
+        }
         else if (data.key == "RandomFrame")
         {
             auto ss = data.ss;
@@ -61,16 +76,26 @@ void Entity::load(std::string filepath)
     {
         sprite.SetFrame(rand() % config.frames.size());
     }
+
+    for (auto animation : animations)
+    {
+        sprite.AddAnimation(animation);
+    }
 }
 
 void Entity::Update(sf::Time elapsed, sf::RenderWindow& window)
 {
-
+    sprite.Update(elapsed, window);
 }
 
 void Entity::Draw(sf::RenderWindow& window)
 {
     sprite.Draw(window);
+}
+
+void Entity::SetAnimation(std::string animation_name)
+{
+    sprite.SetAnimation(animation_name);
 }
 
 sf::Sprite& Entity::GetSprite()

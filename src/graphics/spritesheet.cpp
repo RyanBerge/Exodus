@@ -19,14 +19,8 @@ Spritesheet::Spritesheet(std::string filepath, Config config) : config{config}, 
     }
 }
 
-Spritesheet::Spritesheet(std::string filepath) : config{}, texture{new sf::Texture()}, sprite{}, animations{}, current_animation{""},
-        animation_time{0}, texture_filepath{filepath}, frame{-1}, is_valid{false}
+Spritesheet::Spritesheet(std::string filepath) : Spritesheet{filepath, Config{}}
 {
-    if (texture_filepath != "" && texture->loadFromFile(texture_filepath))
-    {
-        sprite.setTexture(*texture);
-        is_valid = true;
-    }
 }
 
 void Spritesheet::Update(sf::Time elapsed, sf::RenderWindow& window)

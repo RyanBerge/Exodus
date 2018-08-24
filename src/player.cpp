@@ -5,8 +5,6 @@
 #include <iostream>
 #include "data_file.h"
 
-#define MOVESPEED 125
-
 Player::Player() : sprite{Spritesheet("assets/Player.png")}, direction{Spritesheet::Direction::Down}
 {
     load("data/player/player.txt");
@@ -52,94 +50,42 @@ void Player::determineMovement(sf::Time elapsed)
         knockback_decay = 0;
     }
 
-    velocity.x += horizontal_direction * MOVESPEED * elapsed.asSeconds();
-    velocity.y += vertical_direction * MOVESPEED * elapsed.asSeconds();
+    velocity.x += horizontal_direction * movespeed * elapsed.asSeconds();
+    velocity.y += vertical_direction * movespeed * elapsed.asSeconds();
 
     sf::IntRect new_position(sprite.GetSprite().getGlobalBounds());
     new_position.left = sprite.GetSprite().getPosition().x + velocity.x;
     new_position.top = sprite.GetSprite().getPosition().y;
 
-    if (!checkCollisions(new_position))
-    {
-        sprite.GetSprite().move(velocity.x, 0);
-    }
-    else if (!checkCollisions(sf::IntRect(new_position.left, new_position.top + velocity.x, new_position.width, new_position.height)))
-    {
-        sprite.GetSprite().move(velocity.x, velocity.x);
-    }
-    else if (!checkCollisions(sf::IntRect(new_position.left, new_position.top - velocity.x, new_position.width, new_position.height)))
-    {
-        sprite.GetSprite().move(velocity.x, velocity.x * -1);
-    }
-    else
-    {
-        // float min = 0;
-        // float max = velocity.x;
-        // float distance = velocity.x;
-
-        // while (abs(min - max) > 1)
-        // {
-        //     distance = (min + max) / 2;
-        //     new_position.left = sprite.GetSprite().getPosition().x + distance;
-        //     if (checkCollisions(new_position))
-        //     {
-        //         max = distance;
-        //     }
-        //     else
-        //     {
-        //         min = distance;
-        //     }
-        // }
-
-        // new_position.left = sprite.GetSprite().getPosition().x + distance;
-        // if (!checkCollisions(new_position))
-        // {
-        //     sprite.GetSprite().move(distance, 0);
-        // }
-    }
+        if (!checkCollisions(new_position))
+        {
+            sprite.GetSprite().move(velocity.x, 0);
+        }
+        else if (!checkCollisions(sf::IntRect(new_position.left, new_position.top + velocity.x, new_position.width, new_position.height)))
+        {
+            sprite.GetSprite().move(velocity.x, velocity.x);
+        }
+        else if (!checkCollisions(sf::IntRect(new_position.left, new_position.top - velocity.x, new_position.width, new_position.height)))
+        {
+            sprite.GetSprite().move(velocity.x, velocity.x * -1);
+        }
 
     new_position = sf::IntRect(sprite.GetSprite().getGlobalBounds());
     new_position.left = sprite.GetSprite().getPosition().x;
     new_position.top = sprite.GetSprite().getPosition().y + velocity.y;
 
-    if (!checkCollisions(new_position))
-    {
-        sprite.GetSprite().move(0, velocity.y);
-    }
-    else if (!checkCollisions(sf::IntRect(new_position.left + velocity.y, new_position.top, new_position.width, new_position.height)))
-    {
-        sprite.GetSprite().move(velocity.y, velocity.y);
-    }
-    else if (!checkCollisions(sf::IntRect(new_position.left - velocity.y, new_position.top, new_position.width, new_position.height)))
-    {
-        sprite.GetSprite().move(velocity.y * -1, velocity.y);
-    }
-    else
-    {
-        // float min = 0;
-        // float max = velocity.y;
-        // float distance = velocity.y;
-
-        // while (abs(min - max) > 1)
-        // {
-        //     distance = (min + max) / 2;
-        //     new_position.top = sprite.GetSprite().getPosition().y + distance;
-        //     if (checkCollisions(new_position))
-        //     {
-        //         max = distance;
-        //     }
-        //     else
-        //     {
-        //         min = distance;
-        //     }
-        // }
-
-        // new_position.top = sprite.GetSprite().getPosition().y + distance;
-        // if (!checkCollisions(new_position))
-        // {
-        //     sprite.GetSprite().move(0, distance);
-        // }
-    }
+        if (!checkCollisions(new_position))
+        {
+            sprite.GetSprite().move(0, velocity.y);
+        }
+        else if (!checkCollisions(sf::IntRect(new_position.left + velocity.y, new_position.top, new_position.width, new_position.height)))
+        {
+            sprite.GetSprite().move(velocity.y, velocity.y);
+        }
+        else if (!checkCollisions(sf::IntRect(new_position.left - velocity.y, new_position.top, new_position.width, new_position.height)))
+        {
+            sprite.GetSprite().move(velocity.y * -1, velocity.y);
+        }
 
     Spritesheet::Direction old_direction = direction;
 
@@ -293,6 +239,11 @@ void Player::load(std::string filepath)
             std::string path;
             *ss >> path;
             sprite_path += std::string(path);
+        }
+        if (data.key == "Movespeed")
+        {
+            auto ss = data.ss;
+            *ss >> movespeed;
         }
         else if (data.key == "Frames")
         {

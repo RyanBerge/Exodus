@@ -11,6 +11,8 @@ public:
     void Update(sf::Time elapsed, sf::RenderWindow& window);
     void Draw(sf::RenderWindow& window);
 
+    void SetAnimation(std::string animation_name);
+
     sf::Sprite& GetSprite();
     bool HasCollisions();
 

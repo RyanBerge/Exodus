@@ -20,8 +20,7 @@ namespace Utilities
 
     bool CheckCollision(sf::FloatRect left, sf::FloatRect right)
     {
-        if (left.left < right.left + right.width && left.left + left.width > right.left &&
-            left.top < right.top + right.height && left.top + left.height > right.top)
+        if (left.intersects(right))
         {
             return true;
         }

@@ -16,6 +16,11 @@ Room::Room(RoomID id) : id{id}
 
 void Room::Update(sf::Time elapsed, sf::RenderWindow& window, Player& player)
 {
+    for (auto& water : terrain_features)
+    {
+        water.Update(elapsed, window);
+    }
+
     for (auto& entity : entities)
     {
         entity.Update(elapsed, window);
@@ -30,6 +35,11 @@ void Room::Update(sf::Time elapsed, sf::RenderWindow& window, Player& player)
 void Room::Draw(sf::RenderWindow& window)
 {
     background.Draw(window);
+
+    for (auto& water : terrain_features)
+    {
+        water.Draw(window);
+    }
 
     for (auto& entity : entities)
     {
@@ -50,6 +60,11 @@ std::list<Entity>& Room::GetEntities()
 std::list<Enemy>& Room::GetEnemies()
 {
     return enemies;
+}
+
+std::list<Spritesheet>& Room::GetTerrain()
+{
+    return terrain_features;
 }
 
 RoomID Room::GetID()
@@ -76,14 +91,17 @@ bool Room::Load()
             auto ss = data.ss;
 
             std::string identifier;
+            std::string start_animation;
             int x, y;
 
             *ss >> identifier;
             *ss >> x;
             *ss >> y;
+            *ss >> start_animation;
 
             Entity entity(identifier);
             entity.GetSprite().setPosition(x, y);
+            entity.SetAnimation(start_animation);
             entities.push_back(entity);
         }
         else if (data.key == "Enemy")

@@ -1,4 +1,5 @@
 Sprite: Player.png
+Movespeed: 250
 Frames: [0 0 42 48] [42 0 42 48] [84 0 42 48] [0 48 42 48] [42 48 42 48] [84 48 42 48] [0 96 42 48] [42 96 42 48] [0 144 42 48] [42 144 42 48]
 Animation: IdleDown 0 0 0
 Animation: IdleUp 3 3 0

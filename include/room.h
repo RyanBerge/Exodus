@@ -26,6 +26,7 @@ public:
     bool Load();
     std::list<Entity>& GetEntities();
     std::list<Enemy>& GetEnemies();
+    std::list<Spritesheet>& GetTerrain();
     RoomID GetID();
 
 private:
@@ -33,6 +34,7 @@ private:
     Spritesheet background;
     std::list<Entity> entities;
     std::list<Enemy> enemies;
+    std::list<Spritesheet> terrain_features;
 
 };
 
