@@ -1,0 +1,3 @@
+Sprite: Temple1ExitFloor.png
+Collisions: 0
+Frames: [0 0 130 51]

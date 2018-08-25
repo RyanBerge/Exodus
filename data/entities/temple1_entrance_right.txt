@@ -1,0 +1,3 @@
+Sprite: Temple1EntranceRight.png
+Collisions: 1
+Frames: [0 0 93 238]

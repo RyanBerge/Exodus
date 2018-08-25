@@ -1,0 +1,3 @@
+Sprite: Temple1EntranceFloor.png
+Collisions: 0
+Frames: [0 0 197 80]

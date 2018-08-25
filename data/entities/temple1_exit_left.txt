@@ -1,0 +1,3 @@
+Sprite: Temple1ExitLeft.png
+Collisions: 1
+Frames: [0 0 92 129]
