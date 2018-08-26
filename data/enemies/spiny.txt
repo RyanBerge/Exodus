@@ -4,3 +4,4 @@ Frames: [0 0 42 41]
 Behavior: Spiny
 Damage: 1
 Knockback: 1500
+Movespeed: 60

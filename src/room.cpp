@@ -109,14 +109,17 @@ bool Room::Load()
             auto ss = data.ss;
 
             std::string identifier;
+            std::string start_animation;
             int x, y;
 
             *ss >> identifier;
             *ss >> x;
             *ss >> y;
+            *ss >> start_animation;
 
             Enemy enemy(identifier);
             enemy.GetSprite().setPosition(x, y);
+            enemy.SetAnimation(start_animation);
             enemies.push_back(enemy);
         }
         else if (data.key == "Background")

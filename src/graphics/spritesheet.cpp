@@ -86,12 +86,18 @@ bool Spritesheet::SetAnimation(std::string name)
         current_animation = name;
         SetFrame(animations[name].first_frame);
         animation_time = 0;
+        sprite.setOrigin(animations[name].center_x, animations[name].center_y);
         return true;
     }
     else
     {
         return false;
     }
+}
+
+void Spritesheet::StopAnimation()
+{
+    current_animation = "";
 }
 
 void Spritesheet::AdvanceAnimation()

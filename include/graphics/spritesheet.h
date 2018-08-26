@@ -33,6 +33,8 @@ public:
         int first_frame;
         int second_frame;
         float speed;
+        int center_x;
+        int center_y;
     };
 
     enum class Direction
@@ -51,6 +53,7 @@ public:
     void SetConfig(Config config);
     void AddAnimation(Animation animation);
     bool SetAnimation(std::string name);
+    void StopAnimation();
     void AdvanceAnimation();
     void SetFlash(sf::Color, float duration, float rate);
 
