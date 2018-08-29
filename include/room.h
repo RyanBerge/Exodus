@@ -14,6 +14,13 @@ struct RoomID
     int y;
 };
 
+struct Portal
+{
+    RoomID id;
+    sf::FloatRect hitbox;
+    sf::Vector2f spawn;
+};
+
 class Room
 {
 public:
@@ -26,6 +33,7 @@ public:
     bool Load();
     std::list<Entity>& GetEntities();
     std::list<Enemy>& GetEnemies();
+    std::list<Portal>& GetPortals();
     std::list<Spritesheet>& GetTerrain();
     RoomID GetID();
 
@@ -34,6 +42,7 @@ private:
     Spritesheet background;
     std::list<Entity> entities;
     std::list<Enemy> enemies;
+    std::list<Portal> portals;
     std::list<Spritesheet> terrain_features;
 
 };

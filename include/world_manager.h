@@ -34,6 +34,10 @@ private:
     Room current_room;
     Room new_room;
     sf::Vector2i room_transition{0, 0};
+    bool portal_transition{false};
+    bool portal_in{false};
+    float transition_time{0};
+    sf::RectangleShape fade{sf::Vector2f(1200, 800)};
     Player player;
     sf::Time elapsed_seconds;
     PauseMenu pause_menu;

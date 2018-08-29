@@ -62,6 +62,11 @@ std::list<Enemy>& Room::GetEnemies()
     return enemies;
 }
 
+std::list<Portal>& Room::GetPortals()
+{
+    return portals;
+}
+
 std::list<Spritesheet>& Room::GetTerrain()
 {
     return terrain_features;
@@ -134,6 +139,32 @@ bool Room::Load()
             config.frames.push_back(sf::IntRect(0, 0, 1200, 800));
             background = Spritesheet(sprite_path, config);
             background.SetFrame(0);
+        }
+        else if (data.key == "Portal")
+        {
+            auto ss = data.ss;
+
+            float x, y, width, height;
+            std::string area;
+            int zone_x, zone_y;
+            float spawn_x, spawn_y;
+
+            *ss >> x;
+            *ss >> y;
+            *ss >> width;
+            *ss >> height;
+            *ss >> area;
+            *ss >> zone_x;
+            *ss >> zone_y;
+            *ss >> spawn_x;
+            *ss >> spawn_y;
+
+            sf::FloatRect hitbox(x, y, width, height);
+            RoomID room_id{area, zone_x, zone_y};
+
+            Portal portal{room_id, hitbox, sf::Vector2f{spawn_x, spawn_y}};
+
+            portals.push_back(portal);
         }
     }
 

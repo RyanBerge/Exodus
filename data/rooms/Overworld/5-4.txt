@@ -58,6 +58,6 @@ Entity: tree 900 700
 Entity: tree 1000 700
 Entity: tree 1100 700
 
-Enemy: lizard 230 580 LeftIdle
-Enemy: lizard 440 230 LeftIdle
-Enemy: lizard 900 500 LeftIdle
+#Enemy: lizard 230 580 LeftIdle
+#Enemy: lizard 440 230 LeftIdle
+#Enemy: lizard 900 500 LeftIdle

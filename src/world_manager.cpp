@@ -5,6 +5,8 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <iostream>
 
+#define PORTAL_TRANSITION_TIME 1
+
 WorldManager::WorldManager() : current_room{RoomID{"Overworld", 5, 5}}
 {
     player.GetSprite().setPosition(sf::Vector2f(500, 500));
@@ -19,10 +21,14 @@ void WorldManager::Initialize()
     pause_menu.Initialize();
     pause_menu.RegisterResumeRequest(std::bind(&WorldManager::Resume, this));
     pause_menu.RegisterQuitRequest(std::bind(&WorldManager::QuitToMenu, this));
+
+    fade.setPosition(0, 0);
+    fade.setFillColor(sf::Color(0, 0, 0, 0));
 }
 
 void WorldManager::Update(sf::Time elapsed, sf::RenderWindow& window)
 {
+    static sf::Vector2f spawn{0, 0};
     if (!paused && !window.hasFocus())
     {
         paused = true;
@@ -38,12 +44,42 @@ void WorldManager::Update(sf::Time elapsed, sf::RenderWindow& window)
     }
     else
     {
-        checkCollisions(sf::IntRect(0, 0, 50, 50));
         elapsed_seconds = elapsed;
-        if (room_transition == sf::Vector2i{0, 0})
+
+        if (room_transition == sf::Vector2i{0, 0} && !portal_transition)
         {
             current_room.Update(elapsed, window, player);
             player.Update(elapsed, window);
+
+            for (auto& portal : current_room.GetPortals())
+            {
+                if (portal.hitbox.intersects(player.GetSprite().getGlobalBounds()))
+                {
+                    new_room = Room(portal.id);
+                    new_room.Load();
+                    portal_transition = true;
+                    portal_in = false;
+                    transition_time = -PORTAL_TRANSITION_TIME / 2;
+                    spawn = portal.spawn;
+                    break;
+                }
+            }
+        }
+        else if (portal_transition)
+        {
+            transition_time += elapsed.asSeconds();
+            if (!portal_in && transition_time > 0)
+            {
+                portal_in = true;
+                current_room = new_room;
+                player.GetSprite().setPosition(spawn);
+            }
+
+            if (transition_time > 0.5)
+            {
+                transition_time = 0;
+                portal_transition = false;
+            }
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
@@ -55,12 +91,12 @@ void WorldManager::Update(sf::Time elapsed, sf::RenderWindow& window)
 
 void WorldManager::Draw(sf::RenderWindow& window)
 {
-    if (room_transition == sf::Vector2i{0, 0})
+    if (room_transition == sf::Vector2i{0, 0} && !portal_transition)
     {
         current_room.Draw(window);
         player.Draw(window);
     }
-    else
+    else if (room_transition != sf::Vector2i{0, 0})
     {
         sf::View current_room_view = window.getView();
         sf::View new_room_view = window.getView();
@@ -103,6 +139,14 @@ void WorldManager::Draw(sf::RenderWindow& window)
         Resize(window.getSize(), window);
         pause_menu.Draw(window);
         window.setView(old_view);
+    }
+
+    if (portal_transition)
+    {
+        current_room.Draw(window);
+        player.Draw(window);
+        fade.setFillColor(sf::Color(0, 0, 0, 1 - std::abs(transition_time) * 2 * 255));
+        window.draw(fade);
     }
 }
 

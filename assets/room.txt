@@ -1,36 +1,30 @@
-Entity: tree 1100 0
-Entity: tree 0 0
-Entity: tree 0 100
-Entity: tree 0 200
-Entity: tree 0 300
-Entity: tree 0 400
-Entity: tree 0 500
-Entity: tree 0 600
-Entity: tree 1100 100
-Entity: tree 1100 200
-Entity: tree 1100 300
-Entity: tree 1100 400
-Entity: tree 1100 500
-Entity: tree 1100 600
-Entity: tree 100 0
-Entity: tree 500 0
-Entity: tree 600 0
-Entity: tree 700 0
-Entity: tree 800 0
-Entity: tree 900 0
-Entity: tree 1000 0
-Entity: tree 0 700
-Entity: tree 100 700
-Entity: tree 200 700
-Entity: tree 300 700
-Entity: tree 400 700
-Entity: tree 500 700
-Entity: tree 600 700
-Entity: tree 700 700
-Entity: tree 800 700
-Entity: tree 1000 700
-Entity: tree 1100 700
-Entity: temple1_exit_floor 289 73
-Entity: temple1_exit_top 289 -1
-Entity: temple1_exit_right 419 -1
-Entity: temple1_exit_left 197 -1
+Layer 0 0 0
+Background 0 0
+Entity: rock_wall_bottom_right 1100 700
+Entity: rock_wall_right 1101 100
+Entity: rock_wall_right copy 1101 200
+Entity: rock_wall_right 1101 300
+Entity: rock_wall_right 1101 400
+Entity: rock_wall_right 1101 500
+Entity: rock_wall_right 1101 600
+Entity: rock_wall_bottom_left 0 700
+Entity: rock_wall_bottom 100 701
+Entity: rock_wall_bottom copy 200 701
+Entity: rock_wall_bottom 900 701
+Entity: rock_wall_bottom 1000 701
+Entity: rock_wall_left 0 100
+Entity: rock_wall_left copy 0 200
+Entity: rock_wall_left 0 300
+Entity: rock_wall_left 0 400
+Entity: rock_wall_left 0 500
+Entity: rock_wall_left 0 600
+Entity: rock_wall_top_rock 1100 0
+Entity: rock_wall_top_left 0 0
+Entity: rock_wall BottomLeftOuter 801 0
+Entity: rock_wall BottomRightOuter 300 0
+Entity: rock_wall TopLeftOuter 800 701
+Entity: rock_wall TopRightOuter 300 700
+Entity: rock_wall Top 100 0
+Entity: rock_wall Top copy 200 0
+Entity: rock_wall Top 900 0
+Entity: rock_wall Top 1000 0

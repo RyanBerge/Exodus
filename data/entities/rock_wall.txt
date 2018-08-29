@@ -1,0 +1,15 @@
+Sprite: RockWall.png
+Collisions: 1
+Frames: [0 0 100 100] [100 0 100 100] [200 0 100 100] [300 0 100 100] [0 100 100 100] [100 100 100 100] [200 100 100 100] [300 100 100 100] [0 200 100 100] [100 200 100 100] [200 200 100 100] [300 200 100 100]
+Animation: Top 0 0 0
+Animation: Bottom 1 1 0
+Animation: Left 2 2 0
+Animation: Right 3 3 0
+Animation: TopLeft 4 4 0
+Animation: BottomLeft 5 5 0
+Animation: TopRight 6 6 0
+Animation: BottomRight 7 7 0
+Animation: BottomRightOuter 8 8 0
+Animation: BottomLeftOuter 9 9 0
+Animation: TopLeftOuter 10 10 0
+Animation: TopRightOuter 11 11 0

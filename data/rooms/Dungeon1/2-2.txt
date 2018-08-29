@@ -1,0 +1,32 @@
+Background: assets/DirtRock.png
+
+Entity: rock_wall 1100 700 BottomRight
+Entity: rock_wall 1100 100 Right
+Entity: rock_wall 1100 200 Right
+Entity: rock_wall 1100 300 Right
+Entity: rock_wall 1100 400 Right
+Entity: rock_wall 1100 500 Right
+Entity: rock_wall 1100 600 Right
+Entity: rock_wall 0 700 BottomLeft
+Entity: rock_wall 100 700 Bottom
+Entity: rock_wall 200 700 Bottom
+Entity: rock_wall 900 700 Bottom
+Entity: rock_wall 1000 700 Bottom
+Entity: rock_wall 0 100 Left
+Entity: rock_wall 0 200 Left
+Entity: rock_wall 0 300 Left
+Entity: rock_wall 0 400 Left
+Entity: rock_wall 0 500 Left
+Entity: rock_wall 0 600 Left
+Entity: rock_wall 1100 0 TopRight
+Entity: rock_wall 0 0 TopLeft
+Entity: rock_wall 800 0 BottomLeftOuter
+Entity: rock_wall 300 0 BottomRightOuter
+Entity: rock_wall 800 700 TopLeftOuter
+Entity: rock_wall 300 700 TopRightOuter
+Entity: rock_wall 100 0 Top
+Entity: rock_wall 200 0 Top
+Entity: rock_wall 900 0 Top
+Entity: rock_wall 1000 0 Top
+
+Portal: 0 800 1200 100 Overworld 6 3 480 440

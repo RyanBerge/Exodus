@@ -47,7 +47,9 @@ Entity: tree 900 700
 Entity: tree 1000 700
 Entity: tree 1100 700
 
-Entity: temple1_entrance_floor 461 429
+Entity: temple1_entrance_floor 460 429
 Entity: temple1_entrance_top 372 280
 Entity: temple1_entrance_left 367 280
 Entity: temple1_entrance_right 658 280
+
+Portal: 437 400 254 33 Dungeon1 2 2 570 710
