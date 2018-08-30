@@ -67,30 +67,33 @@ void CursorButton::load(std::string filepath)
 
 void CursorButton::Update(sf::Time elapsed, sf::RenderWindow& window)
 {
-    sf::FloatRect bounds = sprite.GetSprite().getGlobalBounds();
-    auto mouse_position = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+    if (window.hasFocus())
+    {
+        sf::FloatRect bounds = sprite.GetSprite().getGlobalBounds();
+        auto mouse_position = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
-    bool in_bounds = mouse_position.x >= bounds.left &&
-                     mouse_position.x <= bounds.left + bounds.width &&
-                     mouse_position.y >= bounds.top &&
-                     mouse_position.y <= bounds.top + bounds.height;
+        bool in_bounds = mouse_position.x >= bounds.left &&
+                        mouse_position.x <= bounds.left + bounds.width &&
+                        mouse_position.y >= bounds.top &&
+                        mouse_position.y <= bounds.top + bounds.height;
 
-    if (in_bounds && !mouse_hover)
-    {
-        onHoverEnter();
-    }
-    else if (!in_bounds && mouse_hover)
-    {
-        onHoverExit();
-    }
+        if (in_bounds && !mouse_hover)
+        {
+            onHoverEnter();
+        }
+        else if (!in_bounds && mouse_hover)
+        {
+            onHoverExit();
+        }
 
-    if (in_bounds && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && !mouse_pressed)
-    {
-        onClickDown();
-    }
-    else if (in_bounds && !sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && mouse_pressed)
-    {
-        onClickUp();
+        if (in_bounds && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && !mouse_pressed)
+        {
+            onClickDown();
+        }
+        else if (in_bounds && !sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && mouse_pressed)
+        {
+            onClickUp();
+        }
     }
 }
 

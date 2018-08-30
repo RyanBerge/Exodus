@@ -24,6 +24,9 @@ void GameManager::Update(sf::Time& elapsed, sf::RenderWindow& window)
     if (reset)
     {
         InitializeWorldManager();
+        sf::View view(sf::Vector2f(600, 400), sf::Vector2f(1200, 800));
+        window.setView(view);
+        Resize(window.getSize());
     }
 
     switch (current_scene)
