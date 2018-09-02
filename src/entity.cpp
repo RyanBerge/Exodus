@@ -51,22 +51,21 @@ void Entity::load(std::string filepath)
         else if (data.key == "Animation")
         {
             auto ss = data.ss;
-            int start_frame;
-            int end_frame;
+            int start_frame, end_frame, center_x{0}, center_y{0};
             float animation_speed;
             std::string animation_name;
             *ss >> animation_name;
             *ss >> start_frame;
             *ss >> end_frame;
             *ss >> animation_speed;
+            *ss >> center_x;
+            *ss >> center_y;
 
-            animations.push_back(Spritesheet::Animation{animation_name, start_frame, end_frame, animation_speed});
+            animations.push_back(Spritesheet::Animation{animation_name, start_frame, end_frame, animation_speed, center_x, center_y});
         }
         else if (data.key == "RandomFrame")
         {
             auto ss = data.ss;
-            std::string asd;
-            //*ss >> asd;
             *ss >> random_frame;
         }
     }
@@ -91,6 +90,11 @@ void Entity::Update(sf::Time elapsed, sf::RenderWindow& window)
 void Entity::Draw(sf::RenderWindow& window)
 {
     sprite.Draw(window);
+}
+
+void Entity::DrawLighting(sf::RenderTexture& target)
+{
+    sprite.DrawLighting(target);
 }
 
 void Entity::SetAnimation(std::string animation_name)

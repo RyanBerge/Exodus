@@ -14,6 +14,7 @@
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/RenderTexture.hpp>
 #include <string>
 #include <vector>
 #include <map>
@@ -47,6 +48,7 @@ public:
     Spritesheet(std::string filepath, Config config);
 
     void Draw(sf::RenderWindow& window);
+    void DrawLighting(sf::RenderTexture& target);
     void Update(sf::Time elapsed, sf::RenderWindow& window);
 
     bool SetFrame(int frame);

@@ -1,0 +1,3 @@
+Sprite: Darkness.png
+Collisions: 0
+Frames: [0 0 1200 800]

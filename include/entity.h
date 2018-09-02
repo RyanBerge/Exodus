@@ -10,6 +10,7 @@ public:
 
     void Update(sf::Time elapsed, sf::RenderWindow& window);
     void Draw(sf::RenderWindow& window);
+    void DrawLighting(sf::RenderTexture& target);
 
     void SetAnimation(std::string animation_name);
 
@@ -20,7 +21,7 @@ private:
     void load(std::string filepath);
 
     Spritesheet sprite;
-    bool collisions;
+    bool collisions{false};
 };
 
 #endif // ENTITY_H

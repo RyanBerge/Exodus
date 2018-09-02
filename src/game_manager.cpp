@@ -114,10 +114,12 @@ void GameManager::Fullscreen(bool full)
 {
     if (full)
     {
-        window.create(sf::VideoMode(Settings::video_resolution.x, Settings::video_resolution.y), "Exodus", sf::Style::Fullscreen);
+        window.create(sf::VideoMode::getDesktopMode(), "Exodus", sf::Style::Fullscreen);
+        Resize(window.getSize());
     }
     else
     {
         window.create(sf::VideoMode(Settings::video_resolution.x, Settings::video_resolution.y), "Exodus");
+        Resize(window.getSize());
     }
 }

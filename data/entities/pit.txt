@@ -1,0 +1,23 @@
+Sprite: Pit.png
+Collisions: 1
+Frames: [0 0 100 100] [100 0 100 100] [200 0 100 100] [300 0 100 100] [0 100 100 100] [100 100 100 100] [200 100 100 100] [300 100 100 100] [0 200 100 100] [100 200 100 100] [200 200 100 100] [300 200 100 100] [0 300 100 100] [100 300 100 100] [200 300 100 100] [300 300 100 100] [0 400 100 100] [100 400 100 100] [200 400 100 100] [300 400 100 100]
+Animation: Hole 0 0 0
+Animation: LeftRight 1 1 0
+Animation: TopRight 2 2 0
+Animation: Bottom 3 3 0
+Animation: Right 4 4 0
+Animation: TopBottom 5 5 0
+Animation: TopBottomRight 6 6 0
+Animation: BottomRight 7 7 0
+Animation: Left 8 8 0
+Animation: TopLeft 9 9 0
+Animation: TopBottomLeft 10 10 0
+Animation: BottomLeftRight 11 11 0
+Animation: Top 12 12 0
+Animation: BottomLeft 13 13 0
+Animation: TopLeftRight 14 14 0
+Animation: All 15 15 0
+Animation: BottomRightOuter 16 16 0
+Animation: TopLeftOuter 17 17 0
+Animation: BottomLeftOuter 18 18 0
+Animation: TopRightOuter 19 19 0

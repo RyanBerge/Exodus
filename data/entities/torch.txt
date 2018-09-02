@@ -1,0 +1,4 @@
+Sprite: Torch.png
+Collisions: 1
+Frames: [0 0 60 128] [60 0 60 128] [120 0 60 128]
+Animation: Flicker 0 2 0.2 30 36

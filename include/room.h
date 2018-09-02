@@ -29,6 +29,7 @@ public:
 
     void Update(sf::Time elapsed, sf::RenderWindow& window, Player& player);
     void Draw(sf::RenderWindow& window);
+    void DrawLighting(sf::RenderWindow& window);
 
     bool Load();
     std::list<Entity>& GetEntities();
@@ -44,6 +45,10 @@ private:
     std::list<Enemy> enemies;
     std::list<Portal> portals;
     std::list<Spritesheet> terrain_features;
+
+    std::list<Entity> lights{};
+    std::shared_ptr<sf::RenderTexture> light_layer{new sf::RenderTexture()};
+    int light_level{0};
 
 };
 

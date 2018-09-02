@@ -12,6 +12,7 @@ Room::Room()
 
 Room::Room(RoomID id) : id{id}
 {
+    light_layer->create(1200, 800);
 }
 
 void Room::Update(sf::Time elapsed, sf::RenderWindow& window, Player& player)
@@ -29,6 +30,11 @@ void Room::Update(sf::Time elapsed, sf::RenderWindow& window, Player& player)
     for (auto& enemy : enemies)
     {
         enemy.Update(elapsed, window, player);
+    }
+
+    for (auto& light : lights)
+    {
+        light.Update(elapsed, window);
     }
 }
 
@@ -52,6 +58,33 @@ void Room::Draw(sf::RenderWindow& window)
     }
 }
 
+void Room::DrawLighting(sf::RenderWindow& window)
+{
+    if (lights.size() == 0)
+    {
+        return;
+    }
+
+    light_layer->clear(sf::Color(0, 0, 0, 0));
+    sf::RectangleShape rect(sf::Vector2f(1200, 800));
+    rect.setFillColor(sf::Color(0, 0, 0, 255));
+    //rect.setPosition(-600, -400);
+    light_layer->draw(rect);
+
+    for (auto& light : lights)
+    {
+        light.DrawLighting(*light_layer);
+    }
+
+    light_layer->display();
+
+    sf::Sprite light_sprite(light_layer->getTexture());
+
+    light_sprite.setColor(sf::Color(255, 255, 255, 160));
+
+    window.draw(light_sprite);
+}
+
 std::list<Entity>& Room::GetEntities()
 {
     return entities;
@@ -65,11 +98,6 @@ std::list<Enemy>& Room::GetEnemies()
 std::list<Portal>& Room::GetPortals()
 {
     return portals;
-}
-
-std::list<Spritesheet>& Room::GetTerrain()
-{
-    return terrain_features;
 }
 
 RoomID Room::GetID()
@@ -100,9 +128,9 @@ bool Room::Load()
             int x, y;
 
             *ss >> identifier;
+            *ss >> start_animation;
             *ss >> x;
             *ss >> y;
-            *ss >> start_animation;
 
             Entity entity(identifier);
             entity.GetSprite().setPosition(x, y);
@@ -118,9 +146,9 @@ bool Room::Load()
             int x, y;
 
             *ss >> identifier;
+            *ss >> start_animation;
             *ss >> x;
             *ss >> y;
-            *ss >> start_animation;
 
             Enemy enemy(identifier);
             enemy.GetSprite().setPosition(x, y);
@@ -165,6 +193,29 @@ bool Room::Load()
             Portal portal{room_id, hitbox, sf::Vector2f{spawn_x, spawn_y}};
 
             portals.push_back(portal);
+        }
+        else if (data.key == "LightLevel")
+        {
+            auto ss = data.ss;
+            *ss >> light_level;
+        }
+        else if (data.key == "Light")
+        {
+            auto ss = data.ss;
+
+            std::string identifier;
+            std::string start_animation;
+            int x, y;
+
+            *ss >> identifier;
+            *ss >> start_animation;
+            *ss >> x;
+            *ss >> y;
+
+            Entity light(identifier);
+            light.GetSprite().setPosition(x, y);
+            light.SetAnimation(start_animation);
+            lights.push_back(light);
         }
     }
 

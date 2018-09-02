@@ -1,4 +1,6 @@
 Sprite: OverworldTree.png
 Collisions: 1
 Frames: [0 0 102 128] [102 0 102 128] [204 0 102 128]
-RandomFrame: 1
+Animation: Green 0 0 0
+Animation: Red 1 1 0
+Animation: Mix 2 2 0

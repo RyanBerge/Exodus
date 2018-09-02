@@ -7,7 +7,7 @@
 
 #define PORTAL_TRANSITION_TIME 1
 
-WorldManager::WorldManager() : current_room{RoomID{"Overworld", 5, 5}}
+WorldManager::WorldManager() : current_room{RoomID{"Overworld", 6, 3}}
 {
     player.GetSprite().setPosition(sf::Vector2f(500, 500));
 }
@@ -95,6 +95,7 @@ void WorldManager::Draw(sf::RenderWindow& window)
     {
         current_room.Draw(window);
         player.Draw(window);
+        current_room.DrawLighting(window);
     }
     else if (room_transition != sf::Vector2i{0, 0})
     {
@@ -117,6 +118,11 @@ void WorldManager::Draw(sf::RenderWindow& window)
         current_room.Draw(window);
 
         player.Draw(window);
+        current_room.DrawLighting(window);
+
+        window.setView(new_room_view);
+        new_room.DrawLighting(window);
+        window.setView(current_room_view);
 
         if (((room_transition.x > 0) ? window.getView().getCenter().x >= 1800 : window.getView().getCenter().x <= -600) ||
             ((room_transition.y > 0) ? window.getView().getCenter().y >= 1200 : window.getView().getCenter().y <= -400))
@@ -145,6 +151,7 @@ void WorldManager::Draw(sf::RenderWindow& window)
     {
         current_room.Draw(window);
         player.Draw(window);
+        current_room.DrawLighting(window);
         fade.setFillColor(sf::Color(0, 0, 0, 1 - std::abs(transition_time) * 2 * 255));
         window.draw(fade);
     }
@@ -157,7 +164,7 @@ void WorldManager::RegisterDeathCallback(std::function<void(void)> f)
 
 void WorldManager::LoadSave(sf::RenderWindow& window)
 {
-    current_room = RoomID{"Overworld", 5, 5};
+    current_room = RoomID{"Overworld", 6, 3};
     current_room.Load();
     Resize(sf::Vector2u(Settings::video_resolution.x, Settings::video_resolution.y), window);
 }

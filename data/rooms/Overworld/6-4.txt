@@ -1,39 +1,39 @@
 Background: assets/Grass.png
 
-Entity: tree 1100 0
-Entity: tree 0 0
-Entity: tree 0 100
-Entity: tree 0 200
-Entity: tree 0 300
-Entity: tree 0 400
-Entity: tree 0 500
-Entity: tree 0 600
-Entity: tree 1100 100
-Entity: tree 1100 200
-Entity: tree 1100 300
-Entity: tree 1100 400
-Entity: tree 1100 500
-Entity: tree 1100 600
-Entity: tree 100 0
-Entity: tree 500 0
-Entity: tree 600 0
-Entity: tree 700 0
-Entity: tree 800 0
-Entity: tree 900 0
-Entity: tree 1000 0
-Entity: tree 0 700
-Entity: tree 100 700
-Entity: tree 200 700
-Entity: tree 300 700
-Entity: tree 400 700
-Entity: tree 500 700
-Entity: tree 600 700
-Entity: tree 700 700
-Entity: tree 800 700
-Entity: tree 1000 700
-Entity: tree 1100 700
+Entity: tree Random 1100 0
+Entity: tree Random 0 0
+Entity: tree Random 0 100
+Entity: tree Random 0 200
+Entity: tree Random 0 300
+Entity: tree Random 0 400
+Entity: tree Random 0 500
+Entity: tree Random 0 600
+Entity: tree Random 1100 100
+Entity: tree Random 1100 200
+Entity: tree Random 1100 300
+Entity: tree Random 1100 400
+Entity: tree Random 1100 500
+Entity: tree Random 1100 600
+Entity: tree Random 100 0
+Entity: tree Random 500 0
+Entity: tree Random 600 0
+Entity: tree Random 700 0
+Entity: tree Random 800 0
+Entity: tree Random 900 0
+Entity: tree Random 1000 0
+Entity: tree Random 0 700
+Entity: tree Random 100 700
+Entity: tree Random 200 700
+Entity: tree Random 300 700
+Entity: tree Random 400 700
+Entity: tree Random 500 700
+Entity: tree Random 600 700
+Entity: tree Random 700 700
+Entity: tree Random 800 700
+Entity: tree Random 1000 700
+Entity: tree Random 1100 700
 
-Entity: temple1_exit_floor 289 73
-Entity: temple1_exit_top 289 -1
-Entity: temple1_exit_right 419 -1
-Entity: temple1_exit_left 197 -1
+Entity: temple1_exit_floor Default 289 73
+Entity: temple1_exit_top Default 289 -1
+Entity: temple1_exit_right Default 419 -1
+Entity: temple1_exit_left Default 197 -1

@@ -15,7 +15,7 @@ Spritesheet::Spritesheet(std::string filepath, Config config) : config{config}, 
     {
         sprite.setTexture(*texture);
         is_valid = true;
-        SetFrame(0);
+        animations["Default"] = Spritesheet::Animation{"Default", 0, 0, 0, 0, 0};
     }
 }
 
@@ -68,6 +68,12 @@ void Spritesheet::Draw(sf::RenderWindow& window)
     window.draw(sprite);
 }
 
+void Spritesheet::DrawLighting(sf::RenderTexture& target)
+{
+    sf::BlendMode mode(sf::BlendMode::SrcAlpha, sf::BlendMode::DstAlpha, sf::BlendMode::ReverseSubtract);
+    target.draw(sprite, mode);
+}
+
 void Spritesheet::SetConfig(Config config)
 {
     this->config = config;
@@ -81,7 +87,13 @@ void Spritesheet::AddAnimation(Animation animation)
 
 bool Spritesheet::SetAnimation(std::string name)
 {
-    if (animations.find(name) != animations.end())
+    if (name == "Random")
+    {
+        auto item = animations.begin();
+        std::advance(item, rand() % animations.size());
+        return SetAnimation(item->first);
+    }
+    else if (animations.find(name) != animations.end())
     {
         current_animation = name;
         SetFrame(animations[name].first_frame);

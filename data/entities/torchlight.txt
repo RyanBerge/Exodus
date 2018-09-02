@@ -1,0 +1,3 @@
+Sprite: Torchlight.png
+Frames: [0 0 436 436] [436 0 436 436] [0 436 436 436] [436 436 436 436]
+Animation: Flicker 0 3 0.1 218 218
