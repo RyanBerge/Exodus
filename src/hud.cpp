@@ -5,6 +5,7 @@
 #include <sstream>
 
 #include "data_file.h"
+#include "utilities.h"
 
 Hud::Hud()
 {
@@ -83,16 +84,7 @@ Spritesheet Hud::load_heart(std::string filepath)
         else if (data.key == "Animation")
         {
             auto ss = data.ss;
-            int start_frame;
-            int end_frame;
-            float animation_speed;
-            std::string animation_name;
-            *ss >> animation_name;
-            *ss >> start_frame;
-            *ss >> end_frame;
-            *ss >> animation_speed;
-
-            animations.push_back(Spritesheet::Animation{animation_name, start_frame, end_frame, animation_speed});
+            animations.push_back(Utilities::ReadAnimation(*ss));
         }
     }
 

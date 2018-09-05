@@ -3,7 +3,9 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+
 #include "data_file.h"
+#include "utilities.h"
 
 Player::Player() : sprite{Spritesheet("assets/Player.png")}, direction{Spritesheet::Direction::Down}
 {
@@ -57,35 +59,35 @@ void Player::determineMovement(sf::Time elapsed)
     new_position.left = sprite.GetSprite().getPosition().x + velocity.x;
     new_position.top = sprite.GetSprite().getPosition().y;
 
-        if (!checkCollisions(new_position))
-        {
-            sprite.GetSprite().move(velocity.x, 0);
-        }
-        else if (!checkCollisions(sf::IntRect(new_position.left, new_position.top + velocity.x, new_position.width, new_position.height)))
-        {
-            sprite.GetSprite().move(velocity.x, velocity.x);
-        }
-        else if (!checkCollisions(sf::IntRect(new_position.left, new_position.top - velocity.x, new_position.width, new_position.height)))
-        {
-            sprite.GetSprite().move(velocity.x, velocity.x * -1);
-        }
+    if (!checkCollisions(new_position))
+    {
+        sprite.GetSprite().move(velocity.x, 0);
+    }
+    else if (!checkCollisions(sf::IntRect(new_position.left, new_position.top + velocity.x, new_position.width, new_position.height)))
+    {
+        sprite.GetSprite().move(velocity.x, velocity.x);
+    }
+    else if (!checkCollisions(sf::IntRect(new_position.left, new_position.top - velocity.x, new_position.width, new_position.height)))
+    {
+        sprite.GetSprite().move(velocity.x, velocity.x * -1);
+    }
 
     new_position = sf::IntRect(sprite.GetSprite().getGlobalBounds());
     new_position.left = sprite.GetSprite().getPosition().x;
     new_position.top = sprite.GetSprite().getPosition().y + velocity.y;
 
-        if (!checkCollisions(new_position))
-        {
-            sprite.GetSprite().move(0, velocity.y);
-        }
-        else if (!checkCollisions(sf::IntRect(new_position.left + velocity.y, new_position.top, new_position.width, new_position.height)))
-        {
-            sprite.GetSprite().move(velocity.y, velocity.y);
-        }
-        else if (!checkCollisions(sf::IntRect(new_position.left - velocity.y, new_position.top, new_position.width, new_position.height)))
-        {
-            sprite.GetSprite().move(velocity.y * -1, velocity.y);
-        }
+    if (!checkCollisions(new_position))
+    {
+        sprite.GetSprite().move(0, velocity.y);
+    }
+    else if (!checkCollisions(sf::IntRect(new_position.left + velocity.y, new_position.top, new_position.width, new_position.height)))
+    {
+        sprite.GetSprite().move(velocity.y, velocity.y);
+    }
+    else if (!checkCollisions(sf::IntRect(new_position.left - velocity.y, new_position.top, new_position.width, new_position.height)))
+    {
+        sprite.GetSprite().move(velocity.y * -1, velocity.y);
+    }
 
     Spritesheet::Direction old_direction = direction;
 
@@ -253,16 +255,7 @@ void Player::load(std::string filepath)
         else if (data.key == "Animation")
         {
             auto ss = data.ss;
-            int start_frame;
-            int end_frame;
-            float animation_speed;
-            std::string animation_name;
-            *ss >> animation_name;
-            *ss >> start_frame;
-            *ss >> end_frame;
-            *ss >> animation_speed;
-
-            animations.push_back(Spritesheet::Animation{animation_name, start_frame, end_frame, animation_speed});
+            animations.push_back(Utilities::ReadAnimation(*ss));
         }
     }
 

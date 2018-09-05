@@ -32,20 +32,13 @@ public:
     void DrawLighting(sf::RenderWindow& window);
 
     bool Load();
-    std::list<Entity>& GetEntities();
-    std::list<Enemy>& GetEnemies();
-    std::list<Portal>& GetPortals();
-    std::list<Spritesheet>& GetTerrain();
-    RoomID GetID();
 
-private:
     RoomID id;
     Spritesheet background;
     std::list<Entity> entities;
     std::list<Enemy> enemies;
     std::list<Portal> portals;
     std::list<Spritesheet> terrain_features;
-
     std::list<Entity> lights{};
     std::shared_ptr<sf::RenderTexture> light_layer{new sf::RenderTexture()};
     int light_level{0};

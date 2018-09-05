@@ -6,6 +6,7 @@
 #include <iostream>
 
 #define PORTAL_TRANSITION_TIME 1
+#define PUSH_TRIGGER_DURATION 0.5
 
 WorldManager::WorldManager() : current_room{RoomID{"Overworld", 6, 3}}
 {
@@ -24,11 +25,15 @@ void WorldManager::Initialize()
 
     fade.setPosition(0, 0);
     fade.setFillColor(sf::Color(0, 0, 0, 0));
+
+    trigger_functions["collapseTorch"] = std::bind(&WorldManager::collapseTorch, this, std::placeholders::_1);
 }
 
 void WorldManager::Update(sf::Time elapsed, sf::RenderWindow& window)
 {
     static sf::Vector2f spawn{0, 0};
+    elapsed_seconds = elapsed;
+
     if (!paused && !window.hasFocus())
     {
         paused = true;
@@ -44,14 +49,12 @@ void WorldManager::Update(sf::Time elapsed, sf::RenderWindow& window)
     }
     else
     {
-        elapsed_seconds = elapsed;
-
         if (room_transition == sf::Vector2i{0, 0} && !portal_transition)
         {
             current_room.Update(elapsed, window, player);
             player.Update(elapsed, window);
 
-            for (auto& portal : current_room.GetPortals())
+            for (auto& portal : current_room.portals)
             {
                 if (portal.hitbox.intersects(player.GetSprite().getGlobalBounds()))
                 {
@@ -86,6 +89,16 @@ void WorldManager::Update(sf::Time elapsed, sf::RenderWindow& window)
         {
             paused = true;
         }
+
+        for (auto& flag : trigger_flags)
+        {
+            for (auto& trigger : flag.second)
+            {
+                trigger_functions[flag.first](trigger, elapsed);
+            }
+        }
+
+        trigger_flags.clear();
     }
 }
 
@@ -202,18 +215,39 @@ void WorldManager::Resize(sf::Vector2u ratio, sf::RenderWindow& window)
 
 bool WorldManager::checkCollisions(sf::IntRect new_position)
 {
-    for (auto& entity : current_room.GetEntities())
+    for (auto& entity : current_room.entities)
     {
         if (entity.HasCollisions())
         {
             if (Utilities::CheckCollision(entity.GetSprite().getGlobalBounds(), sf::FloatRect(new_position)))
             {
+                if (entity.GetType() == "torch")
+                {
+                    float duration = entity.Collide(elapsed_seconds);
+                    if (duration >= PUSH_TRIGGER_DURATION)
+                    {
+                        bool collided = false;
+                        for (auto& entity_id : trigger_flags["collapseTorch"])
+                        {
+                            if (*reinterpret_cast<int*>(entity_id) == entity.GetId())
+                            {
+                                collided = true;
+                                break;
+                            }
+                        }
+
+                        if (!collided)
+                        {
+                            trigger_flags["collapseTorch"].push_back(new int(entity.GetId()));
+                        }
+                    }
+                }
                 return true;
             }
         }
     }
 
-    for (auto& enemy : current_room.GetEnemies())
+    for (auto& enemy : current_room.enemies)
     {
         if (enemy.HasCollisions())
         {
@@ -229,12 +263,37 @@ bool WorldManager::checkCollisions(sf::IntRect new_position)
 
 void WorldManager::changeRoom(sf::Vector2i room_offset)
 {
-    RoomID id = current_room.GetID();
+    RoomID id = current_room.id;
     id.x += room_offset.x;
     id.y += room_offset.y;
     new_room = Room(id);
     new_room.Load();
     room_transition = room_offset;
+}
+
+void WorldManager::collapseTorch(void* args)
+{
+    int* entity_id = reinterpret_cast<int*>(args);
+
+    auto& entities = current_room.entities;
+    auto it = entities.begin();
+
+    while (it != entities.end() && it->GetId() != *entity_id)
+    {
+        ++it;
+    }
+
+    sf::Vector2f position = it->GetSprite().getPosition();
+    current_room.entities.erase(it);
+
+    Entity falling_torch("falling_torch");
+    falling_torch.GetSprite().setPosition(position);
+    falling_torch.SetAnimation("Fall");
+
+    current_room.entities.push_back(falling_torch);
+
+
+    delete entity_id;
 }
 
 void WorldManager::Death()

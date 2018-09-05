@@ -36,6 +36,7 @@ public:
         float speed;
         int center_x;
         int center_y;
+        std::string next_animation;
     };
 
     enum class Direction

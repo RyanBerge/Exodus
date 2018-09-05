@@ -85,26 +85,6 @@ void Room::DrawLighting(sf::RenderWindow& window)
     window.draw(light_sprite);
 }
 
-std::list<Entity>& Room::GetEntities()
-{
-    return entities;
-}
-
-std::list<Enemy>& Room::GetEnemies()
-{
-    return enemies;
-}
-
-std::list<Portal>& Room::GetPortals()
-{
-    return portals;
-}
-
-RoomID Room::GetID()
-{
-    return id;
-}
-
 bool Room::Load()
 {
     std::string filepath = "data/rooms/" + id.area + "/" + std::to_string(id.x) + "-" + std::to_string(id.y) + ".txt";

@@ -118,7 +118,14 @@ void Spritesheet::AdvanceAnimation()
     {
         if (frame == animations[current_animation].second_frame)
         {
-            SetFrame(animations[current_animation].first_frame);
+            if (animations[current_animation].next_animation == "Loop")
+            {
+                SetFrame(animations[current_animation].first_frame);
+            }
+            else
+            {
+                SetAnimation(animations[current_animation].next_animation);
+            }
         }
         else
         {

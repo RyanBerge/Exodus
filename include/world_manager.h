@@ -29,6 +29,8 @@ private:
     bool checkCollisions(sf::IntRect new_position);
     void changeRoom(sf::Vector2i position);
 
+    void collapseTorch(void*);
+
     std::function<void(void)> deathCallback;
 
     Room current_room;
@@ -42,6 +44,8 @@ private:
     sf::Time elapsed_seconds;
     PauseMenu pause_menu;
     bool paused{false};
+    std::map<std::string, std::list<void*>> trigger_flags;
+    std::map<std::string, std::function<void(void*, sf::Time)>> trigger_functions;
 };
 
 #endif // WORLD_MANAGER_H

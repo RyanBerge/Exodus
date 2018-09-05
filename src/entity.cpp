@@ -6,10 +6,16 @@
 #include <sstream>
 
 #include "data_file.h"
+#include "utilities.h"
 
-Entity::Entity(std::string identifier)
+namespace {
+    static int id_counter{0};
+}
+
+Entity::Entity(std::string identifier) : type{identifier}
 {
     load("data/entities/" + identifier + ".txt");
+    id = id_counter++;
 }
 
 void Entity::load(std::string filepath)
@@ -51,17 +57,7 @@ void Entity::load(std::string filepath)
         else if (data.key == "Animation")
         {
             auto ss = data.ss;
-            int start_frame, end_frame, center_x{0}, center_y{0};
-            float animation_speed;
-            std::string animation_name;
-            *ss >> animation_name;
-            *ss >> start_frame;
-            *ss >> end_frame;
-            *ss >> animation_speed;
-            *ss >> center_x;
-            *ss >> center_y;
-
-            animations.push_back(Spritesheet::Animation{animation_name, start_frame, end_frame, animation_speed, center_x, center_y});
+            animations.push_back(Utilities::ReadAnimation(*ss));
         }
         else if (data.key == "RandomFrame")
         {
@@ -97,9 +93,31 @@ void Entity::DrawLighting(sf::RenderTexture& target)
     sprite.DrawLighting(target);
 }
 
+int Entity::GetId()
+{
+    return id;
+}
+
+std::string Entity::GetType()
+{
+    return type;
+}
+
 void Entity::SetAnimation(std::string animation_name)
 {
     sprite.SetAnimation(animation_name);
+}
+
+float Entity::Collide(sf::Time elapsed)
+{
+    if (!colliding)
+    {
+        collision_timer = 0;
+    }
+
+    collision_timer += elapsed.asSeconds();
+    colliding = true;
+    return collision_timer;
 }
 
 sf::Sprite& Entity::GetSprite()
