@@ -3,19 +3,18 @@
 #include <iostream>
 #include <sstream>
 
-Spritesheet::Spritesheet() : config{}, texture{new sf::Texture()}, sprite{}, animations{}, current_animation{""},
-        animation_time{0}, texture_filepath{""}, frame{-1}, is_valid{false}
+Spritesheet::Spritesheet()
 {
 }
 
-Spritesheet::Spritesheet(std::string filepath, Config config) : config{config}, texture{new sf::Texture()}, sprite{}, animations{}, current_animation{""},
-        animation_time{0}, texture_filepath{filepath}, frame{-1}, is_valid{false}
+Spritesheet::Spritesheet(std::string filepath, Config config) : config{config}, texture_filepath{filepath}
 {
     if (texture_filepath != "" && texture->loadFromFile(texture_filepath))
     {
         sprite.setTexture(*texture);
         is_valid = true;
         animations["Default"] = Spritesheet::Animation{"Default", 0, 0, 0, 0, 0};
+        light_configs = std::vector<std::list<LightConfig>>(config.frames.size());
     }
 }
 
@@ -77,7 +76,19 @@ void Spritesheet::DrawLighting(sf::RenderTexture& target)
 void Spritesheet::SetConfig(Config config)
 {
     this->config = config;
+    light_configs = std::vector<std::list<LightConfig>>(config.frames.size());
     SetFrame(0);
+}
+
+void Spritesheet::AddLightFrame(int frame, LightConfig light_config)
+{
+    if (frame >= static_cast<int>(config.frames.size()))
+    {
+        std::cerr << "Exodus: Spritesheet light frame index exceeds total animation frames." << std::endl;
+        return;
+    }
+
+    light_configs[frame].push_back(light_config);
 }
 
 void Spritesheet::AddAnimation(Animation animation)
@@ -166,6 +177,16 @@ void Spritesheet::SetFlash(sf::Color color, float duration, float rate)
 sf::Sprite& Spritesheet::GetSprite()
 {
     return sprite;
+}
+
+std::list<Spritesheet::LightConfig> Spritesheet::GetLights()
+{
+    return light_configs[frame];
+}
+
+std::string Spritesheet::GetAnimation()
+{
+    return current_animation;
 }
 
 std::stringstream& operator>>(std::stringstream& ss, Spritesheet::Config& config)

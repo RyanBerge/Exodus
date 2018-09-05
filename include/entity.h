@@ -10,7 +10,7 @@ public:
 
     void Update(sf::Time elapsed, sf::RenderWindow& window);
     void Draw(sf::RenderWindow& window);
-    void DrawLighting(sf::RenderTexture& target);
+    void DrawLights(sf::RenderTexture& target);
 
     void SetAnimation(std::string animation_name);
     float Collide(sf::Time elapsed);
@@ -18,14 +18,18 @@ public:
     int GetId();
     std::string GetType();
     sf::Sprite& GetSprite();
+    std::string GetAnimation();
+    std::list<Entity> GetLights();
     bool HasCollisions();
 
 private:
     void load(std::string filepath);
+    void drawLighting(sf::RenderTexture& target);
 
     int id{0};
     std::string type{""};
-    Spritesheet sprite;
+    Spritesheet sprite{};
+    std::list<Entity> lights{};
     bool collisions{false};
     bool colliding{false};
     float collision_timer{0};

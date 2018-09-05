@@ -17,6 +17,7 @@
 #include <SFML/Graphics/RenderTexture.hpp>
 #include <string>
 #include <vector>
+#include <list>
 #include <map>
 #include <memory>
 
@@ -39,6 +40,14 @@ public:
         std::string next_animation;
     };
 
+    struct LightConfig
+    {
+        int x;
+        int y;
+        std::string identifier;
+        std::string animation;
+    };
+
     enum class Direction
     {
         Up, Down, Left, Right
@@ -54,6 +63,7 @@ public:
 
     bool SetFrame(int frame);
     void SetConfig(Config config);
+    void AddLightFrame(int frame, LightConfig light_config);
     void AddAnimation(Animation animation);
     bool SetAnimation(std::string name);
     void StopAnimation();
@@ -61,21 +71,27 @@ public:
     void SetFlash(sf::Color, float duration, float rate);
 
     sf::Sprite& GetSprite();
+    std::list<LightConfig> GetLights();
+    std::string GetAnimation();
 
 private:
-    Config config;
-    std::shared_ptr<sf::Texture> texture;
-    sf::Sprite sprite;
-    std::map<std::string, Animation> animations;
-    std::string current_animation;
-    float animation_time;
-    std::string texture_filepath;
-    int frame;
-    bool is_valid;
+    Config config{};
+    std::shared_ptr<sf::Texture> texture{new sf::Texture()};
+    sf::Sprite sprite{};
+    std::string texture_filepath{""};
+
+    std::map<std::string, Animation> animations{};
+    std::string current_animation{""};
+    std::vector<std::list<LightConfig>> light_configs{};
+    float animation_time{0};
+    int frame{-1};
+
     sf::Color flash_color{255, 255, 255};
     float flash_rate{0};
     float flash_timer{0};
     float flash_complete_timer{0};
+
+    bool is_valid{false};
 };
 
 std::stringstream& operator>>(std::stringstream& ss, Spritesheet::Config& config);

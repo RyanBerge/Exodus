@@ -60,7 +60,7 @@ void Room::Draw(sf::RenderWindow& window)
 
 void Room::DrawLighting(sf::RenderWindow& window)
 {
-    if (lights.size() == 0)
+    if (light_level == 0)
     {
         return;
     }
@@ -68,19 +68,18 @@ void Room::DrawLighting(sf::RenderWindow& window)
     light_layer->clear(sf::Color(0, 0, 0, 0));
     sf::RectangleShape rect(sf::Vector2f(1200, 800));
     rect.setFillColor(sf::Color(0, 0, 0, 255));
-    //rect.setPosition(-600, -400);
     light_layer->draw(rect);
 
-    for (auto& light : lights)
+    for (auto& entity : entities)
     {
-        light.DrawLighting(*light_layer);
+        entity.DrawLights(*light_layer);
     }
 
     light_layer->display();
 
     sf::Sprite light_sprite(light_layer->getTexture());
 
-    light_sprite.setColor(sf::Color(255, 255, 255, 160));
+    light_sprite.setColor(sf::Color(255, 255, 255, light_level));
 
     window.draw(light_sprite);
 }

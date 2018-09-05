@@ -76,4 +76,58 @@ namespace Utilities
 
         return Spritesheet::Animation{animation_name, start_frame, end_frame, animation_speed, center_x, center_y, next_animation};
     }
+
+    std::vector<std::list<Spritesheet::LightConfig>> ReadLights(std::stringstream& source_stream)
+    {
+        std::vector<std::list<Spritesheet::LightConfig>> lights;
+
+        std::string line = source_stream.str();
+        auto sit = line.begin();
+        while (sit != line.end())
+        {
+            while (sit != line.end() && *sit != '[')
+            {
+                ++sit;
+            }
+
+            if (sit == line.end())
+            {
+                break;
+            }
+
+            auto s_sit = ++sit;
+
+            while (sit != line.end() && *sit != ']')
+            {
+                ++sit;
+            }
+
+            std::stringstream ss(std::string(s_sit, sit));
+            std::list<Spritesheet::LightConfig> light_list;
+
+            if (ss.str() != "")
+            {
+                int x, y;
+                std::string identifier, animation;
+                char comma{' '};
+
+                do
+                {
+                    ss >> x;
+                    ss >> y;
+                    ss >> identifier;
+                    ss >> animation;
+
+                    light_list.push_back(Spritesheet::LightConfig{x, y, identifier, animation});
+
+                    ss >> comma;
+                }
+                while (comma == ',');
+            }
+
+            lights.push_back(light_list);
+        }
+
+        return lights;
+    }
 }

@@ -32,9 +32,9 @@ Entity: rock_wall Top 1000 0
 Entity: torch Flicker 295 220
 Entity: torch Flicker 930 220
 
-Light: torchlight Flicker 295 220
-Light: torchlight Flicker 930 220
+$Light: torchlight Flicker 295 220
+$Light: torchlight Flicker 930 220
 
-LightLevel: 120
+LightLevel: 160
 
 Portal: 0 800 1200 100 Overworld 6 3 480 440

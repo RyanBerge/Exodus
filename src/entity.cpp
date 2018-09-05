@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <sstream>
+#include <set>
 
 #include "data_file.h"
 #include "utilities.h"
@@ -23,6 +24,7 @@ void Entity::load(std::string filepath)
     std::string sprite_path("assets/");
     Spritesheet::Config config;
     std::vector<Spritesheet::Animation> animations;
+    std::vector<std::list<Spritesheet::LightConfig>> light_configs;
     bool random_frame;
 
     DataFile data_file;
@@ -54,6 +56,11 @@ void Entity::load(std::string filepath)
             auto ss = data.ss;
             *ss >> config;
         }
+        else if (data.key == "Lights")
+        {
+            auto ss = data.ss;
+            light_configs = Utilities::ReadLights(*ss);
+        }
         else if (data.key == "Animation")
         {
             auto ss = data.ss;
@@ -76,11 +83,31 @@ void Entity::load(std::string filepath)
     {
         sprite.AddAnimation(animation);
     }
+
+    std::set<std::string> light_ids;
+
+    for (unsigned i = 0; i < light_configs.size(); ++i)
+    {
+        for (auto& light : light_configs[i])
+        {
+            light_ids.insert(light.identifier);
+            sprite.AddLightFrame(i, light);
+        }
+    }
+
+    for (auto& light_id : light_ids)
+    {
+        lights.push_back(Entity(light_id));
+    }
 }
 
 void Entity::Update(sf::Time elapsed, sf::RenderWindow& window)
 {
     sprite.Update(elapsed, window);
+    for (auto& light : lights)
+    {
+        light.Update(elapsed, window);
+    }
 }
 
 void Entity::Draw(sf::RenderWindow& window)
@@ -88,7 +115,31 @@ void Entity::Draw(sf::RenderWindow& window)
     sprite.Draw(window);
 }
 
-void Entity::DrawLighting(sf::RenderTexture& target)
+void Entity::DrawLights(sf::RenderTexture& target)
+{
+    for (auto& light_config : sprite.GetLights())
+    {
+        for (auto& light_entity : lights)
+        {
+            if (light_config.identifier == light_entity.GetType())
+            {
+                float x = -sprite.GetSprite().getOrigin().x + sprite.GetSprite().getPosition().x + light_config.x;
+                float y = -sprite.GetSprite().getOrigin().y + sprite.GetSprite().getPosition().y + light_config.y;
+                light_entity.GetSprite().setPosition(x, y);
+
+                if (light_entity.GetAnimation() != light_config.animation)
+                {
+                    light_entity.SetAnimation(light_config.animation);
+                }
+
+                light_entity.drawLighting(target);
+                break;
+            }
+        }
+    }
+}
+
+void Entity::drawLighting(sf::RenderTexture& target)
 {
     sprite.DrawLighting(target);
 }
@@ -123,6 +174,16 @@ float Entity::Collide(sf::Time elapsed)
 sf::Sprite& Entity::GetSprite()
 {
     return sprite.GetSprite();
+}
+
+std::string Entity::GetAnimation()
+{
+    return sprite.GetAnimation();
+}
+
+std::list<Entity> Entity::GetLights()
+{
+    return lights;
 }
 
 bool Entity::HasCollisions()

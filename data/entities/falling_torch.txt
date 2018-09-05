@@ -1,5 +1,6 @@
 Sprite: FallingTorch.png
 Collisions: 0
 Frames: [0 0 60 128] [60 0 65 128] [125 0 71 128] [196 0 79 128] [275 0 87 128] [362 0 98 128] [460 0 136 128] [569 0 118 128] [687 0 131 128] [818 0 133 147] [951 0 133 147] [1084 0 133 147]
+Lights: [30 33 torchlight Flicker] [37 33 torchlight Flicker] [43 35 torchlight Flicker] [50 36 torchlight Flicker] [57 38 torchlight Flicker] [69 44 torchlight Flicker] [80 53 torchlight Flicker] [89 62 torchlight Flicker] [103 83 torchlight Flicker] [106 111 torchlight Flicker] [106 111 torchlight Flicker] [106 111 torchlight Flicker]
 Animation: Fall 0 9 0.075 x=30 y=34 next_animation=Floor
 Animation: Floor 9 11 0.2 x=30 y=34
