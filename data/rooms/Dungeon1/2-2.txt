@@ -29,11 +29,8 @@ Entity: rock_wall Top 200 0
 Entity: rock_wall Top 900 0
 Entity: rock_wall Top 1000 0
 
-Entity: torch Flicker 295 220
-Entity: torch Flicker 930 220
-
-$Light: torchlight Flicker 295 220
-$Light: torchlight Flicker 930 220
+Entity: torch Flicker 295 312
+Entity: torch Flicker 930 312
 
 LightLevel: 160
 

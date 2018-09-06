@@ -24,9 +24,15 @@
 class Spritesheet
 {
 public:
+    struct Frame
+    {
+        sf::IntRect bounds;
+        sf::Vector2f origin;
+    };
+
     struct Config
     {
-        std::vector<sf::IntRect> frames;
+        std::vector<Frame> frames;
     };
 
     struct Animation

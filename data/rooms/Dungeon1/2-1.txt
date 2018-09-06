@@ -57,7 +57,6 @@ Entity: rock_wall TopLeftOuter 1100 600
 Entity: rock_wall BottomLeftOuter 1100 300
 Entity: rock_wall TopRightOuter 300 700
 
-Entity: torch Flicker 260 80
-Light: torchlight Flicker 260 80
+Entity: torch Flicker 260 172
 
 LightLevel: 160

@@ -283,15 +283,36 @@ void WorldManager::collapseTorch(void* args)
         ++it;
     }
 
-    sf::Vector2f position = it->GetSprite().getPosition();
-    current_room.entities.erase(it);
+    sf::Vector2f torch_position = it->GetSprite().getPosition();
+    sf::FloatRect torch_bounds = it->GetSprite().getGlobalBounds();
+    sf::Vector2f player_center;
+    player_center.x = player.GetSprite().getGlobalBounds().left + (player.GetSprite().getGlobalBounds().width / 2);
+    player_center.y = player.GetSprite().getGlobalBounds().top + (player.GetSprite().getGlobalBounds().height / 2);
+
+    if (player.GetDirection() == Spritesheet::Direction::Down || player.GetDirection() == Spritesheet::Direction::Up)
+    {
+        return;
+    }
+
+    if (player_center.y > torch_bounds.top + torch_bounds.height || player_center.y < torch_bounds.top)
+    {
+        return;
+    }
 
     Entity falling_torch("falling_torch");
-    falling_torch.GetSprite().setPosition(position);
-    falling_torch.SetAnimation("Fall");
+    falling_torch.GetSprite().setPosition(torch_position);
+    current_room.entities.erase(it);
+
+    if (player.GetDirection() == Spritesheet::Direction::Right)
+    {
+        falling_torch.SetAnimation("FallRight");
+    }
+    else if (player.GetDirection() == Spritesheet::Direction::Left)
+    {
+        falling_torch.SetAnimation("FallLeft");
+    }
 
     current_room.entities.push_back(falling_torch);
-
 
     delete entity_id;
 }

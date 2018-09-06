@@ -108,6 +108,12 @@ void Entity::Update(sf::Time elapsed, sf::RenderWindow& window)
     {
         light.Update(elapsed, window);
     }
+
+    if (!colliding)
+    {
+        collision_timer = 0;
+    }
+    colliding = false;
 }
 
 void Entity::Draw(sf::RenderWindow& window)
@@ -161,11 +167,6 @@ void Entity::SetAnimation(std::string animation_name)
 
 float Entity::Collide(sf::Time elapsed)
 {
-    if (!colliding)
-    {
-        collision_timer = 0;
-    }
-
     collision_timer += elapsed.asSeconds();
     colliding = true;
     return collision_timer;

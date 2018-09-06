@@ -38,8 +38,6 @@ public:
     std::list<Entity> entities;
     std::list<Enemy> enemies;
     std::list<Portal> portals;
-    std::list<Spritesheet> terrain_features;
-    std::list<Entity> lights{};
     std::shared_ptr<sf::RenderTexture> light_layer{new sf::RenderTexture()};
     int light_level{0};
 

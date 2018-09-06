@@ -19,6 +19,7 @@ public:
     void Damage(int damage, int knockback, sf::Vector2f direction);
 
     sf::Sprite& GetSprite();
+    Spritesheet::Direction GetDirection();
     void SetHudViewport(sf::FloatRect viewport);
 
     void RegisterCollisionCheck(std::function<bool(sf::IntRect)> f);

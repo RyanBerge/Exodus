@@ -219,6 +219,11 @@ sf::Sprite& Player::GetSprite()
     return sprite.GetSprite();
 }
 
+Spritesheet::Direction Player::GetDirection()
+{
+    return direction;
+}
+
 void Player::load(std::string filepath)
 {
     std::string sprite_path("assets/");

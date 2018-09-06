@@ -15,6 +15,7 @@ Spritesheet::Spritesheet(std::string filepath, Config config) : config{config}, 
         is_valid = true;
         animations["Default"] = Spritesheet::Animation{"Default", 0, 0, 0, 0, 0};
         light_configs = std::vector<std::list<LightConfig>>(config.frames.size());
+        SetAnimation("Default");
     }
 }
 
@@ -109,11 +110,11 @@ bool Spritesheet::SetAnimation(std::string name)
         current_animation = name;
         SetFrame(animations[name].first_frame);
         animation_time = 0;
-        sprite.setOrigin(animations[name].center_x, animations[name].center_y);
         return true;
     }
     else
     {
+        std::cerr << "Exodus: Requested animation not present: " << name << std::endl;
         return false;
     }
 }
@@ -125,7 +126,7 @@ void Spritesheet::StopAnimation()
 
 void Spritesheet::AdvanceAnimation()
 {
-    if (current_animation != "")
+    if (current_animation != "" && current_animation != "Default")
     {
         if (frame == animations[current_animation].second_frame)
         {
@@ -155,7 +156,8 @@ bool Spritesheet::SetFrame(int new_frame)
     if (static_cast<int>(config.frames.size()) > 0 && static_cast<int>(config.frames.size()) > new_frame)
     {
         frame = new_frame;
-        sprite.setTextureRect(config.frames[new_frame]);
+        sprite.setTextureRect(config.frames[new_frame].bounds);
+        sprite.setOrigin(config.frames[new_frame].origin);
     }
     else
     {
@@ -213,12 +215,14 @@ std::stringstream& operator>>(std::stringstream& ss, Spritesheet::Config& config
         }
 
         std::stringstream ss(std::string(s_sit, sit));
-        int left, right, width, height;
+        int left, right, width, height, x{0}, y{0};
         ss >> left;
         ss >> right;
         ss >> width;
         ss >> height;
-        config.frames.push_back(sf::IntRect(left, right, width, height));
+        ss >> x;
+        ss >> y;
+        config.frames.push_back(Spritesheet::Frame{sf::IntRect(left, right, width, height), sf::Vector2f(x, y)});
     }
 
     return ss;

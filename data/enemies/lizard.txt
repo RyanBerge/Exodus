@@ -1,14 +1,14 @@
 Sprite: Lizard.png
 Collisions: 0
-Frames: [0 124 170 60] [0 62 170 62] [0 0 170 62] [170 124 170 60] [170 62 170 62] [170 0 170 62] [124 184 60 170] [62 184 62 170] [0 184 62 170] [308 184 62 170] [246 184 62 170] [184 184 62 170]
-Animation: Right 0 2 0.375 x=110 y=30
-Animation: Left 3 5 0.375 x=60 y=30
-Animation: Up 6 8 0.375 x=30 y=60
-Animation: Down 9 11 0.375 x=30 y=110
-Animation: RightIdle 1 1 0 x=110 y=30
-Animation: LeftIdle 4 4 0 x=60 y=30
-Animation: UpIdle 7 7 0 x=30 y=60
-Animation: DownIdle 10 10 0 x=30 y=110
+Frames: [0 124 170 60 110 30] [0 62 170 62 110 30] [0 0 170 62 110 30] [170 124 170 60 60 30] [170 62 170 62 60 30] [170 0 170 62 60 30] [124 184 60 170 30 60] [62 184 62 170 30 60] [0 184 62 170 30 60] [308 184 62 170 30 110] [246 184 62 170 30 110] [184 184 62 170 30 110]
+Animation: Right 0 2 0.375
+Animation: Left 3 5 0.375
+Animation: Up 6 8 0.375
+Animation: Down 9 11 0.375
+Animation: RightIdle 1 1 0
+Animation: LeftIdle 4 4 0
+Animation: UpIdle 7 7 0
+Animation: DownIdle 10 10 0
 Behavior: Lizard
 Damage: 1
 Knockback: 1500

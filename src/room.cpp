@@ -17,11 +17,6 @@ Room::Room(RoomID id) : id{id}
 
 void Room::Update(sf::Time elapsed, sf::RenderWindow& window, Player& player)
 {
-    for (auto& water : terrain_features)
-    {
-        water.Update(elapsed, window);
-    }
-
     for (auto& entity : entities)
     {
         entity.Update(elapsed, window);
@@ -31,21 +26,11 @@ void Room::Update(sf::Time elapsed, sf::RenderWindow& window, Player& player)
     {
         enemy.Update(elapsed, window, player);
     }
-
-    for (auto& light : lights)
-    {
-        light.Update(elapsed, window);
-    }
 }
 
 void Room::Draw(sf::RenderWindow& window)
 {
     background.Draw(window);
-
-    for (auto& water : terrain_features)
-    {
-        water.Draw(window);
-    }
 
     for (auto& entity : entities)
     {
@@ -143,7 +128,7 @@ bool Room::Load()
             *ss >> sprite_path;
 
             Spritesheet::Config config;
-            config.frames.push_back(sf::IntRect(0, 0, 1200, 800));
+            config.frames.push_back(Spritesheet::Frame{sf::IntRect(0, 0, 1200, 800), sf::Vector2f(0, 0)});
             background = Spritesheet(sprite_path, config);
             background.SetFrame(0);
         }
@@ -177,24 +162,6 @@ bool Room::Load()
         {
             auto ss = data.ss;
             *ss >> light_level;
-        }
-        else if (data.key == "Light")
-        {
-            auto ss = data.ss;
-
-            std::string identifier;
-            std::string start_animation;
-            int x, y;
-
-            *ss >> identifier;
-            *ss >> start_animation;
-            *ss >> x;
-            *ss >> y;
-
-            Entity light(identifier);
-            light.GetSprite().setPosition(x, y);
-            light.SetAnimation(start_animation);
-            lights.push_back(light);
         }
     }
 

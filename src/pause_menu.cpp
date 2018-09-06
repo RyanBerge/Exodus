@@ -58,7 +58,7 @@ void PauseMenu::load(std::string filepath)
             *ss >> y;
 
             Spritesheet::Config config;
-            config.frames.push_back(sf::IntRect(0, 0, 800, 700));
+            config.frames.push_back(Spritesheet::Frame{sf::IntRect(0, 0, 800, 700), sf::Vector2f(0, 0)});
             background = Spritesheet("assets/" + sprite_path, config);
             background.SetFrame(0);
             background.GetSprite().setPosition(x, y);
