@@ -25,6 +25,7 @@ void Entity::load(std::string filepath)
     Spritesheet::Config config;
     std::vector<Spritesheet::Animation> animations;
     std::vector<std::list<Spritesheet::LightConfig>> light_configs;
+    std::vector<sf::FloatRect> hitboxes;
     bool random_frame;
 
     DataFile data_file;
@@ -71,6 +72,71 @@ void Entity::load(std::string filepath)
             auto ss = data.ss;
             *ss >> random_frame;
         }
+        else if (data.key == "Damage")
+        {
+            auto ss = data.ss;
+            *ss >> damage;
+        }
+        else if (data.key == "Knockback")
+        {
+            auto ss = data.ss;
+            *ss >> knockback;
+        }
+        else if (data.key == "Trigger")
+        {
+            auto ss = data.ss;
+            std::string collision_key, collision_type;
+            *ss >> collision_key;
+            *ss >> collision_type;
+            triggers.push_back(Trigger{collision_key, collision_type});
+        }
+        else if (data.key == "Hitbox")
+        {
+            auto ss = data.ss;
+            std::string line = ss->str();
+            auto sit = line.begin();
+
+            while (sit != line.end())
+            {
+                while (sit != line.end() && *sit != '[')
+                {
+                    ++sit;
+                }
+
+                if (sit == line.end())
+                {
+                    break;
+                }
+
+                auto s_sit = ++sit;
+
+                while (sit != line.end() && *sit != ']')
+                {
+                    ++sit;
+                }
+
+                std::string box(s_sit, sit);
+                if (box == "default")
+                {
+                    hitboxes.push_back(sf::FloatRect{-1, -1, -1, -1});
+                }
+                else if (box == "")
+                {
+                    hitboxes.push_back(sf::FloatRect{0, 0, 0, 0});
+                }
+                else
+                {
+                    std::stringstream stream(box);
+                    float left, top, width, height;
+                    stream >> left;
+                    stream >> top;
+                    stream >> width;
+                    stream >> height;
+
+                    hitboxes.push_back(sf::FloatRect{left, top, width, height});
+                }
+            }
+        }
     }
 
     sprite = Spritesheet(sprite_path, config);
@@ -99,6 +165,8 @@ void Entity::load(std::string filepath)
     {
         lights.push_back(Entity(light_id));
     }
+
+    sprite.SetHitboxes(hitboxes);
 }
 
 void Entity::Update(sf::Time elapsed, sf::RenderWindow& window)
@@ -165,11 +233,22 @@ void Entity::SetAnimation(std::string animation_name)
     sprite.SetAnimation(animation_name);
 }
 
-float Entity::Collide(sf::Time elapsed)
+Collision Entity::Collide(sf::Time elapsed, Player& player)
 {
     collision_timer += elapsed.asSeconds();
     colliding = true;
-    return collision_timer;
+    return Collision{collisions, collision_timer, damage, knockback};
+}
+
+sf::Vector2f Entity::GetKnockbackDirection(Player& player)
+{
+    sf::FloatRect player_bounds = player.GetSprite().getGlobalBounds();
+    sf::Vector2f player_position = {player_bounds.left + (player_bounds.width / 2), player_bounds.top + (player_bounds.height / 2)};
+    sf::FloatRect hitbox = sprite.GetHitbox();
+    sf::Vector2f center = sf::Vector2f{hitbox.left + (hitbox.width / 2), hitbox.top + (hitbox.height / 2)};
+
+    sf::Vector2f direction = player_position - center;
+    return Utilities::Normalize(direction);
 }
 
 sf::Sprite& Entity::GetSprite()
@@ -182,12 +261,22 @@ std::string Entity::GetAnimation()
     return sprite.GetAnimation();
 }
 
-std::list<Entity> Entity::GetLights()
+std::list<Entity>& Entity::GetLights()
 {
     return lights;
+}
+
+std::list<Trigger>& Entity::GetTriggers()
+{
+    return triggers;
 }
 
 bool Entity::HasCollisions()
 {
     return collisions;
+}
+
+sf::FloatRect Entity::GetHitbox()
+{
+    return sprite.GetHitbox();
 }

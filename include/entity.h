@@ -2,6 +2,21 @@
 #define ENTITY_H
 
 #include "graphics/spritesheet.h"
+#include "player.h"
+
+struct Collision
+{
+    bool blocking;
+    float collision_timer;
+    int damage;
+    int knockback;
+};
+
+struct Trigger
+{
+    std::string callback_key;
+    std::string type;
+};
 
 class Entity
 {
@@ -13,14 +28,19 @@ public:
     void DrawLights(sf::RenderTexture& target);
 
     void SetAnimation(std::string animation_name);
-    float Collide(sf::Time elapsed);
+    Collision Collide(sf::Time elapsed, Player& player);
+    sf::Vector2f GetKnockbackDirection(Player& player);
 
     int GetId();
     std::string GetType();
     sf::Sprite& GetSprite();
     std::string GetAnimation();
-    std::list<Entity> GetLights();
+    std::list<Entity>& GetLights();
+    std::list<Trigger>& GetTriggers();
     bool HasCollisions();
+    int GetDamage();
+    int GetKnockback();
+    sf::FloatRect GetHitbox();
 
 private:
     void load(std::string filepath);
@@ -30,9 +50,12 @@ private:
     std::string type{""};
     Spritesheet sprite{};
     std::list<Entity> lights{};
+    std::list<Trigger> triggers{};
     bool collisions{false};
     bool colliding{false};
     float collision_timer{0};
+    int damage{0};
+    int knockback{0};
 };
 
 #endif // ENTITY_H

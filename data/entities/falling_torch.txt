@@ -1,10 +1,17 @@
 Sprite: FallingTorch.png
 Collisions: 0
-Frames: [0 0 60 125 30 125] [60 0 60 125 25 124] [120 0 60 126 20 125] [180 0 60 126 12 125] [240 0 60 126 4 125] [300 0 70 120 2 119] [370 0 81 112 2 110] [451 0 90 104 2 101] [541 0 103 80 1 78] [644 0 105 72 0 51] [749 0 105 72 0 51] [854 0 105 72 0 51] [0 126 60 125 30 125] [60 126 60 125 35 124] [120 126 60 126 40 125] [180 126 60 126 48 125] [240 126 60 126 56 125] [300 126 70 120 68 119] [370 126 81 112 79 110] [451 126 90 104 88 101] [541 126 103 80 102 78] [644 126 105 72 105 51] [749 126 105 72 105 51] [854 126 105 72 105 51]
 
-Lights: [30 34 torchlight Flicker] [31 34 torchlight Flicker] [32 36 torchlight Flicker] [31 37 torchlight Flicker] [30 39 torchlight Flicker] [41 39 torchlight Flicker] [52 39 torchlight Flicker] [51 39 torchlight Flicker] [74 39 torchlight Flicker] [78 39 torchlight Flicker] [78 39 torchlight Flicker] [78 39 torchlight Flicker] [30 34 torchlight Flicker] [29 34 torchlight Flicker] [28 36 torchlight Flicker] [29 37 torchlight Flicker] [30 39 torchlight Flicker] [29 39 torchlight Flicker] [29 39 torchlight Flicker] [39 39 torchlight Flicker] [29 39 torchlight Flicker] [27 39 torchlight Flicker] [27 39 torchlight Flicker] [27 39 torchlight Flicker]
+Frames: [0 0 60 125 30 125] [60 0 60 125 25 124] [120 0 60 126 20 125] [180 0 60 126 12 125] [240 0 60 126 4 125] [300 0 70 120 2 119] [370 0 81 112 2 110] [451 0 90 104 2 101] [541 0 103 80 1 78] [644 0 105 72 0 51] [749 0 105 72 0 51] [854 0 105 72 0 51] [0 126 60 125 30 125] [60 126 60 125 35 124] [120 126 60 126 40 125] [180 126 60 126 48 125] [240 126 60 126 56 125] [300 126 70 120 68 119] [370 126 81 112 79 110] [451 126 90 104 88 101] [541 126 103 80 102 78] [644 126 105 72 105 51] [749 126 105 72 105 51] [854 126 105 72 105 51]                        [0 252 152 127 0 74] [152 252 166 126 0 74] [318 252 208 150 0 85] [526 252 241 150 0 85] [767 252 271 150 0 85] [767 252 271 150 0 85] [767 252 271 150 0 85] [0 402 265 133 0 73] [265 402 255 133 0 73] [520 402 247 133 0 73] [767 402 271 133 0 73]
 
-Animation: FallRight 0 9 0.075 next_animation=FloorRight
-Animation: FloorRight 9 11 0.2
-Animation: FallLeft 12 21 0.075 next_animation=FloorLeft
-Animation: FloorLeft 21 23 0.2
+Lights: [30 34 torchlight Flicker] [31 34 torchlight Flicker] [32 36 torchlight Flicker] [31 37 torchlight Flicker] [30 39 torchlight Flicker] [41 39 torchlight Flicker] [52 39 torchlight Flicker] [51 39 torchlight Flicker] [74 39 torchlight Flicker] [78 39 torchlight Flicker] [] [78 39 torchlight Flicker] [30 34 torchlight Flicker] [29 34 torchlight Flicker] [28 36 torchlight Flicker] [29 37 torchlight Flicker] [30 39 torchlight Flicker] [29 39 torchlight Flicker] [29 39 torchlight Flicker] [39 39 torchlight Flicker] [29 39 torchlight Flicker] [27 39 torchlight Flicker] [] [27 39 torchlight Flicker]                                   [77 64 torchlight Flicker, 103 64 torchlight Flicker] [77 64 torchlight Flicker, 121 64 torchlight Flicker] [77 75 torchlight Flicker, 164 64 torchlight Flicker] [77 75 torchlight Flicker, 195 64 torchlight Flicker] [77 75 torchlight Flicker, 229 64 torchlight Flicker] [77 75 torchlight Flicker, 229 64 torchlight Flicker] [77 75 torchlight Flicker, 229 64 torchlight Flicker] [77 63 torchlight Flicker, 229 64 torchlight Flicker] [77 63 torchlight Flicker, 214 64 torchlight Flicker] [77 63 torchlight Flicker, 214 64 torchlight Flicker] [77 63 torchlight Flicker, 203 64 torchlight Flicker]
+
+Hitbox: [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [] [69 38 40 48] [69 34 59 63] [69 32 99 78] [69 33 133 77] [69 32 164 81] [69 32 164 81] [69 32 164 81] [69 28 164 71] [69 30 147 70] [79 35 137 65] [79 35 126 65]
+
+Animation: FallRight 0 9 0.075 next_animation=BurnRight
+Animation: FloorRight 10 10 0
+Animation: FallLeft 12 21 0.075 next_animation=BurnRight
+Animation: FloorLeft 22 22 0
+Animation: BurnRight 24 34 0.2 next_animation=FloorRight
+
+Damage: 2
+Knockback: 1500

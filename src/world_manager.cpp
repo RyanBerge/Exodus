@@ -215,34 +215,49 @@ void WorldManager::Resize(sf::Vector2u ratio, sf::RenderWindow& window)
 
 bool WorldManager::checkCollisions(sf::IntRect new_position)
 {
+    bool blocking = false;
     for (auto& entity : current_room.entities)
     {
-        if (entity.HasCollisions())
+        auto hitbox = entity.GetHitbox();
+        if (hitbox != sf::FloatRect{0, 0, 0, 0} && Utilities::CheckCollision(hitbox, sf::FloatRect(new_position)))
         {
-            if (Utilities::CheckCollision(entity.GetSprite().getGlobalBounds(), sf::FloatRect(new_position)))
-            {
-                if (entity.GetType() == "torch")
-                {
-                    float duration = entity.Collide(elapsed_seconds);
-                    if (duration >= PUSH_TRIGGER_DURATION)
-                    {
-                        bool collided = false;
-                        for (auto& entity_id : trigger_flags["collapseTorch"])
-                        {
-                            if (*reinterpret_cast<int*>(entity_id) == entity.GetId())
-                            {
-                                collided = true;
-                                break;
-                            }
-                        }
+            Collision collision = entity.Collide(elapsed_seconds, player);
 
-                        if (!collided)
+            for (auto& trigger : entity.GetTriggers())
+            {
+                if (trigger.type == "duration" && collision.collision_timer >= PUSH_TRIGGER_DURATION)
+                {
+                    bool found = false;
+                    for (auto& entity_id : trigger_flags[trigger.callback_key])
+                    {
+                        if (*reinterpret_cast<int*>(entity_id) == entity.GetId())
                         {
-                            trigger_flags["collapseTorch"].push_back(new int(entity.GetId()));
+                            found = true;
+                            break;
                         }
                     }
+
+                    if (!found)
+                    {
+                        trigger_flags[trigger.callback_key].push_back(new int(entity.GetId()));
+                    }
                 }
-                return true;
+            }
+
+            if (collision.damage != 0 || collision.knockback != 0)
+            {
+                sf::Vector2f direction{0, 0};
+                if (collision.knockback != 0)
+                {
+                    direction = entity.GetKnockbackDirection(player);
+                }
+
+                player.Damage(collision.damage, collision.knockback, direction);
+            }
+
+            if (collision.blocking)
+            {
+                blocking = true;
             }
         }
     }
@@ -253,12 +268,13 @@ bool WorldManager::checkCollisions(sf::IntRect new_position)
         {
             if (Utilities::CheckCollision(enemy.GetSprite().getGlobalBounds(), sf::FloatRect(new_position)))
             {
-                return true;
+                blocking = true;
+                break;
             }
         }
     }
 
-    return false;
+    return blocking;
 }
 
 void WorldManager::changeRoom(sf::Vector2i room_offset)

@@ -109,20 +109,25 @@ namespace Utilities
             {
                 int x, y;
                 std::string identifier, animation;
-                char comma{' '};
+                bool more = false;
 
                 do
                 {
+                    more = false;
                     ss >> x;
                     ss >> y;
                     ss >> identifier;
                     ss >> animation;
 
-                    light_list.push_back(Spritesheet::LightConfig{x, y, identifier, animation});
+                    if (*(animation.end() - 1) == ',')
+                    {
+                        more = true;
+                        animation = std::string(animation.begin(), animation.end() - 1);
+                    }
 
-                    ss >> comma;
+                    light_list.push_back(Spritesheet::LightConfig{x, y, identifier, animation});
                 }
-                while (comma == ',');
+                while (more);
             }
 
             lights.push_back(light_list);

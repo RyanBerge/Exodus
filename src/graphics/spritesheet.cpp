@@ -7,14 +7,14 @@ Spritesheet::Spritesheet()
 {
 }
 
-Spritesheet::Spritesheet(std::string filepath, Config config) : config{config}, texture_filepath{filepath}
+Spritesheet::Spritesheet(std::string filepath, Config config) : texture_filepath{filepath}
 {
     if (texture_filepath != "" && texture->loadFromFile(texture_filepath))
     {
         sprite.setTexture(*texture);
         is_valid = true;
         animations["Default"] = Spritesheet::Animation{"Default", 0, 0, 0, 0, 0};
-        light_configs = std::vector<std::list<LightConfig>>(config.frames.size());
+        SetConfig(config);
         SetAnimation("Default");
     }
 }
@@ -78,6 +78,13 @@ void Spritesheet::SetConfig(Config config)
 {
     this->config = config;
     light_configs = std::vector<std::list<LightConfig>>(config.frames.size());
+
+    hitboxes = std::vector<sf::FloatRect>(config.frames.size());
+    for (unsigned i = 0; i < config.frames.size(); ++i)
+    {
+        hitboxes[i] = sf::FloatRect{0, 0, (float)config.frames[i].bounds.width, (float)config.frames[i].bounds.height};
+    }
+
     SetFrame(0);
 }
 
@@ -95,6 +102,28 @@ void Spritesheet::AddLightFrame(int frame, LightConfig light_config)
 void Spritesheet::AddAnimation(Animation animation)
 {
     animations[animation.name] = animation;
+}
+
+void Spritesheet::SetHitboxes(std::vector<sf::FloatRect> boxes)
+{
+    if (boxes.size() == 0)
+    {
+        return;
+    }
+
+    if (hitboxes.size() != boxes.size())
+    {
+        std::cerr << "Exodus: Hitbox vector does not match frame count." << std::endl;
+        return;
+    }
+
+    for (unsigned i = 0; i < boxes.size(); ++i)
+    {
+        if (boxes[i] != sf::FloatRect{-1, -1, -1, -1} || boxes[i] == sf::FloatRect{0, 0, 0, 0})
+        {
+            hitboxes[i] = boxes[i];
+        }
+    }
 }
 
 bool Spritesheet::SetAnimation(std::string name)
@@ -189,6 +218,14 @@ std::list<Spritesheet::LightConfig> Spritesheet::GetLights()
 std::string Spritesheet::GetAnimation()
 {
     return current_animation;
+}
+
+sf::FloatRect Spritesheet::GetHitbox()
+{
+    sf::FloatRect hitbox{hitboxes[frame]};
+    hitbox.left += sprite.getGlobalBounds().left;
+    hitbox.top += sprite.getGlobalBounds().top;
+    return hitbox;
 }
 
 std::stringstream& operator>>(std::stringstream& ss, Spritesheet::Config& config)

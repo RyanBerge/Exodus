@@ -71,6 +71,7 @@ public:
     void SetConfig(Config config);
     void AddLightFrame(int frame, LightConfig light_config);
     void AddAnimation(Animation animation);
+    void SetHitboxes(std::vector<sf::FloatRect> boxes);
     bool SetAnimation(std::string name);
     void StopAnimation();
     void AdvanceAnimation();
@@ -79,6 +80,7 @@ public:
     sf::Sprite& GetSprite();
     std::list<LightConfig> GetLights();
     std::string GetAnimation();
+    sf::FloatRect GetHitbox();
 
 private:
     Config config{};
@@ -89,6 +91,7 @@ private:
     std::map<std::string, Animation> animations{};
     std::string current_animation{""};
     std::vector<std::list<LightConfig>> light_configs{};
+    std::vector<sf::FloatRect> hitboxes;
     float animation_time{0};
     int frame{-1};
 

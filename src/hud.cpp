@@ -117,6 +117,11 @@ void Hud::Draw(sf::RenderWindow& window)
 void Hud::SetHealth(int hp)
 {
     health = hp;
+    if (health < 0)
+    {
+        health = 0;
+    }
+
     for (int i = 0; i < health; ++i)
     {
         hearts[i].SetAnimation("Lit");
