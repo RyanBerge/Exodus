@@ -13,7 +13,7 @@ namespace {
     static int id_counter{0};
 }
 
-Entity::Entity(std::string identifier) : type{identifier}
+Entity::Entity(std::string identifier, std::string label) : label{label}, type{identifier}
 {
     load("data/entities/" + identifier + ".txt");
     id = id_counter++;
@@ -163,7 +163,7 @@ void Entity::load(std::string filepath)
 
     for (auto& light_id : light_ids)
     {
-        lights.push_back(Entity(light_id));
+        lights.push_back(Entity(light_id, ""));
     }
 
     sprite.SetHitboxes(hitboxes);
@@ -259,6 +259,11 @@ sf::Sprite& Entity::GetSprite()
 std::string Entity::GetAnimation()
 {
     return sprite.GetAnimation();
+}
+
+std::string Entity::GetLabel()
+{
+    return label;
 }
 
 std::list<Entity>& Entity::GetLights()

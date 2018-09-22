@@ -21,7 +21,7 @@ struct Trigger
 class Entity
 {
 public:
-    Entity(std::string identifier);
+    Entity(std::string identifier, std::string label);
 
     void Update(sf::Time elapsed, sf::RenderWindow& window);
     void Draw(sf::RenderWindow& window);
@@ -35,6 +35,7 @@ public:
     std::string GetType();
     sf::Sprite& GetSprite();
     std::string GetAnimation();
+    std::string GetLabel();
     std::list<Entity>& GetLights();
     std::list<Trigger>& GetTriggers();
     bool HasCollisions();
@@ -47,6 +48,7 @@ private:
     void drawLighting(sf::RenderTexture& target);
 
     int id{0};
+    std::string label{""};
     std::string type{""};
     Spritesheet sprite{};
     std::list<Entity> lights{};

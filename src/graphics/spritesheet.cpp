@@ -25,6 +25,11 @@ Spritesheet::Spritesheet(std::string filepath) : Spritesheet{filepath, Config{}}
 
 void Spritesheet::Update(sf::Time elapsed, sf::RenderWindow& window)
 {
+    if (current_animation == "None")
+    {
+        return;
+    }
+
     if (current_animation != "" && animations[current_animation].speed != 0)
     {
         animation_time += elapsed.asSeconds();
@@ -65,6 +70,11 @@ void Spritesheet::Update(sf::Time elapsed, sf::RenderWindow& window)
 
 void Spritesheet::Draw(sf::RenderWindow& window)
 {
+    if (current_animation == "None")
+    {
+        return;
+    }
+
     window.draw(sprite);
 }
 
@@ -134,9 +144,15 @@ bool Spritesheet::SetAnimation(std::string name)
         std::advance(item, rand() % animations.size());
         return SetAnimation(item->first);
     }
-    else if (animations.find(name) != animations.end())
+    else if (animations.find(name) != animations.end() || name == "None")
     {
         current_animation = name;
+
+        if (name == "None")
+        {
+            return true;
+        }
+
         SetFrame(animations[name].first_frame);
         animation_time = 0;
         return true;

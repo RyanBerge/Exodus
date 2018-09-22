@@ -2,7 +2,7 @@
 app.preferences.rulerUnits = Units.PIXELS;
 
 
-var file = new File("C:/Users/Ryan Berge/Desktop/Exodus/assets/room.txt");
+var file = new File("C:/Users/Ryan Berge/Desktop/Exodus/assets/Scripts/room.txt");
 file.open("w");
 for (var i = 0; i < app.activeDocument.layers.length; i++)
 {

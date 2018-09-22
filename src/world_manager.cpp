@@ -27,6 +27,7 @@ void WorldManager::Initialize()
     fade.setFillColor(sf::Color(0, 0, 0, 0));
 
     trigger_functions["collapseTorch"] = std::bind(&WorldManager::collapseTorch, this, std::placeholders::_1);
+    trigger_functions["fallingBoulder"] = std::bind(&WorldManager::fallingBoulder, this, std::placeholders::_1);
 }
 
 void WorldManager::Update(sf::Time elapsed, sf::RenderWindow& window)
@@ -85,9 +86,22 @@ void WorldManager::Update(sf::Time elapsed, sf::RenderWindow& window)
             }
         }
 
+        if (cutscene == "Falling Boulder")
+        {
+            updateFallingBoulderCutscene(elapsed, window);
+        }
+
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
         {
             paused = true;
+        }
+
+        for (auto& trigger : current_room.triggers)
+        {
+            if (trigger.hitbox.intersects(player.GetSprite().getGlobalBounds()))
+            {
+                trigger_flags[trigger.callback_key].push_back(nullptr);
+            }
         }
 
         for (auto& flag : trigger_flags)
@@ -315,7 +329,7 @@ void WorldManager::collapseTorch(void* args)
         return;
     }
 
-    Entity falling_torch("falling_torch");
+    Entity falling_torch("falling_torch", "");
     falling_torch.GetSprite().setPosition(torch_position);
     current_room.entities.erase(it);
 
@@ -331,6 +345,100 @@ void WorldManager::collapseTorch(void* args)
     current_room.entities.push_back(falling_torch);
 
     delete entity_id;
+}
+
+void WorldManager::fallingBoulder(void*)
+{
+    cutscene = "Falling Boulder";
+    Entity falling_boulder("falling_boulder", "Boulder");
+    falling_boulder.GetSprite().setPosition(200, -50);
+    current_room.entities.push_back(falling_boulder);
+    player.SetFrozen(true);
+    player.SetAnimation("IdleUp");
+
+    auto it = current_room.triggers.begin();
+    while (it != current_room.triggers.end())
+    {
+        if (it->callback_key == "fallingBoulder")
+        {
+            current_room.triggers.erase(it);
+            break;
+        }
+        ++it;
+    }
+}
+
+void WorldManager::updateFallingBoulderCutscene(sf::Time elapsed, sf::RenderWindow& window)
+{
+    static std::string phase = "Fall";
+    float fall_speed = 500;
+    float roll_speed = 70;
+
+    auto it = current_room.entities.begin();
+
+    while (it != current_room.entities.end())
+    {
+        if (it->GetLabel() == "Boulder")
+        {
+            if (phase == "Fall")
+            {
+                it->GetSprite().move(sf::Vector2f(0, fall_speed * elapsed.asSeconds()));
+                if (it->GetSprite().getPosition().y >= 150)
+                {
+                    phase = "Land";
+
+                    auto torch_it = current_room.entities.begin();
+
+                    while (torch_it != current_room.entities.end() && torch_it->GetLabel() != "boulder_torch")
+                    {
+                        ++torch_it;
+                    }
+
+                    Entity falling_torch("falling_torch", "");
+                    falling_torch.GetSprite().setPosition(torch_it->GetSprite().getPosition());
+                    falling_torch.SetAnimation("FallRight");
+
+                    current_room.entities.erase(torch_it);
+                    current_room.entities.insert(it, falling_torch);
+                }
+            }
+            else if (phase == "Land")
+            {
+                static float timer = 0;
+                timer += elapsed.asSeconds();
+                if (timer > 0.4)
+                {
+                    phase = "Roll";
+                    it->SetAnimation("Roll");
+                    timer = 0;
+                }
+            }
+            else if (phase == "Roll")
+            {
+                it->GetSprite().move(sf::Vector2f(0, roll_speed * elapsed.asSeconds()));
+                if (it->GetSprite().getPosition().y >= 400)
+                {
+                    phase = "Fade";
+                }
+            }
+            else if (phase == "Fade")
+            {
+                static float timer = 0;
+                timer += elapsed.asSeconds();
+                if (timer > 1)
+                {
+                    player.SetFrozen(false);
+                    cutscene = "";
+
+                    current_room.entities.erase(it);
+                    phase = "Fall";
+                    timer = 0;
+                }
+            }
+            break;
+        }
+        ++it;
+    }
 }
 
 void WorldManager::Death()

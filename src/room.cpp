@@ -96,7 +96,32 @@ bool Room::Load()
             *ss >> x;
             *ss >> y;
 
-            Entity entity(identifier);
+            std::string subkey{""};
+            std::string label{""};
+
+            *ss >> subkey;
+            while (subkey != "")
+            {
+                auto subkey_ss = std::stringstream(subkey);
+                subkey = "";
+                char letter;
+                letter = subkey_ss.get();
+                while (letter != '=')
+                {
+                    subkey += letter;
+                    letter = subkey_ss.get();
+                }
+
+                if (subkey == "label")
+                {
+                    subkey_ss >> label;
+                }
+
+                subkey = "";
+                *ss >> subkey;
+            }
+
+            Entity entity(identifier, label);
             entity.GetSprite().setPosition(x, y);
             entity.SetAnimation(start_animation);
             entities.push_back(entity);
@@ -157,6 +182,24 @@ bool Room::Load()
             Portal portal{room_id, hitbox, sf::Vector2f{spawn_x, spawn_y}};
 
             portals.push_back(portal);
+        }
+        else if (data.key == "Trigger")
+        {
+            auto ss = data.ss;
+            std::string identifier;
+            float x, y, width, height;
+
+            *ss >> identifier;
+            *ss >> x;
+            *ss >> y;
+            *ss >> width;
+            *ss >> height;
+
+            sf::FloatRect hitbox(x, y, width, height);
+
+            WorldTrigger trigger{identifier, hitbox};
+
+            triggers.push_back(trigger);
         }
         else if (data.key == "LightLevel")
         {

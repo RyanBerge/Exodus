@@ -1,18 +1,20 @@
 Background: assets/DirtRock.png
 
-Entity: rock_wall TopLeftOuter 1100 200
 Entity: pit TopBottom 0 400
-Entity: pit TopBottom 100 400
-Entity: pit TopBottom 200 400
-Entity: pit TopBottom 300 400
+Entity: pit Bottom 100 400
+Entity: pit Bottom 200 400
+Entity: pit Bottom 300 400
 Entity: pit Bottom 400 400
-Entity: pit TopLeftOuter 400 400
+Entity: pit TopLeftOuter 100 400
 Entity: pit Bottom 500 400
 Entity: pit Bottom 600 400
 Entity: pit Bottom 700 400
-Entity: pit TopLeft 400 300
+Entity: pit TopLeft 100 300
 Entity: pit TopLeft 600 200
 Entity: pit Top 500 300
+Entity: pit Top 300 300
+Entity: pit Top 200 300
+Entity: pit Top 400 300
 Entity: pit Top 700 200
 Entity: pit Hole 600 300
 Entity: pit TopLeftOuter 600 300
@@ -29,13 +31,14 @@ Entity: pit Left 800 0
 Entity: pit Hole 900 200
 Entity: pit BottomRightOuter 900 200
 Entity: pit Hole 900 100
-Entity: pit Hole 1000 100
 Entity: pit BottomRightOuter 1000 100
+Entity: pit Hole 1000 100
 Entity: pit Bottom 1100 100
 Entity: pit Hole 900 0
 Entity: pit Hole 1000 0
 Entity: pit Hole 1100 0
 
+Entity: rock_wall TopLeftOuter 1100 200
 Entity: rock_wall BottomRight 1100 700
 Entity: rock_wall BottomLeft 0 700
 Entity: rock_wall Top 100 0
@@ -57,6 +60,8 @@ Entity: rock_wall TopLeftOuter 1100 600
 Entity: rock_wall BottomLeftOuter 1100 300
 Entity: rock_wall TopRightOuter 300 700
 
-Entity: torch Flicker 260 172
+Trigger: fallingBoulder 367 720 490 80
+
+Entity: torch Flicker 260 172 label=boulder_torch
 
 LightLevel: 160

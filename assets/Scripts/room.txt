@@ -1,0 +1,60 @@
+DirtRock 0 0
+Entity: rock_wall TopLeftOuter 1100 201
+Entity: pit TopBottom 0 400
+Entity: pit Bottom copy 100 400
+Entity: pit Bottom 200 400
+Entity: pit Bottom 300 400
+Entity: pit Bottom 400 400
+Entity: pit TopLeftOuter 100 400
+Entity: pit Bottom copy 500 400
+Entity: pit Bottom 600 400
+Entity: pit Bottom 700 400
+Entity: pit TopLeft 100 300
+Entity: pit TopLeft 600 200
+Entity: pit Top 500 300
+Entity: pit Top 300 300
+Entity: pit Top 200 300
+Entity: pit Top 400 300
+Entity: pit Top copy 700 200
+Entity: pit Hole 600 300
+Entity: pit TopLeftOuter 600 300
+Entity: pit Hole 700 300
+Entity: pit BottomRight 800 400
+Entity: pit BottomRight copy 900 300
+Entity: pit BottomRight 1000 200
+Entity: pit Hole 800 300
+Entity: pit BottomRightOuter 800 300
+Entity: pit Hole 800 200
+Entity: pit TopLeftOuter 800 200
+Entity: pit Left 800 100
+Entity: pit Left 800 0
+Entity: pit Hole 900 200
+Entity: pit BottomRightOuter 900 200
+Entity: pit Hole 900 100
+Entity: pit BottomRightOuter 1000 100
+Entity: pit Hole 1000 100
+Entity: pit Bottom 1100 100
+Entity: pit Hole 900 0
+Entity: pit Hole 1000 0
+Entity: pit Hole copy 1100 0
+Entity: rock_wall BottomRight 1100 700
+Entity: rock_wall BottomLeft 0 700
+Entity: rock_wall Top 100 0
+Entity: rock_wall Top copy 0 0
+Entity: rock_wall BottomRightOuter 0 299
+Entity: rock_wall Top 600 0
+Entity: rock_wall BottomLeftOuter 501 0
+Entity: rock_wall BottomRightOuter 200 0
+Entity: rock_wall BottomRightOuter copy 700 0
+Entity: rock_wall Left 0 593
+Entity: rock_wall TopRightOuter 0 199
+Entity: rock_wall TopRightOuter copy 0 500
+Entity: rock_wall Bottom 93 701
+Entity: rock_wall Bottom copy 193 701
+Entity: rock_wall Bottom 993 701
+Entity: rock_wall Bottom 893 701
+Entity: rock_wall TopLeftOuter 800 701
+Entity: rock_wall TopLeftOuter 1100 601
+Entity: rock_wall BottomLeftOuter 1101 300
+Entity: rock_wall TopRightOuter 300 700
+Trigger: falling_boulder 367 720

@@ -21,6 +21,8 @@ public:
     sf::Sprite& GetSprite();
     Spritesheet::Direction GetDirection();
     void SetHudViewport(sf::FloatRect viewport);
+    void SetFrozen(bool frozen);
+    void SetAnimation(std::string animation);
 
     void RegisterCollisionCheck(std::function<bool(sf::IntRect)> f);
     void RegisterChangeRoom(std::function<void(sf::Vector2i)> f);
@@ -44,6 +46,7 @@ private:
     sf::Vector2f knockback_direction{0, 0};
     float knockback_decay{0};
     bool invincible{false};
+    bool frozen{false};
     float invincible_timer{0};
     Hud hud;
 

@@ -154,7 +154,11 @@ void Player::determineMovement(sf::Time elapsed)
 
 void Player::Update(sf::Time elapsed, sf::RenderWindow& window)
 {
-    determineMovement(elapsed);
+    if (!frozen)
+    {
+        determineMovement(elapsed);
+    }
+
     sprite.Update(elapsed, window);
     hud.Update(elapsed, window);
 
@@ -289,4 +293,14 @@ void Player::RegisterDeathCallback(std::function<void(void)> f)
 void Player::SetHudViewport(sf::FloatRect viewport)
 {
     hud.SetViewport(viewport);
+}
+
+void Player::SetFrozen(bool frozen)
+{
+    this->frozen = frozen;
+}
+
+void Player::SetAnimation(std::string animation)
+{
+    sprite.SetAnimation(animation);
 }

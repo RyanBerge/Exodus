@@ -21,6 +21,12 @@ struct Portal
     sf::Vector2f spawn;
 };
 
+struct WorldTrigger
+{
+    std::string callback_key;
+    sf::FloatRect hitbox;
+};
+
 class Room
 {
 public:
@@ -33,11 +39,12 @@ public:
 
     bool Load();
 
-    RoomID id;
-    Spritesheet background;
-    std::list<Entity> entities;
-    std::list<Enemy> enemies;
-    std::list<Portal> portals;
+    RoomID id{};
+    Spritesheet background{};
+    std::list<Entity> entities{};
+    std::list<Enemy> enemies{};
+    std::list<Portal> portals{};
+    std::list<WorldTrigger> triggers{};
     std::shared_ptr<sf::RenderTexture> light_layer{new sf::RenderTexture()};
     int light_level{0};
 
