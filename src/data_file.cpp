@@ -21,9 +21,14 @@ bool DataFile::Open(std::string path)
     }
 }
 
+void DataFile::Close()
+{
+    file.close();
+}
+
 bool DataFile::MoreKeys()
 {
-    return !file.eof();
+    return !(file.eof() || file.peek() == std::ifstream::traits_type::eof());
 }
 
 DataKey DataFile::GetKey()

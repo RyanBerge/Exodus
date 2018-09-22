@@ -1,7 +1,9 @@
 #include "utilities.h"
+#include "data_file.h"
 
 #include <cmath>
 #include <sstream>
+#include <iostream>
 
 namespace Utilities
 {
@@ -134,5 +136,121 @@ namespace Utilities
         }
 
         return lights;
+    }
+
+    bool CheckDungeonState(std::string dungeon_state, RoomID id)
+    {
+        std::string filepath = "data/rooms/" + id.area + "/dungeon_state.txt";
+
+        DataFile data_file;
+        if (!data_file.Open(filepath))
+        {
+            std::cerr << "Exodus: Dungeon State could not be loaded: " << filepath << std::endl;
+            return false;
+        }
+
+        while (data_file.MoreKeys())
+        {
+            auto data = data_file.GetKey();
+            if (data.key == (std::to_string(id.x) + "-" + std::to_string(id.y)))
+            {
+                auto ss = data.ss;
+
+                std::string state;
+                *ss >> state;
+
+                if (state == dungeon_state)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    void SetDungeonState(std::string dungeon_state, RoomID id)
+    {
+        std::list<std::pair<std::string, std::string>> lines;
+
+        std::string filepath = "data/rooms/" + id.area + "/dungeon_state.txt";
+
+        DataFile data_file;
+        if (!data_file.Open(filepath))
+        {
+            std::cerr << "Exodus: Dungeon State could not be loaded: " << filepath << std::endl;
+            return;
+        }
+
+        while (data_file.MoreKeys())
+        {
+            auto data = data_file.GetKey();
+            auto ss = data.ss;
+            std::string state;
+
+            *ss >> state;
+
+            lines.push_back(std::pair<std::string, std::string>(data.key + ": ", state));
+        }
+
+        data_file.Close();
+
+        std::fstream file(filepath, std::fstream::out);
+        bool found = false;
+
+        for (auto& line : lines)
+        {
+            if (line.first == std::to_string(id.x) + "-" + std::to_string(id.y) + ": ")
+            {
+                line.second = dungeon_state;
+                found = true;
+            }
+
+            file << line.first << line.second << std::endl;
+        }
+
+        if (!found)
+        {
+            std::cerr << "Exodus: Room not present in dungeon state file: " << filepath << std::endl;
+        }
+    }
+
+    void SetAllDungeonStates(std::string dungeon_state, RoomID id)
+    {
+        std::list<std::pair<std::string, std::string>> lines;
+
+        std::string filepath = "data/rooms/" + id.area + "/dungeon_state.txt";
+
+        DataFile data_file;
+        if (!data_file.Open(filepath))
+        {
+            std::cerr << "Exodus: Dungeon State could not be loaded: " << filepath << std::endl;
+            return;
+        }
+
+        while (data_file.MoreKeys())
+        {
+            auto data = data_file.GetKey();
+            auto ss = data.ss;
+            std::string state;
+
+            *ss >> state;
+
+            lines.push_back(std::pair<std::string, std::string>(data.key + ": ", state));
+        }
+
+        data_file.Close();
+
+        std::fstream file(filepath, std::fstream::out);
+
+        for (auto& line : lines)
+        {
+            line.second = dungeon_state;
+            file << line.first << line.second << std::endl;
+        }
     }
 }

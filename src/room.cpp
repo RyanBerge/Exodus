@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include "data_file.h"
+#include "utilities.h"
 
 Room::Room()
 {
@@ -98,6 +99,7 @@ bool Room::Load()
 
             std::string subkey{""};
             std::string label{""};
+            std::string dungeon_state{""};
 
             *ss >> subkey;
             while (subkey != "")
@@ -116,15 +118,22 @@ bool Room::Load()
                 {
                     subkey_ss >> label;
                 }
+                else if (subkey == "dungeonState")
+                {
+                    subkey_ss >> dungeon_state;
+                }
 
                 subkey = "";
                 *ss >> subkey;
             }
 
-            Entity entity(identifier, label);
-            entity.GetSprite().setPosition(x, y);
-            entity.SetAnimation(start_animation);
-            entities.push_back(entity);
+            if (dungeon_state == "" || Utilities::CheckDungeonState(dungeon_state, id))
+            {
+                Entity entity(identifier, label);
+                entity.GetSprite().setPosition(x, y);
+                entity.SetAnimation(start_animation);
+                entities.push_back(entity);
+            }
         }
         else if (data.key == "Enemy")
         {
@@ -195,11 +204,37 @@ bool Room::Load()
             *ss >> width;
             *ss >> height;
 
-            sf::FloatRect hitbox(x, y, width, height);
+            std::string subkey{""};
+            std::string dungeon_state{""};
 
-            WorldTrigger trigger{identifier, hitbox};
+            *ss >> subkey;
+            while (subkey != "")
+            {
+                auto subkey_ss = std::stringstream(subkey);
+                subkey = "";
+                char letter;
+                letter = subkey_ss.get();
+                while (letter != '=')
+                {
+                    subkey += letter;
+                    letter = subkey_ss.get();
+                }
 
-            triggers.push_back(trigger);
+                if (subkey == "dungeonState")
+                {
+                    subkey_ss >> dungeon_state;
+                }
+
+                subkey = "";
+                *ss >> subkey;
+            }
+
+            if (dungeon_state == "" || Utilities::CheckDungeonState(dungeon_state, id))
+            {
+                sf::FloatRect hitbox(x, y, width, height);
+                WorldTrigger trigger{identifier, hitbox};
+                triggers.push_back(trigger);
+            }
         }
         else if (data.key == "LightLevel")
         {
@@ -207,6 +242,8 @@ bool Room::Load()
             *ss >> light_level;
         }
     }
+
+    Utilities::SetDungeonState("Explored", id);
 
     return true;
 }

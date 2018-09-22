@@ -60,8 +60,9 @@ Entity: rock_wall TopLeftOuter 1100 600
 Entity: rock_wall BottomLeftOuter 1100 300
 Entity: rock_wall TopRightOuter 300 700
 
-Trigger: fallingBoulder 367 720 490 80
+Trigger: fallingBoulder 367 720 490 80 dungeonState=Unexplored
 
-Entity: torch Flicker 260 172 label=boulder_torch
+Entity: falling_torch FloorRight 260 172 dungeonState=Explored
+Entity: torch Flicker 260 172 label=boulder_torch dungeonState=Unexplored
 
 LightLevel: 160

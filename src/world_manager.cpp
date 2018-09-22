@@ -59,6 +59,7 @@ void WorldManager::Update(sf::Time elapsed, sf::RenderWindow& window)
             {
                 if (portal.hitbox.intersects(player.GetSprite().getGlobalBounds()))
                 {
+                    Utilities::SetAllDungeonStates("Unexplored", current_room.id);
                     new_room = Room(portal.id);
                     new_room.Load();
                     portal_transition = true;
@@ -194,6 +195,9 @@ void WorldManager::LoadSave(sf::RenderWindow& window)
     current_room = RoomID{"Overworld", 6, 3};
     current_room.Load();
     Resize(sf::Vector2u(Settings::video_resolution.x, Settings::video_resolution.y), window);
+
+    Utilities::SetAllDungeonStates("Unexplored", RoomID{"Overworld", 0, 0});
+    Utilities::SetAllDungeonStates("Unexplored", RoomID{"Dungeon1", 0, 0});
 }
 
 void WorldManager::Resize(sf::Vector2u ratio, sf::RenderWindow& window)
@@ -352,6 +356,7 @@ void WorldManager::fallingBoulder(void*)
     cutscene = "Falling Boulder";
     Entity falling_boulder("falling_boulder", "Boulder");
     falling_boulder.GetSprite().setPosition(200, -50);
+    falling_boulder.SetAnimation("Fall");
     current_room.entities.push_back(falling_boulder);
     player.SetFrozen(true);
     player.SetAnimation("IdleUp");
@@ -425,7 +430,7 @@ void WorldManager::updateFallingBoulderCutscene(sf::Time elapsed, sf::RenderWind
             {
                 static float timer = 0;
                 timer += elapsed.asSeconds();
-                if (timer > 1)
+                if (timer > 1.75)
                 {
                     player.SetFrozen(false);
                     cutscene = "";

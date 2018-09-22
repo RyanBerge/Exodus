@@ -18,6 +18,7 @@ public:
     DataFile();
 
     bool Open(std::string path);
+    void Close();
     bool MoreKeys();
     DataKey GetKey();
 

@@ -3,7 +3,7 @@
 
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Graphics/Rect.hpp>
-#include "graphics/spritesheet.h"
+#include "room.h"
 
 namespace Utilities
 {
@@ -11,6 +11,9 @@ namespace Utilities
     bool CheckCollision(sf::FloatRect left, sf::FloatRect right);
     Spritesheet::Animation ReadAnimation(std::stringstream& ss);
     std::vector<std::list<Spritesheet::LightConfig>> ReadLights(std::stringstream& ss);
+    bool CheckDungeonState(std::string dungeon_state, RoomID id);
+    void SetDungeonState(std::string dungeon_state, RoomID id);
+    void SetAllDungeonStates(std::string dungeon_state, RoomID id);
 
 }
 
