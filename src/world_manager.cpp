@@ -87,9 +87,9 @@ void WorldManager::Update(sf::Time elapsed, sf::RenderWindow& window)
             }
         }
 
-        if (cutscene == "Falling Boulder")
+        if (game_event == "Falling Boulder")
         {
-            updateFallingBoulderCutscene(elapsed, window);
+            updateFallingBoulderEvent(elapsed, window);
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
@@ -192,7 +192,7 @@ void WorldManager::RegisterDeathCallback(std::function<void(void)> f)
 
 void WorldManager::LoadSave(sf::RenderWindow& window)
 {
-    current_room = RoomID{"Overworld", 6, 3};
+    current_room = RoomID{"Dungeon1", 2, 1};
     current_room.Load();
     Resize(sf::Vector2u(Settings::video_resolution.x, Settings::video_resolution.y), window);
 
@@ -353,7 +353,7 @@ void WorldManager::collapseTorch(void* args)
 
 void WorldManager::fallingBoulder(void*)
 {
-    cutscene = "Falling Boulder";
+    game_event = "Falling Boulder";
     Entity falling_boulder("falling_boulder", "Boulder");
     falling_boulder.GetSprite().setPosition(200, -50);
     falling_boulder.SetAnimation("Fall");
@@ -373,7 +373,7 @@ void WorldManager::fallingBoulder(void*)
     }
 }
 
-void WorldManager::updateFallingBoulderCutscene(sf::Time elapsed, sf::RenderWindow& window)
+void WorldManager::updateFallingBoulderEvent(sf::Time elapsed, sf::RenderWindow& window)
 {
     static std::string phase = "Fall";
     float fall_speed = 500;
@@ -433,7 +433,7 @@ void WorldManager::updateFallingBoulderCutscene(sf::Time elapsed, sf::RenderWind
                 if (timer > 1.75)
                 {
                     player.SetFrozen(false);
-                    cutscene = "";
+                    game_event = "";
 
                     current_room.entities.erase(it);
                     phase = "Fall";

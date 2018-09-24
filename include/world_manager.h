@@ -32,13 +32,13 @@ private:
     void collapseTorch(void*);
     void fallingBoulder(void*);
 
-    void updateFallingBoulderCutscene(sf::Time elapsed, sf::RenderWindow& window);
+    void updateFallingBoulderEvent(sf::Time elapsed, sf::RenderWindow& window);
 
     std::function<void(void)> deathCallback;
 
     Room current_room;
     Room new_room;
-    std::string cutscene{""};
+    std::string game_event{""};
     sf::Vector2i room_transition{0, 0};
     bool portal_transition{false};
     bool portal_in{false};

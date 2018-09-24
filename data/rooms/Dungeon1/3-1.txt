@@ -1,0 +1,50 @@
+Background: assets/DirtRock.png
+
+Entity: rock_wall BottomRight 1100 700
+Entity: rock_wall Right 1100 100
+Entity: rock_wall Right 1100 200
+Entity: rock_wall Right 1100 300
+Entity: rock_wall Right 1100 400
+Entity: rock_wall Right 1100 500
+Entity: rock_wall Right 1100 600
+Entity: rock_wall BottomLeft 0 700
+Entity: rock_wall Bottom 100 700
+Entity: rock_wall Bottom 200 700
+Entity: rock_wall Bottom 300 700
+Entity: rock_wall TopLeftOuter 700 700
+Entity: rock_wall TopLeftOuter 500 300
+Entity: rock_wall Bottom 800 700
+Entity: rock_wall Bottom 900 700
+Entity: rock_wall Bottom 1000 700
+Entity: rock_wall TopRight 1100 0
+Entity: rock_wall TopLeft 0 0
+Entity: rock_wall BottomLeftOuter 600 0
+Entity: rock_wall BottomLeftOuter 500 400
+Entity: rock_wall BottomLeftOuter 100 0
+Entity: rock_wall BottomRightOuter 400 0
+Entity: rock_wall BottomRightOuter 0 300
+Entity: rock_wall BottomRightOuter 600 400
+Entity: rock_wall TopRightOuter 0 600
+Entity: rock_wall TopRightOuter 400 700
+Entity: rock_wall TopRightOuter 600 300
+Entity: rock_wall TopRightOuter 0 200
+Entity: rock_wall Top 200 0
+Entity: rock_wall Top 300 0
+Entity: rock_wall Top 400 0 label=fake_wall dungeonState=Explored,Unexplored
+Entity: rock_wall Top 500 0 label=fake_wall dungeonState=Explored,Unexplored
+Entity: rock_wall Top 600 0 label=fake_wall dungeonState=Explored,Unexplored
+Entity: rock_wall Top 900 0
+Entity: rock_wall Top 800 0
+Entity: rock_wall Top 700 0
+Entity: rock_wall Top 1000 0
+
+Entity: pit BottomRight 0 100
+Entity: pit Right 0 0
+
+
+Entity: torch Flicker 375 260
+Entity: torch Flicker 815 260
+Entity: torch Flicker 375 630
+Entity: torch Flicker 815 630
+
+LightLevel: 160

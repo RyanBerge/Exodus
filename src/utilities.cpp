@@ -149,6 +149,24 @@ namespace Utilities
             return false;
         }
 
+        std::list<std::string> dungeon_states;
+        auto sit = dungeon_state.begin();
+        std::string temp;
+        while (sit != dungeon_state.end())
+        {
+            if (*sit != ',')
+            {
+                temp += *sit;
+            }
+            else
+            {
+                dungeon_states.push_back(temp);
+                temp = "";
+            }
+            ++sit;
+        }
+        dungeon_states.push_back(temp);
+
         while (data_file.MoreKeys())
         {
             auto data = data_file.GetKey();
@@ -159,14 +177,15 @@ namespace Utilities
                 std::string state;
                 *ss >> state;
 
-                if (state == dungeon_state)
+                for (auto& d_state : dungeon_states)
                 {
-                    return true;
+                    if (d_state == state)
+                    {
+                        return true;
+                    }
                 }
-                else
-                {
-                    return false;
-                }
+
+                return false;
             }
         }
 
