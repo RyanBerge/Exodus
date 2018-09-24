@@ -26,7 +26,8 @@ public:
     void QuitToMenu();
 
 private:
-    bool checkCollisions(sf::IntRect new_position);
+    //bool checkCollisions(sf::IntRect new_position);
+    sf::Vector2f movePlayer(sf::FloatRect hitbox, sf::Vector2f displacement);
     void changeRoom(sf::Vector2i position);
 
     void collapseTorch(void*);

@@ -24,7 +24,7 @@ public:
     void SetFrozen(bool frozen);
     void SetAnimation(std::string animation);
 
-    void RegisterCollisionCheck(std::function<bool(sf::IntRect)> f);
+    void RegisterMovePlayer(std::function<sf::Vector2f(sf::FloatRect, sf::Vector2f)> f);
     void RegisterChangeRoom(std::function<void(sf::Vector2i)> f);
     void RegisterDeathCallback(std::function<void(void)> f);
 
@@ -32,7 +32,7 @@ private:
     void load(std::string filepath);
     void determineMovement(sf::Time elapsed);
 
-    std::function<bool(sf::IntRect)> checkCollisions;
+    std::function<sf::Vector2f(sf::FloatRect, sf::Vector2f)> movePlayer;
     std::function<void(sf::Vector2i)> changeRoom;
     std::function<void(void)> deathCallback;
 

@@ -15,7 +15,7 @@ WorldManager::WorldManager() : current_room{RoomID{"Overworld", 6, 3}}
 
 void WorldManager::Initialize()
 {
-    player.RegisterCollisionCheck(std::bind(&WorldManager::checkCollisions, this, std::placeholders::_1));
+    player.RegisterMovePlayer(std::bind(&WorldManager::movePlayer, this, std::placeholders::_1, std::placeholders::_2));
     player.RegisterChangeRoom(std::bind(&WorldManager::changeRoom, this, std::placeholders::_1));
     player.RegisterDeathCallback(std::bind(&WorldManager::Death, this));
 
@@ -231,13 +231,29 @@ void WorldManager::Resize(sf::Vector2u ratio, sf::RenderWindow& window)
     player.SetHudViewport(sf::FloatRect(viewport_x, viewport_y, viewport_width, viewport_height));
 }
 
-bool WorldManager::checkCollisions(sf::IntRect new_position)
+
+sf::Vector2f WorldManager::movePlayer(sf::FloatRect hitbox, sf::Vector2f displacement)
 {
-    bool blocking = false;
+    bool vertical = true;
+    bool horizontal = true;
+
     for (auto& entity : current_room.entities)
     {
-        auto hitbox = entity.GetHitbox();
-        if (hitbox != sf::FloatRect{0, 0, 0, 0} && Utilities::CheckCollision(hitbox, sf::FloatRect(new_position)))
+        auto entity_hitbox = entity.GetHitbox();
+        bool temp_vertical = true;
+        bool temp_horizontal = true;
+
+        if (entity_hitbox.intersects(sf::FloatRect{hitbox.left + displacement.x, hitbox.top, hitbox.width, hitbox.height}))
+        {
+            temp_horizontal = false;
+        }
+
+        if (entity_hitbox.intersects(sf::FloatRect{hitbox.left, hitbox.top + displacement.y, hitbox.width, hitbox.height}))
+        {
+            temp_vertical = false;
+        }
+
+        if (!temp_horizontal || !temp_vertical)
         {
             Collision collision = entity.Collide(elapsed_seconds, player);
 
@@ -275,25 +291,98 @@ bool WorldManager::checkCollisions(sf::IntRect new_position)
 
             if (collision.blocking)
             {
-                blocking = true;
+                if (!temp_horizontal)
+                {
+                    horizontal = false;
+                }
+
+                if (!temp_vertical)
+                {
+                    vertical = false;
+                }
             }
         }
     }
 
-    for (auto& enemy : current_room.enemies)
+    sf::Vector2f final_displacement;
+
+    if (horizontal)
     {
-        if (enemy.HasCollisions())
-        {
-            if (Utilities::CheckCollision(enemy.GetSprite().getGlobalBounds(), sf::FloatRect(new_position)))
-            {
-                blocking = true;
-                break;
-            }
-        }
+        final_displacement.x = displacement.x;
     }
 
-    return blocking;
+    if (vertical)
+    {
+        final_displacement.y = displacement.y;
+    }
+
+    return final_displacement;
 }
+
+
+// bool WorldManager::checkCollisions(sf::IntRect new_position)
+// {
+//     bool blocking = false;
+//     for (auto& entity : current_room.entities)
+//     {
+//         auto hitbox = entity.GetHitbox();
+//         if (hitbox != sf::FloatRect{0, 0, 0, 0} && Utilities::CheckCollision(hitbox, sf::FloatRect(new_position)))
+//         {
+//             Collision collision = entity.Collide(elapsed_seconds, player);
+
+//             for (auto& trigger : entity.GetTriggers())
+//             {
+//                 if (trigger.type == "duration" && collision.collision_timer >= PUSH_TRIGGER_DURATION)
+//                 {
+//                     bool found = false;
+//                     for (auto& entity_id : trigger_flags[trigger.callback_key])
+//                     {
+//                         if (*reinterpret_cast<int*>(entity_id) == entity.GetId())
+//                         {
+//                             found = true;
+//                             break;
+//                         }
+//                     }
+
+//                     if (!found)
+//                     {
+//                         trigger_flags[trigger.callback_key].push_back(new int(entity.GetId()));
+//                     }
+//                 }
+//             }
+
+//             if (collision.damage != 0 || collision.knockback != 0)
+//             {
+//                 sf::Vector2f direction{0, 0};
+//                 if (collision.knockback != 0)
+//                 {
+//                     direction = entity.GetKnockbackDirection(player);
+//                 }
+
+//                 player.Damage(collision.damage, collision.knockback, direction);
+//             }
+
+//             if (collision.blocking)
+//             {
+//                 blocking = true;
+//             }
+//         }
+//     }
+
+//     for (auto& enemy : current_room.enemies)
+//     {
+//         if (enemy.HasCollisions())
+//         {
+//             if (Utilities::CheckCollision(enemy.GetSprite().getGlobalBounds(), sf::FloatRect(new_position)))
+//             {
+//                 blocking = true;
+//                 break;
+//             }
+//         }
+//     }
+
+//     return blocking;
+// }
 
 void WorldManager::changeRoom(sf::Vector2i room_offset)
 {
