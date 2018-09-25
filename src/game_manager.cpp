@@ -13,7 +13,8 @@ GameManager::GameManager(sf::RenderWindow& window) : current_scene{Scene::MainMe
 void GameManager::InitializeWorldManager()
 {
     Resize(window.getSize());
-    world_manager = WorldManager();
+    world_manager.~WorldManager();
+    new(&world_manager) WorldManager();
     world_manager.Initialize();
     world_manager.RegisterDeathCallback(std::bind(&GameManager::Death, this));
     reset = false;

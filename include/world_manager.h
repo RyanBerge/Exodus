@@ -3,6 +3,7 @@
 
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/System/Time.hpp>
+#include <mutex>
 #include "room.h"
 #include "player.h"
 #include "pause_menu.h"
@@ -26,7 +27,10 @@ public:
     void QuitToMenu();
 
 private:
-    //bool checkCollisions(sf::IntRect new_position);
+    void loadAdjacentRooms();
+    void loadRoom(RoomID id);
+    void setNewRoom(RoomID id);
+
     sf::Vector2f movePlayer(sf::FloatRect hitbox, sf::Vector2f displacement);
     void changeRoom(sf::Vector2i position);
 
@@ -37,8 +41,10 @@ private:
 
     std::function<void(void)> deathCallback;
 
-    Room current_room;
-    Room new_room;
+    std::shared_ptr<Room> current_room;
+    std::shared_ptr<Room> new_room;
+    std::list<std::shared_ptr<Room>> adjacent_rooms;
+    std::mutex room_mutex;
     std::string game_event{""};
     sf::Vector2i room_transition{0, 0};
     bool portal_transition{false};

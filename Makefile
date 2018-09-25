@@ -17,10 +17,10 @@ $(TARGET): $(OBJ_FILES)
 	g++ -g -o $@ $^ -I$(INCLUDE) -I$(SFML_INCLUDE) -L$(SFML_LIB) -lsfml-graphics -lsfml-window -lsfml-system
 
 obj/%.o: src/%.cpp
-	g++ -g -std=c++11 $(CXXFLAGS) -c -o $@ -Iinclude -I$(SFML_INCLUDE) $<
+	g++ -g -std=c++17 $(CXXFLAGS) -c -o $@ -Iinclude -I$(SFML_INCLUDE) $<
 
 obj/graphics/%.o: src/graphics/%.cpp
-	g++ -g -std=c++11 $(CXXFLAGS) -c -o $@ -Iinclude -I$(SFML_INCLUDE) $<
+	g++ -g -std=c++17 $(CXXFLAGS) -c -o $@ -Iinclude -I$(SFML_INCLUDE) $<
 
 clean :
 	rm -f $(REBUILDABLES)

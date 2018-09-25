@@ -11,6 +11,9 @@ struct RoomID
     std::string area;
     int x;
     int y;
+
+    bool operator==(const RoomID& other) const;
+    bool operator<(const RoomID& other) const;
 };
 
 struct Portal
@@ -45,6 +48,9 @@ public:
     std::list<WorldTrigger> triggers{};
     std::shared_ptr<sf::RenderTexture> light_layer{new sf::RenderTexture()};
     int light_level{0};
+
+    static std::map<RoomID, std::string> dungeon_states;
+    static void InitDungeonStates();
 
 };
 

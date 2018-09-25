@@ -140,16 +140,7 @@ namespace Utilities
 
     bool CheckDungeonState(std::string dungeon_state, RoomID id)
     {
-        std::string filepath = "data/rooms/" + id.area + "/dungeon_state.txt";
-
-        DataFile data_file;
-        if (!data_file.Open(filepath))
-        {
-            std::cerr << "Exodus: Dungeon State could not be loaded: " << filepath << std::endl;
-            return false;
-        }
-
-        std::list<std::string> dungeon_states;
+        std::list<std::string> states;
         auto sit = dungeon_state.begin();
         std::string temp;
         while (sit != dungeon_state.end())
@@ -160,32 +151,18 @@ namespace Utilities
             }
             else
             {
-                dungeon_states.push_back(temp);
+                states.push_back(temp);
                 temp = "";
             }
             ++sit;
         }
-        dungeon_states.push_back(temp);
+        states.push_back(temp);
 
-        while (data_file.MoreKeys())
+        for (auto& state : states)
         {
-            auto data = data_file.GetKey();
-            if (data.key == (std::to_string(id.x) + "-" + std::to_string(id.y)))
+            if (Room::dungeon_states[id] == state)
             {
-                auto ss = data.ss;
-
-                std::string state;
-                *ss >> state;
-
-                for (auto& d_state : dungeon_states)
-                {
-                    if (d_state == state)
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
+                return true;
             }
         }
 
@@ -194,82 +171,17 @@ namespace Utilities
 
     void SetDungeonState(std::string dungeon_state, RoomID id)
     {
-        std::list<std::pair<std::string, std::string>> lines;
-
-        std::string filepath = "data/rooms/" + id.area + "/dungeon_state.txt";
-
-        DataFile data_file;
-        if (!data_file.Open(filepath))
-        {
-            std::cerr << "Exodus: Dungeon State could not be loaded: " << filepath << std::endl;
-            return;
-        }
-
-        while (data_file.MoreKeys())
-        {
-            auto data = data_file.GetKey();
-            auto ss = data.ss;
-            std::string state;
-
-            *ss >> state;
-
-            lines.push_back(std::pair<std::string, std::string>(data.key + ": ", state));
-        }
-
-        data_file.Close();
-
-        std::fstream file(filepath, std::fstream::out);
-        bool found = false;
-
-        for (auto& line : lines)
-        {
-            if (line.first == std::to_string(id.x) + "-" + std::to_string(id.y) + ": ")
-            {
-                line.second = dungeon_state;
-                found = true;
-            }
-
-            file << line.first << line.second << std::endl;
-        }
-
-        if (!found)
-        {
-            std::cerr << "Exodus: Room not present in dungeon state file: " << filepath << std::endl;
-        }
+        Room::dungeon_states[id] = dungeon_state;
     }
 
     void SetAllDungeonStates(std::string dungeon_state, RoomID id)
     {
-        std::list<std::pair<std::string, std::string>> lines;
-
-        std::string filepath = "data/rooms/" + id.area + "/dungeon_state.txt";
-
-        DataFile data_file;
-        if (!data_file.Open(filepath))
+        for (auto& state : Room::dungeon_states)
         {
-            std::cerr << "Exodus: Dungeon State could not be loaded: " << filepath << std::endl;
-            return;
-        }
-
-        while (data_file.MoreKeys())
-        {
-            auto data = data_file.GetKey();
-            auto ss = data.ss;
-            std::string state;
-
-            *ss >> state;
-
-            lines.push_back(std::pair<std::string, std::string>(data.key + ": ", state));
-        }
-
-        data_file.Close();
-
-        std::fstream file(filepath, std::fstream::out);
-
-        for (auto& line : lines)
-        {
-            line.second = dungeon_state;
-            file << line.first << line.second << std::endl;
+            if (state.first.area == id.area)
+            {
+                state.second = dungeon_state;
+            }
         }
     }
 }

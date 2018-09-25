@@ -4,11 +4,12 @@
 
 #include <SFML/Window/Keyboard.hpp>
 #include <iostream>
+#include <thread>
 
 #define PORTAL_TRANSITION_TIME 1
 #define PUSH_TRIGGER_DURATION 0.5
 
-WorldManager::WorldManager() : current_room{RoomID{"Overworld", 6, 3}}
+WorldManager::WorldManager() : current_room{new Room(RoomID{"Overworld", 6, 3})}
 {
     player.GetSprite().setPosition(sf::Vector2f(500, 500));
 }
@@ -52,16 +53,15 @@ void WorldManager::Update(sf::Time elapsed, sf::RenderWindow& window)
     {
         if (room_transition == sf::Vector2i{0, 0} && !portal_transition)
         {
-            current_room.Update(elapsed, window, player);
+            current_room->Update(elapsed, window, player);
             player.Update(elapsed, window);
 
-            for (auto& portal : current_room.portals)
+            for (auto& portal : current_room->portals)
             {
                 if (portal.hitbox.intersects(player.GetSprite().getGlobalBounds()))
                 {
-                    Utilities::SetAllDungeonStates("Unexplored", current_room.id);
-                    new_room = Room(portal.id);
-                    new_room.Load();
+                    Utilities::SetAllDungeonStates("Unexplored", current_room->id);
+                    setNewRoom(portal.id);
                     portal_transition = true;
                     portal_in = false;
                     transition_time = -PORTAL_TRANSITION_TIME / 2;
@@ -77,7 +77,9 @@ void WorldManager::Update(sf::Time elapsed, sf::RenderWindow& window)
             {
                 portal_in = true;
                 current_room = new_room;
+                Utilities::SetDungeonState("Explored", current_room->id);
                 player.GetSprite().setPosition(spawn);
+                loadAdjacentRooms();
             }
 
             if (transition_time > 0.5)
@@ -97,7 +99,7 @@ void WorldManager::Update(sf::Time elapsed, sf::RenderWindow& window)
             paused = true;
         }
 
-        for (auto& trigger : current_room.triggers)
+        for (auto& trigger : current_room->triggers)
         {
             if (trigger.hitbox.intersects(player.GetSprite().getGlobalBounds()))
             {
@@ -121,9 +123,9 @@ void WorldManager::Draw(sf::RenderWindow& window)
 {
     if (room_transition == sf::Vector2i{0, 0} && !portal_transition)
     {
-        current_room.Draw(window);
+        current_room->Draw(window);
         player.Draw(window);
-        current_room.DrawLighting(window);
+        current_room->DrawLighting(window);
     }
     else if (room_transition != sf::Vector2i{0, 0})
     {
@@ -140,27 +142,29 @@ void WorldManager::Draw(sf::RenderWindow& window)
         }
 
         window.setView(new_room_view);
-        new_room.Draw(window);
+        new_room->Draw(window);
 
         window.setView(current_room_view);
-        current_room.Draw(window);
+        current_room->Draw(window);
 
         player.Draw(window);
-        current_room.DrawLighting(window);
+        current_room->DrawLighting(window);
 
         window.setView(new_room_view);
-        new_room.DrawLighting(window);
+        new_room->DrawLighting(window);
         window.setView(current_room_view);
 
         if (((room_transition.x > 0) ? window.getView().getCenter().x >= 1800 : window.getView().getCenter().x <= -600) ||
             ((room_transition.y > 0) ? window.getView().getCenter().y >= 1200 : window.getView().getCenter().y <= -400))
         {
             current_room = new_room;
+            Utilities::SetDungeonState("Explored", current_room->id);
+            loadAdjacentRooms();
             player.GetSprite().move(1200 * -room_transition.x, 800 * -room_transition.y);
             sf::View view = window.getView();
             view.move(1200 * -room_transition.x, 800 * -room_transition.y);
             window.setView(view);
-            current_room.Draw(window);
+            current_room->Draw(window);
             room_transition.x = 0;
             room_transition.y = 0;
         }
@@ -177,9 +181,9 @@ void WorldManager::Draw(sf::RenderWindow& window)
 
     if (portal_transition)
     {
-        current_room.Draw(window);
+        current_room->Draw(window);
         player.Draw(window);
-        current_room.DrawLighting(window);
+        current_room->DrawLighting(window);
         fade.setFillColor(sf::Color(0, 0, 0, 1 - std::abs(transition_time) * 2 * 255));
         window.draw(fade);
     }
@@ -192,12 +196,67 @@ void WorldManager::RegisterDeathCallback(std::function<void(void)> f)
 
 void WorldManager::LoadSave(sf::RenderWindow& window)
 {
-    current_room = RoomID{"Dungeon1", 2, 1};
-    current_room.Load();
+    Room::InitDungeonStates();
+
+    current_room = std::shared_ptr<Room>(new Room(RoomID{"Dungeon1", 2, 1}));
+    current_room->Load();
+    Utilities::SetDungeonState("Explored", current_room->id);
     Resize(sf::Vector2u(Settings::video_resolution.x, Settings::video_resolution.y), window);
 
-    Utilities::SetAllDungeonStates("Unexplored", RoomID{"Overworld", 0, 0});
-    Utilities::SetAllDungeonStates("Unexplored", RoomID{"Dungeon1", 0, 0});
+    loadAdjacentRooms();
+}
+
+void WorldManager::loadAdjacentRooms()
+{
+    std::thread right(&WorldManager::loadRoom, this, RoomID{current_room->id.area, current_room->id.x + 1, current_room->id.y});
+    std::thread left(&WorldManager::loadRoom, this, RoomID{current_room->id.area, current_room->id.x - 1, current_room->id.y});
+    std::thread down(&WorldManager::loadRoom, this, RoomID{current_room->id.area, current_room->id.x, current_room->id.y + 1});
+    std::thread up(&WorldManager::loadRoom, this, RoomID{current_room->id.area, current_room->id.x, current_room->id.y - 1});
+
+    right.detach();
+    left.detach();
+    down.detach();
+    up.detach();
+
+    for (auto& portal : current_room->portals)
+    {
+        std::thread p(&WorldManager::loadRoom, this, portal.id);
+        p.detach();
+    }
+}
+
+void WorldManager::loadRoom(RoomID id)
+{
+    Room* room = new Room(id);
+    room->Load();
+
+    room_mutex.lock();
+    adjacent_rooms.push_back(std::shared_ptr<Room>(room));
+    room_mutex.unlock();
+}
+
+void WorldManager::setNewRoom(RoomID id)
+{
+    while (!new_room || !(new_room->id == id))
+    {
+        room_mutex.lock();
+        auto it = adjacent_rooms.begin();
+        while (it != adjacent_rooms.end())
+        {
+            if ((*it)->id == id)
+            {
+                new_room = *it;
+                adjacent_rooms.erase(it);
+                break;
+            }
+            ++it;
+        }
+        room_mutex.unlock();
+    }
+
+    room_mutex.lock();
+    adjacent_rooms.clear();
+    room_mutex.unlock();
 }
 
 void WorldManager::Resize(sf::Vector2u ratio, sf::RenderWindow& window)
@@ -231,13 +290,12 @@ void WorldManager::Resize(sf::Vector2u ratio, sf::RenderWindow& window)
     player.SetHudViewport(sf::FloatRect(viewport_x, viewport_y, viewport_width, viewport_height));
 }
 
-
 sf::Vector2f WorldManager::movePlayer(sf::FloatRect hitbox, sf::Vector2f displacement)
 {
     bool vertical = true;
     bool horizontal = true;
 
-    for (auto& entity : current_room.entities)
+    for (auto& entity : current_room->entities)
     {
         auto entity_hitbox = entity.GetHitbox();
         bool temp_vertical = true;
@@ -321,11 +379,12 @@ sf::Vector2f WorldManager::movePlayer(sf::FloatRect hitbox, sf::Vector2f displac
 
 void WorldManager::changeRoom(sf::Vector2i room_offset)
 {
-    RoomID id = current_room.id;
+    RoomID id = current_room->id;
     id.x += room_offset.x;
     id.y += room_offset.y;
-    new_room = Room(id);
-    new_room.Load();
+
+    setNewRoom(id);
+
     room_transition = room_offset;
 }
 
@@ -333,7 +392,7 @@ void WorldManager::collapseTorch(void* args)
 {
     int* entity_id = reinterpret_cast<int*>(args);
 
-    auto& entities = current_room.entities;
+    auto& entities = current_room->entities;
     auto it = entities.begin();
 
     while (it != entities.end() && it->GetId() != *entity_id)
@@ -359,7 +418,7 @@ void WorldManager::collapseTorch(void* args)
 
     Entity falling_torch("falling_torch", "");
     falling_torch.GetSprite().setPosition(torch_position);
-    current_room.entities.erase(it);
+    current_room->entities.erase(it);
 
     if (player.GetDirection() == Spritesheet::Direction::Right)
     {
@@ -370,7 +429,7 @@ void WorldManager::collapseTorch(void* args)
         falling_torch.SetAnimation("FallLeft");
     }
 
-    current_room.entities.push_back(falling_torch);
+    current_room->entities.push_back(falling_torch);
 
     delete entity_id;
 }
@@ -381,16 +440,16 @@ void WorldManager::fallingBoulder(void*)
     Entity falling_boulder("falling_boulder", "Boulder");
     falling_boulder.GetSprite().setPosition(200, -50);
     falling_boulder.SetAnimation("Fall");
-    current_room.entities.push_back(falling_boulder);
+    current_room->entities.push_back(falling_boulder);
     player.SetFrozen(true);
     player.SetAnimation("IdleUp");
 
-    auto it = current_room.triggers.begin();
-    while (it != current_room.triggers.end())
+    auto it = current_room->triggers.begin();
+    while (it != current_room->triggers.end())
     {
         if (it->callback_key == "fallingBoulder")
         {
-            current_room.triggers.erase(it);
+            current_room->triggers.erase(it);
             break;
         }
         ++it;
@@ -403,9 +462,9 @@ void WorldManager::updateFallingBoulderEvent(sf::Time elapsed, sf::RenderWindow&
     float fall_speed = 500;
     float roll_speed = 70;
 
-    auto it = current_room.entities.begin();
+    auto it = current_room->entities.begin();
 
-    while (it != current_room.entities.end())
+    while (it != current_room->entities.end())
     {
         if (it->GetLabel() == "Boulder")
         {
@@ -416,9 +475,9 @@ void WorldManager::updateFallingBoulderEvent(sf::Time elapsed, sf::RenderWindow&
                 {
                     phase = "Land";
 
-                    auto torch_it = current_room.entities.begin();
+                    auto torch_it = current_room->entities.begin();
 
-                    while (torch_it != current_room.entities.end() && torch_it->GetLabel() != "boulder_torch")
+                    while (torch_it != current_room->entities.end() && torch_it->GetLabel() != "boulder_torch")
                     {
                         ++torch_it;
                     }
@@ -427,8 +486,8 @@ void WorldManager::updateFallingBoulderEvent(sf::Time elapsed, sf::RenderWindow&
                     falling_torch.GetSprite().setPosition(torch_it->GetSprite().getPosition());
                     falling_torch.SetAnimation("FallRight");
 
-                    current_room.entities.erase(torch_it);
-                    current_room.entities.insert(it, falling_torch);
+                    current_room->entities.erase(torch_it);
+                    current_room->entities.insert(it, falling_torch);
                 }
             }
             else if (phase == "Land")
@@ -459,7 +518,7 @@ void WorldManager::updateFallingBoulderEvent(sf::Time elapsed, sf::RenderWindow&
                     player.SetFrozen(false);
                     game_event = "";
 
-                    current_room.entities.erase(it);
+                    current_room->entities.erase(it);
                     phase = "Fall";
                     timer = 0;
                 }

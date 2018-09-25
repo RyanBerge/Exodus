@@ -1,7 +1,4 @@
 5-3: Unexplored
 5-4: Unexplored
 5-5: Unexplored
-6-3: Unexplored
-6-4: Unexplored
-6-5: Unexplored
-6-6: Unexplored
+6-3: Explored

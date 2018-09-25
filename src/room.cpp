@@ -7,6 +7,9 @@
 #include "data_file.h"
 #include "utilities.h"
 
+std::map<RoomID, std::string> Room::dungeon_states{};
+
+
 Room::Room()
 {
 }
@@ -67,7 +70,7 @@ bool Room::Load()
     DataFile data_file;
     if (!data_file.Open(filepath))
     {
-        std::cerr << "Exodus: Room could not be loaded: " << filepath << std::endl;
+        //std::cerr << "Exodus: Room could not be loaded: " << filepath << std::endl;
         return false;
     }
 
@@ -215,7 +218,45 @@ bool Room::Load()
         }
     }
 
-    Utilities::SetDungeonState("Explored", id);
-
     return true;
 }
+
+void Room::InitDungeonStates()
+{
+    Room::dungeon_states[RoomID{"Overworld", 5, 3}] = "Unexplored";
+    Room::dungeon_states[RoomID{"Overworld", 5, 4}] = "Unexplored";
+    Room::dungeon_states[RoomID{"Overworld", 5, 5}] = "Unexplored";
+    Room::dungeon_states[RoomID{"Overworld", 6, 3}] = "Unexplored";
+    Room::dungeon_states[RoomID{"Overworld", 6, 4}] = "Unexplored";
+    Room::dungeon_states[RoomID{"Overworld", 6, 5}] = "Unexplored";
+    Room::dungeon_states[RoomID{"Overworld", 6, 6}] = "Unexplored";
+    Room::dungeon_states[RoomID{"Dungeon1", 2, 1}] = "Unexplored";
+    Room::dungeon_states[RoomID{"Dungeon1", 2, 2}] = "Unexplored";
+    Room::dungeon_states[RoomID{"Dungeon1", 3, 1}] = "Unexplored";
+}
+
+bool RoomID::operator==(const RoomID& other) const
+{
+    return area == other.area && x == other.x && y == other.y;
+}
+
+bool RoomID::operator<(const RoomID& other) const
+{
+    if (area != other.area)
+    {
+        return area < other.area;
+    }
+
+    if (x != other.x)
+    {
+        return x < other.x;
+    }
+
+    if (y != other.y)
+    {
+        return y < other.y;
+    }
+
+    return false;
+}
+
