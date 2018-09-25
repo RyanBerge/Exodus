@@ -5,7 +5,6 @@
 #include <SFML/System/Time.hpp>
 #include <list>
 #include "entity.h"
-#include "enemy.h"
 
 struct RoomID
 {
@@ -42,7 +41,6 @@ public:
     RoomID id{};
     Spritesheet background{};
     std::list<Entity> entities{};
-    std::list<Enemy> enemies{};
     std::list<Portal> portals{};
     std::list<WorldTrigger> triggers{};
     std::shared_ptr<sf::RenderTexture> light_layer{new sf::RenderTexture()};

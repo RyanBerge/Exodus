@@ -19,6 +19,7 @@ public:
     void Damage(int damage, int knockback, sf::Vector2f direction);
 
     sf::Sprite& GetSprite();
+    sf::FloatRect GetHitbox();
     Spritesheet::Direction GetDirection();
     void SetHudViewport(sf::FloatRect viewport);
     void SetFrozen(bool frozen);

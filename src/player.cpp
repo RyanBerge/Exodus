@@ -58,11 +58,9 @@ void Player::determineMovement(sf::Time elapsed)
     velocity = movePlayer(sprite.GetHitbox(), velocity);
     sprite.GetSprite().move(velocity);
 
-    Spritesheet::Direction old_direction = direction;
-
     if (horizontal_direction > 0)
     {
-        if (old_direction != Spritesheet::Direction::Right || (old_velocity.x == 0 && old_velocity.y == 0))
+        if (sprite.GetAnimation() != "WalkRight")
         {
             direction = Spritesheet::Direction::Right;
             sprite.SetAnimation("WalkRight");
@@ -70,7 +68,7 @@ void Player::determineMovement(sf::Time elapsed)
     }
     else if (horizontal_direction < 0)
     {
-        if (old_direction != Spritesheet::Direction::Left || (old_velocity.x == 0 && old_velocity.y == 0))
+        if (sprite.GetAnimation() != "WalkLeft")
         {
             direction = Spritesheet::Direction::Left;
             sprite.SetAnimation("WalkLeft");
@@ -78,7 +76,7 @@ void Player::determineMovement(sf::Time elapsed)
     }
     else if (vertical_direction > 0)
     {
-        if (old_direction != Spritesheet::Direction::Down || (old_velocity.x == 0 && old_velocity.y == 0))
+        if (sprite.GetAnimation() != "WalkDown")
         {
             direction = Spritesheet::Direction::Down;
             sprite.SetAnimation("WalkDown");
@@ -86,7 +84,7 @@ void Player::determineMovement(sf::Time elapsed)
     }
     else if (vertical_direction < 0)
     {
-        if (old_direction != Spritesheet::Direction::Up || (old_velocity.x == 0 && old_velocity.y == 0))
+        if (sprite.GetAnimation() != "WalkUp")
         {
             direction = Spritesheet::Direction::Up;
             sprite.SetAnimation("WalkUp");
@@ -195,6 +193,11 @@ sf::Sprite& Player::GetSprite()
 Spritesheet::Direction Player::GetDirection()
 {
     return direction;
+}
+
+sf::FloatRect Player::GetHitbox()
+{
+    return sprite.GetHitbox();
 }
 
 void Player::load(std::string filepath)

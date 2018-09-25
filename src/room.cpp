@@ -20,12 +20,7 @@ void Room::Update(sf::Time elapsed, sf::RenderWindow& window, Player& player)
 {
     for (auto& entity : entities)
     {
-        entity.Update(elapsed, window);
-    }
-
-    for (auto& enemy : enemies)
-    {
-        enemy.Update(elapsed, window, player);
+        entity.Update(elapsed, window, player);
     }
 }
 
@@ -36,11 +31,6 @@ void Room::Draw(sf::RenderWindow& window)
     for (auto& entity : entities)
     {
         entity.Draw(window);
-    }
-
-    for (auto& enemy : enemies)
-    {
-        enemy.Draw(window);
     }
 }
 
@@ -134,24 +124,6 @@ bool Room::Load()
                 entity.SetAnimation(start_animation);
                 entities.push_back(entity);
             }
-        }
-        else if (data.key == "Enemy")
-        {
-            auto ss = data.ss;
-
-            std::string identifier;
-            std::string start_animation;
-            int x, y;
-
-            *ss >> identifier;
-            *ss >> start_animation;
-            *ss >> x;
-            *ss >> y;
-
-            Enemy enemy(identifier);
-            enemy.GetSprite().setPosition(x, y);
-            enemy.SetAnimation(start_animation);
-            enemies.push_back(enemy);
         }
         else if (data.key == "Background")
         {

@@ -23,7 +23,7 @@ class Entity
 public:
     Entity(std::string identifier, std::string label);
 
-    void Update(sf::Time elapsed, sf::RenderWindow& window);
+    void Update(sf::Time elapsed, sf::RenderWindow& window, Player& player);
     void Draw(sf::RenderWindow& window);
     void DrawLights(sf::RenderTexture& target);
 
@@ -47,6 +47,14 @@ private:
     void load(std::string filepath);
     void drawLighting(sf::RenderTexture& target);
 
+    void spinyUpdate(sf::Time elapsed, sf::RenderWindow& window, Player& player);
+    void lizardUpdate(sf::Time elapsed, sf::RenderWindow& window, Player& player);
+
+    sf::Vector2f follow(sf::Vector2f player_position, sf::Time elapsed);
+    void wander(sf::Time elapsed);
+
+    sf::Vector2f getPlayerDirection(sf::Vector2f player_position);
+
     int id{0};
     std::string label{""};
     std::string type{""};
@@ -56,8 +64,11 @@ private:
     bool collisions{false};
     bool colliding{false};
     float collision_timer{0};
+    sf::Vector2f velocity{0, 0};
+    float movespeed;
     int damage{0};
     int knockback{0};
+    std::string behavior;
 };
 
 #endif // ENTITY_H

@@ -137,6 +137,26 @@ void Entity::load(std::string filepath)
                 }
             }
         }
+        else if (data.key == "Behavior")
+        {
+            auto ss = data.ss;
+            *ss >> behavior;
+        }
+        else if (data.key == "Damage")
+        {
+            auto ss = data.ss;
+            *ss >> damage;
+        }
+        else if (data.key == "Knockback")
+        {
+            auto ss = data.ss;
+            *ss >> knockback;
+        }
+        else if (data.key == "Movespeed")
+        {
+            auto ss = data.ss;
+            *ss >> movespeed;
+        }
     }
 
     sprite = Spritesheet(sprite_path, config);
@@ -169,12 +189,22 @@ void Entity::load(std::string filepath)
     sprite.SetHitboxes(hitboxes);
 }
 
-void Entity::Update(sf::Time elapsed, sf::RenderWindow& window)
+void Entity::Update(sf::Time elapsed, sf::RenderWindow& window, Player& player)
 {
     sprite.Update(elapsed, window);
     for (auto& light : lights)
     {
-        light.Update(elapsed, window);
+        light.Update(elapsed, window, player);
+    }
+
+
+    if (behavior == "Spiny")
+    {
+        spinyUpdate(elapsed, window, player);
+    }
+    else if (behavior == "Lizard")
+    {
+        lizardUpdate(elapsed, window, player);
     }
 
     if (!colliding)
@@ -248,6 +278,131 @@ sf::Vector2f Entity::GetKnockbackDirection(Player& player)
     sf::Vector2f center = sf::Vector2f{hitbox.left + (hitbox.width / 2), hitbox.top + (hitbox.height / 2)};
 
     sf::Vector2f direction = player_position - center;
+    return Utilities::Normalize(direction);
+}
+
+void Entity::spinyUpdate(sf::Time elapsed, sf::RenderWindow& window, Player& player)
+{
+    auto direction = follow(player.GetSprite().getPosition(), elapsed);
+    if (sprite.GetHitbox().intersects(player.GetHitbox()))
+    {
+        player.Damage(damage, knockback, direction);
+    }
+}
+
+void Entity::lizardUpdate(sf::Time elapsed, sf::RenderWindow& window, Player& player)
+{
+    wander(elapsed);
+    sprite.GetSprite().move(velocity * elapsed.asSeconds());
+    auto direction = getPlayerDirection(player.GetSprite().getPosition());
+    if (sprite.GetHitbox().intersects(player.GetHitbox()))
+    {
+        player.Damage(damage, knockback, direction);
+    }
+}
+
+sf::Vector2f Entity::follow(sf::Vector2f player_position, sf::Time elapsed)
+{
+    auto direction = getPlayerDirection(player_position);
+    sprite.GetSprite().move(direction.x * movespeed * elapsed.asSeconds(), direction.y * movespeed * elapsed.asSeconds());
+    return direction;
+}
+
+void Entity::wander(sf::Time elapsed)
+{
+    static int direction = 0; // None
+    static bool moving = false;
+    static float behavior_distance = 0;
+    static float current_distance = 0;
+
+    if (direction == 0)
+    {
+        direction = (rand() % 4) + 1;
+        behavior_distance = (rand() % 50) + 50;
+    }
+
+    current_distance += elapsed.asSeconds() * movespeed;
+    if (current_distance >= behavior_distance)
+    {
+        if (moving)
+        {
+            moving = false;
+            behavior_distance = (rand() % 50) + 50;
+        }
+        else
+        {
+            moving = true;
+            direction = (rand() % 4) + 1;
+            behavior_distance = (rand() % 50) + 50;
+        }
+        current_distance = 0;
+
+        switch (direction)
+        {
+            case 1:
+            {
+                if (moving)
+                {
+                    sprite.SetAnimation("Left");
+                    velocity = {-movespeed, 0};
+                }
+                else
+                {
+                    sprite.StopAnimation();
+                    velocity = {0, 0};
+                }
+            }
+            break;
+            case 2:
+            {
+                if (moving)
+                {
+                    sprite.SetAnimation("Right");
+                    velocity = {movespeed, 0};
+                }
+                else
+                {
+                    sprite.StopAnimation();
+                    velocity = {0, 0};
+                }
+            }
+            break;
+            case 3:
+            {
+                if (moving)
+                {
+                    sprite.SetAnimation("Up");
+                    velocity = {0, -movespeed};
+                }
+                else
+                {
+                    sprite.StopAnimation();
+                    velocity = {0, 0};
+                }
+            }
+            break;
+            case 4:
+            {
+                if (moving)
+                {
+                    sprite.SetAnimation("Down");
+                    velocity = {0, movespeed};
+                }
+                else
+                {
+                    sprite.StopAnimation();
+                    velocity = {0, 0};
+                }
+            }
+            break;
+        }
+    }
+}
+
+sf::Vector2f Entity::getPlayerDirection(sf::Vector2f player_position)
+{
+    sf::Vector2f position = sprite.GetSprite().getPosition();
+    sf::Vector2f direction = player_position - position;
     return Utilities::Normalize(direction);
 }
 
