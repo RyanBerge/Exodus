@@ -6,6 +6,7 @@
 
 #include "data_file.h"
 #include "utilities.h"
+#include "global.h"
 
 Player::Player() : sprite{Spritesheet("assets/Player.png")}, direction{Spritesheet::Direction::Down}
 {
@@ -55,7 +56,7 @@ void Player::determineMovement(sf::Time elapsed)
     velocity.x += horizontal_direction * movespeed * elapsed.asSeconds();
     velocity.y += vertical_direction * movespeed * elapsed.asSeconds();
 
-    velocity = movePlayer(sprite.GetHitbox(), velocity);
+    velocity = Global::MovePlayer(sprite.GetHitbox(), velocity);
     sprite.GetSprite().move(velocity);
 
     if (horizontal_direction > 0)
@@ -131,19 +132,19 @@ void Player::Update(sf::Time elapsed, sf::RenderWindow& window)
 
     if (sprite.GetSprite().getPosition().x < 0 - sprite.GetSprite().getGlobalBounds().width)
     {
-        changeRoom(sf::Vector2i(-1, 0));
+        Global::ChangeRoom(sf::Vector2i(-1, 0));
     }
     else if (sprite.GetSprite().getPosition().y < 0 - sprite.GetSprite().getGlobalBounds().height)
     {
-        changeRoom(sf::Vector2i(0, -1));
+        Global::ChangeRoom(sf::Vector2i(0, -1));
     }
     else if (sprite.GetSprite().getPosition().x > 1200)
     {
-        changeRoom(sf::Vector2i(1, 0));
+        Global::ChangeRoom(sf::Vector2i(1, 0));
     }
     else if (sprite.GetSprite().getPosition().y > 800)
     {
-        changeRoom(sf::Vector2i(0, 1));
+        Global::ChangeRoom(sf::Vector2i(0, 1));
     }
 
     if (invincible)
@@ -171,7 +172,7 @@ void Player::Damage(int damage, int knockback, sf::Vector2f direction)
         hud.SetHealth(health);
         if (health <= 0)
         {
-            deathCallback();
+            Global::Death();
             return;
         }
 
@@ -245,21 +246,6 @@ void Player::load(std::string filepath)
     {
         sprite.AddAnimation(animation);
     }
-}
-
-void Player::RegisterMovePlayer(std::function<sf::Vector2f(sf::FloatRect, sf::Vector2f)> f)
-{
-    movePlayer = f;
-}
-
-void Player::RegisterChangeRoom(std::function<void(sf::Vector2i)> f)
-{
-    changeRoom = f;
-}
-
-void Player::RegisterDeathCallback(std::function<void(void)> f)
-{
-    deathCallback = f;
 }
 
 void Player::SetHudViewport(sf::FloatRect viewport)

@@ -1,7 +1,7 @@
 Sprite: Spiny.png
 Collisions: 0
-Frames: [0 0 42 41]
+Frames: [0 0 42 42 21 21]
 Behavior: Spiny
 Damage: 1
 Knockback: 1500
-Movespeed: 60
+Movespeed: 40

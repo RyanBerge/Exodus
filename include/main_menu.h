@@ -24,10 +24,6 @@ public:
     void Fullscreen();
     void Back();
 
-    void RegisterPlayRequest(std::function<void(void)> f);
-    void RegisterQuitRequest(std::function<void(void)> f);
-    void RegisterFullscreenRequest(std::function<void(bool)> f);
-
 private:
     void load(std::string filepath);
     Menu current_menu;
@@ -38,10 +34,6 @@ private:
 
     CheckboxButton fullscreen_button;
     CursorButton back_button;
-
-    std::function<void(void)> playRequest;
-    std::function<void(void)> quitRequest;
-    std::function<void(bool)> fullscreenRequest;
 
     bool is_fullscreen{false};
 

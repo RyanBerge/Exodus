@@ -1,6 +1,7 @@
 Sprite: Torch.png
 Collisions: 1
-Frames: [0 0 60 125 30 125] [60 0 60 125 30 125] [120 0 60 125 30 125]
-Lights: [30 34 torchlight Flicker] [30 34 torchlight Flicker] [30 34 torchlight Flicker]
+Frames: [0 0 63 134 33 134] [63 2 64 132 34 132] [127 9 65 125 35 125]
+Lights: [33 42 torchlight Flicker] [34 40 torchlight Flicker] [35 33 torchlight Flicker]
+Hitbox: [24 24 17 110] [25 22 17 110] [26 15 17 110]
 Animation: Flicker 0 2 0.2
 Trigger: collapseTorch duration

@@ -1,10 +1,14 @@
 #include "game_manager.h"
+#include "global.h"
 
 GameManager::GameManager(sf::RenderWindow& window) : current_scene{Scene::MainMenu}, main_menu{}, window{window}
 {
-    main_menu.RegisterPlayRequest(std::bind(&GameManager::StartGame, this));
-    main_menu.RegisterQuitRequest(std::bind(&GameManager::Quit, this));
-    main_menu.RegisterFullscreenRequest(std::bind(&GameManager::Fullscreen, this, std::placeholders::_1));
+    Global::Play = std::bind(&GameManager::StartGame, this);
+    Global::Fullscreen = std::bind(&GameManager::Fullscreen, this, std::placeholders::_1);
+    Global::Death = std::bind(&GameManager::Death, this);
+    Global::Quit = std::bind(&GameManager::Quit, this);
+    Global::QuitToMenu = std::bind(&GameManager::Death, this);
+
     main_menu.Resize(sf::Vector2u(Settings::video_resolution.x, Settings::video_resolution.y), window);
 
     InitializeWorldManager();
@@ -16,7 +20,6 @@ void GameManager::InitializeWorldManager()
     world_manager.~WorldManager();
     new(&world_manager) WorldManager();
     world_manager.Initialize();
-    world_manager.RegisterDeathCallback(std::bind(&GameManager::Death, this));
     reset = false;
 }
 

@@ -9,7 +9,6 @@
 
 std::map<RoomID, std::string> Room::dungeon_states{};
 
-
 Room::Room()
 {
 }

@@ -1,6 +1,7 @@
 #include "pause_menu.h"
 
 #include "data_file.h"
+#include "global.h"
 #include <iostream>
 
 PauseMenu::PauseMenu()
@@ -10,8 +11,8 @@ PauseMenu::PauseMenu()
 
 void PauseMenu::Initialize()
 {
-    resume_button.RegisterOnClickUp(std::bind(&PauseMenu::Resume, this));
-    quit_button.RegisterOnClickUp(std::bind(&PauseMenu::QuitToMenu, this));
+    resume_button.RegisterOnClickUp(Global::Resume);
+    quit_button.RegisterOnClickUp(Global::QuitToMenu);
 }
 
 void PauseMenu::load(std::string filepath)
@@ -78,24 +79,4 @@ void PauseMenu::Draw(sf::RenderWindow& window)
     background.Draw(window);
     resume_button.Draw(window);
     quit_button.Draw(window);
-}
-
-void PauseMenu::Resume()
-{
-    resumeRequest();
-}
-
-void PauseMenu::QuitToMenu()
-{
-    quitRequest();
-}
-
-void PauseMenu::RegisterResumeRequest(std::function<void(void)> f)
-{
-    resumeRequest = f;
-}
-
-void PauseMenu::RegisterQuitRequest(std::function<void(void)> f)
-{
-    quitRequest = f;
 }

@@ -109,22 +109,22 @@ sf::Sprite& CursorButton::GetSprite()
 
 void CursorButton::RegisterOnClickDown(std::function<void(void)> f)
 {
-    onClickDownVector.push_back(std::bind(f));
+    onClickDownVector.push_back(f);
 }
 
 void CursorButton::RegisterOnClickUp(std::function<void(void)> f)
 {
-    onClickUpVector.push_back(std::bind(f));
+    onClickUpVector.push_back(f);
 }
 
 void CursorButton::RegisterOnHoverEnter(std::function<void(void)> f)
 {
-    onHoverEnterVector.push_back(std::bind(f));
+    onHoverEnterVector.push_back(f);
 }
 
 void CursorButton::RegisterOnHoverExit(std::function<void(void)> f)
 {
-    onHoverExitVector.push_back(std::bind(f));
+    onHoverExitVector.push_back(f);
 }
 
 void CursorButton::onClickUp()

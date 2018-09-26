@@ -41,10 +41,14 @@ Entity: rock_wall Top 1000 0
 Entity: pit BottomRight 0 100
 Entity: pit Right 0 0
 
-
-Entity: torch Flicker 375 260
-Entity: torch Flicker 815 260
+Entity: torch Flicker 375 270
+Entity: torch Flicker 815 270
 Entity: torch Flicker 375 630
 Entity: torch Flicker 815 630
+
+Entity: spiny Default 600 200
+Entity: spiny Default 600 600
+Entity: spiny Default 400 400
+Entity: spiny Default 800 400
 
 LightLevel: 160

@@ -21,10 +21,8 @@ public:
     void LoadSave(sf::RenderWindow& window);
     void Resize(sf::Vector2u ratio, sf::RenderWindow& window);
 
-    void RegisterDeathCallback(std::function<void(void)> f);
     void Death();
     void Resume();
-    void QuitToMenu();
 
 private:
     void loadAdjacentRooms();
@@ -32,6 +30,7 @@ private:
     void setNewRoom(RoomID id);
 
     sf::Vector2f movePlayer(sf::FloatRect hitbox, sf::Vector2f displacement);
+    sf::Vector2f moveEntity(sf::FloatRect hitbox, sf::Vector2f displacement, int id);
     void changeRoom(sf::Vector2i position);
 
     void collapseTorch(void*);

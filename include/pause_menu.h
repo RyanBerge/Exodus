@@ -16,14 +16,8 @@ public:
     void Resume();
     void QuitToMenu();
 
-    void RegisterResumeRequest(std::function<void(void)> f);
-    void RegisterQuitRequest(std::function<void(void)> f);
-
 private:
     void load(std::string filepath);
-
-    std::function<void(void)> resumeRequest;
-    std::function<void(void)> quitRequest;
 
     Spritesheet background;
     CursorButton resume_button;

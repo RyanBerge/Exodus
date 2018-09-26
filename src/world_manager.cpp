@@ -1,6 +1,7 @@
 #include "world_manager.h"
 #include "settings.h"
 #include "utilities.h"
+#include "global.h"
 
 #include <SFML/Window/Keyboard.hpp>
 #include <iostream>
@@ -16,19 +17,18 @@ WorldManager::WorldManager() : current_room{new Room(RoomID{"Overworld", 6, 3})}
 
 void WorldManager::Initialize()
 {
-    player.RegisterMovePlayer(std::bind(&WorldManager::movePlayer, this, std::placeholders::_1, std::placeholders::_2));
-    player.RegisterChangeRoom(std::bind(&WorldManager::changeRoom, this, std::placeholders::_1));
-    player.RegisterDeathCallback(std::bind(&WorldManager::Death, this));
-
     pause_menu.Initialize();
-    pause_menu.RegisterResumeRequest(std::bind(&WorldManager::Resume, this));
-    pause_menu.RegisterQuitRequest(std::bind(&WorldManager::QuitToMenu, this));
 
     fade.setPosition(0, 0);
     fade.setFillColor(sf::Color(0, 0, 0, 0));
 
     trigger_functions["collapseTorch"] = std::bind(&WorldManager::collapseTorch, this, std::placeholders::_1);
     trigger_functions["fallingBoulder"] = std::bind(&WorldManager::fallingBoulder, this, std::placeholders::_1);
+
+    Global::MovePlayer = std::bind(&WorldManager::movePlayer, this, std::placeholders::_1, std::placeholders::_2);
+    Global::MoveEntity = std::bind(&WorldManager::moveEntity, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+    Global::ChangeRoom = std::bind(&WorldManager::changeRoom, this, std::placeholders::_1);
+    Global::Resume = std::bind(&WorldManager::Resume, this);
 }
 
 void WorldManager::Update(sf::Time elapsed, sf::RenderWindow& window)
@@ -187,11 +187,6 @@ void WorldManager::Draw(sf::RenderWindow& window)
         fade.setFillColor(sf::Color(0, 0, 0, 1 - std::abs(transition_time) * 2 * 255));
         window.draw(fade);
     }
-}
-
-void WorldManager::RegisterDeathCallback(std::function<void(void)> f)
-{
-    deathCallback = f;
 }
 
 void WorldManager::LoadSave(sf::RenderWindow& window)
@@ -377,6 +372,98 @@ sf::Vector2f WorldManager::movePlayer(sf::FloatRect hitbox, sf::Vector2f displac
     return final_displacement;
 }
 
+sf::Vector2f WorldManager::moveEntity(sf::FloatRect hitbox, sf::Vector2f displacement, int id)
+{
+    bool vertical = true;
+    bool horizontal = true;
+
+    for (auto& entity : current_room->entities)
+    {
+        if (entity.GetId() == id)
+        {
+            continue;
+        }
+
+        auto entity_hitbox = entity.GetHitbox();
+        bool temp_vertical = true;
+        bool temp_horizontal = true;
+
+        if (entity_hitbox.intersects(sf::FloatRect{hitbox.left + displacement.x, hitbox.top, hitbox.width, hitbox.height}))
+        {
+            temp_horizontal = false;
+        }
+
+        if (entity_hitbox.intersects(sf::FloatRect{hitbox.left, hitbox.top + displacement.y, hitbox.width, hitbox.height}))
+        {
+            temp_vertical = false;
+        }
+
+        if (!temp_horizontal || !temp_vertical)
+        {
+            Collision collision = entity.Collide(elapsed_seconds, player);
+
+            // for (auto& trigger : entity.GetTriggers())
+            // {
+            //     if (trigger.type == "duration" && collision.collision_timer >= PUSH_TRIGGER_DURATION)
+            //     {
+            //         bool found = false;
+            //         for (auto& entity_id : trigger_flags[trigger.callback_key])
+            //         {
+            //             if (*reinterpret_cast<int*>(entity_id) == entity.GetId())
+            //             {
+            //                 found = true;
+            //                 break;
+            //             }
+            //         }
+
+            //         if (!found)
+            //         {
+            //             trigger_flags[trigger.callback_key].push_back(new int(entity.GetId()));
+            //         }
+            //     }
+            // }
+
+            // if (collision.damage != 0 || collision.knockback != 0)
+            // {
+            //     sf::Vector2f direction{0, 0};
+            //     if (collision.knockback != 0)
+            //     {
+            //         direction = entity.GetKnockbackDirection(player);
+            //     }
+
+            //     player.Damage(collision.damage, collision.knockback, direction);
+            // }
+
+            if (collision.blocking)
+            {
+                if (!temp_horizontal)
+                {
+                    horizontal = false;
+                }
+
+                if (!temp_vertical)
+                {
+                    vertical = false;
+                }
+            }
+        }
+    }
+
+    sf::Vector2f final_displacement;
+
+    if (horizontal)
+    {
+        final_displacement.x = displacement.x;
+    }
+
+    if (vertical)
+    {
+        final_displacement.y = displacement.y;
+    }
+
+    return final_displacement;
+}
+
 void WorldManager::changeRoom(sf::Vector2i room_offset)
 {
     RoomID id = current_room->id;
@@ -529,17 +616,7 @@ void WorldManager::updateFallingBoulderEvent(sf::Time elapsed, sf::RenderWindow&
     }
 }
 
-void WorldManager::Death()
-{
-    deathCallback();
-}
-
 void WorldManager::Resume()
 {
     paused = false;
-}
-
-void WorldManager::QuitToMenu()
-{
-    deathCallback();
 }

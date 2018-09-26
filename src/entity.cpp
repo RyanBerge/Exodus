@@ -8,6 +8,7 @@
 
 #include "data_file.h"
 #include "utilities.h"
+#include "global.h"
 
 namespace {
     static int id_counter{0};
@@ -304,7 +305,11 @@ void Entity::lizardUpdate(sf::Time elapsed, sf::RenderWindow& window, Player& pl
 sf::Vector2f Entity::follow(sf::Vector2f player_position, sf::Time elapsed)
 {
     auto direction = getPlayerDirection(player_position);
-    sprite.GetSprite().move(direction.x * movespeed * elapsed.asSeconds(), direction.y * movespeed * elapsed.asSeconds());
+    velocity.x = direction.x * movespeed * elapsed.asSeconds();
+    velocity.y = direction.y * movespeed * elapsed.asSeconds();
+
+    velocity = Global::MoveEntity(sprite.GetHitbox(), velocity, id);
+    sprite.GetSprite().move(velocity);
     return direction;
 }
 

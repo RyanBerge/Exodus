@@ -2,6 +2,7 @@
 #include "settings.h"
 
 #include "data_file.h"
+#include "global.h"
 #include <iostream>
 
 MainMenu::MainMenu() : current_menu{Menu::Main}
@@ -147,12 +148,12 @@ void MainMenu::Resize(sf::Vector2u ratio, sf::RenderWindow& window)
 
 void MainMenu::Play()
 {
-    playRequest();
+    Global::Play();
 }
 
 void MainMenu::Quit()
 {
-    quitRequest();
+    Global::Quit();
 }
 
 void MainMenu::OpenSettings()
@@ -163,7 +164,7 @@ void MainMenu::OpenSettings()
 void MainMenu::Fullscreen()
 {
     is_fullscreen = !is_fullscreen;
-    fullscreenRequest(is_fullscreen);
+    Global::Fullscreen(is_fullscreen);
 }
 
 void MainMenu::Back()
@@ -171,17 +172,3 @@ void MainMenu::Back()
     current_menu = Menu::Main;
 }
 
-void MainMenu::RegisterPlayRequest(std::function<void(void)> f)
-{
-    playRequest = f;
-}
-
-void MainMenu::RegisterQuitRequest(std::function<void(void)> f)
-{
-    quitRequest = f;
-}
-
-void MainMenu::RegisterFullscreenRequest(std::function<void(bool)> f)
-{
-    fullscreenRequest = f;
-}
