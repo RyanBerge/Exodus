@@ -35,8 +35,10 @@ private:
 
     void collapseTorch(void*);
     void fallingBoulder(void*);
+    void spinyPuzzle(void*);
 
     void updateFallingBoulderEvent(sf::Time elapsed, sf::RenderWindow& window);
+    void updateSpinyPuzzle(sf::Time elapsed, sf::RenderWindow& window);
 
     std::function<void(void)> deathCallback;
 

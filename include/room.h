@@ -4,6 +4,8 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/System/Time.hpp>
 #include <list>
+#include <set>
+#include <mutex>
 #include "entity.h"
 
 struct RoomID
@@ -49,7 +51,8 @@ public:
     std::shared_ptr<sf::RenderTexture> light_layer{new sf::RenderTexture()};
     int light_level{0};
 
-    static std::map<RoomID, std::string> dungeon_states;
+    static std::map<RoomID, std::set<std::string>> dungeon_states;
+    static std::mutex state_mutex;
     static void InitDungeonStates();
 
 };

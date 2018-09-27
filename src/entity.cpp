@@ -500,3 +500,8 @@ bool Entity::IsDead()
 {
     return dead;
 }
+
+void Entity::Kill()
+{
+    dead = true;
+}

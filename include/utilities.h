@@ -12,9 +12,9 @@ namespace Utilities
     Spritesheet::Animation ReadAnimation(std::stringstream& ss);
     std::vector<std::list<Spritesheet::LightConfig>> ReadLights(std::stringstream& ss);
     bool CheckDungeonState(std::string dungeon_state, RoomID id);
-    void SetDungeonState(std::string dungeon_state, RoomID id);
+    void AddDungeonState(std::string dungeon_state, RoomID id);
+    void RemoveDungeonState(std::string dungeon_state, RoomID id);
     void SetAllDungeonStates(std::string dungeon_state, RoomID id);
-
 }
 
 #endif // UTILITIES_H

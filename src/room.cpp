@@ -3,11 +3,13 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <set>
 
 #include "data_file.h"
 #include "utilities.h"
 
-std::map<RoomID, std::string> Room::dungeon_states{};
+std::map<RoomID, std::set<std::string>> Room::dungeon_states{};
+std::mutex Room::state_mutex;
 
 Room::Room()
 {
@@ -222,16 +224,16 @@ bool Room::Load()
 
 void Room::InitDungeonStates()
 {
-    Room::dungeon_states[RoomID{"Overworld", 5, 3}] = "Unexplored";
-    Room::dungeon_states[RoomID{"Overworld", 5, 4}] = "Unexplored";
-    Room::dungeon_states[RoomID{"Overworld", 5, 5}] = "Unexplored";
-    Room::dungeon_states[RoomID{"Overworld", 6, 3}] = "Unexplored";
-    Room::dungeon_states[RoomID{"Overworld", 6, 4}] = "Unexplored";
-    Room::dungeon_states[RoomID{"Overworld", 6, 5}] = "Unexplored";
-    Room::dungeon_states[RoomID{"Overworld", 6, 6}] = "Unexplored";
-    Room::dungeon_states[RoomID{"Dungeon1", 2, 1}] = "Unexplored";
-    Room::dungeon_states[RoomID{"Dungeon1", 2, 2}] = "Unexplored";
-    Room::dungeon_states[RoomID{"Dungeon1", 3, 1}] = "Unexplored";
+    Room::dungeon_states[RoomID{"Overworld", 5, 3}].insert("Unexplored");
+    Room::dungeon_states[RoomID{"Overworld", 5, 4}].insert("Unexplored");
+    Room::dungeon_states[RoomID{"Overworld", 5, 5}].insert("Unexplored");
+    Room::dungeon_states[RoomID{"Overworld", 6, 3}].insert("Unexplored");
+    Room::dungeon_states[RoomID{"Overworld", 6, 4}].insert("Unexplored");
+    Room::dungeon_states[RoomID{"Overworld", 6, 5}].insert("Unexplored");
+    Room::dungeon_states[RoomID{"Overworld", 6, 6}].insert("Unexplored");
+    Room::dungeon_states[RoomID{"Dungeon1", 2, 1}].insert("Unexplored");
+    Room::dungeon_states[RoomID{"Dungeon1", 2, 2}].insert("Unexplored");
+    Room::dungeon_states[RoomID{"Dungeon1", 3, 1}].insert("Unexplored");
 }
 
 bool RoomID::operator==(const RoomID& other) const

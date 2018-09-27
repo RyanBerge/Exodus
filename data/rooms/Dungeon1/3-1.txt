@@ -30,9 +30,9 @@ Entity: rock_wall TopRightOuter 600 300
 Entity: rock_wall TopRightOuter 0 200
 Entity: rock_wall Top 200 0
 Entity: rock_wall Top 300 0
-Entity: rock_wall Top 400 0 label=fake_wall dungeonState=Explored,Unexplored
-Entity: rock_wall Top 500 0 label=fake_wall dungeonState=Explored,Unexplored
-Entity: rock_wall Top 600 0 label=fake_wall dungeonState=Explored,Unexplored
+Entity: rock_wall Top 400 0 label=fakeWall dungeonState=Explored,Unexplored
+Entity: rock_wall Top 500 0 label=fakeWall dungeonState=Explored,Unexplored
+Entity: rock_wall Top 600 0 label=fakeWall dungeonState=Explored,Unexplored
 Entity: rock_wall Top 900 0
 Entity: rock_wall Top 800 0
 Entity: rock_wall Top 700 0
@@ -41,14 +41,16 @@ Entity: rock_wall Top 1000 0
 Entity: pit BottomRight 0 100
 Entity: pit Right 0 0
 
+Trigger: spinyPuzzle 0 0 1200 800 dungeonState=Explored,Unexplored
+
 Entity: torch Flicker 375 270
 Entity: torch Flicker 815 270
 Entity: torch Flicker 375 630
 Entity: torch Flicker 815 630
 
-Entity: spiny Default 600 200
-Entity: spiny Default 600 600
-Entity: spiny Default 400 400
-Entity: spiny Default 800 400
+Entity: spiny Default 600 200 label=Spiny dungeonState=Explored,Unexplored
+Entity: spiny Default 600 600 label=Spiny dungeonState=Explored,Unexplored
+Entity: spiny Default 400 400 label=Spiny dungeonState=Explored,Unexplored
+Entity: spiny Default 800 400 label=Spiny dungeonState=Explored,Unexplored
 
 LightLevel: 160

@@ -17,18 +17,19 @@ WorldManager::WorldManager() : current_room{new Room(RoomID{"Overworld", 6, 3})}
 
 void WorldManager::Initialize()
 {
-    pause_menu.Initialize();
-
     fade.setPosition(0, 0);
     fade.setFillColor(sf::Color(0, 0, 0, 0));
 
     trigger_functions["collapseTorch"] = std::bind(&WorldManager::collapseTorch, this, std::placeholders::_1);
     trigger_functions["fallingBoulder"] = std::bind(&WorldManager::fallingBoulder, this, std::placeholders::_1);
+    trigger_functions["spinyPuzzle"] = std::bind(&WorldManager::spinyPuzzle, this, std::placeholders::_1);
 
     Global::MovePlayer = std::bind(&WorldManager::movePlayer, this, std::placeholders::_1, std::placeholders::_2);
     Global::MoveEntity = std::bind(&WorldManager::moveEntity, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
     Global::ChangeRoom = std::bind(&WorldManager::changeRoom, this, std::placeholders::_1);
     Global::Resume = std::bind(&WorldManager::Resume, this);
+
+    pause_menu.Initialize();
 }
 
 void WorldManager::Update(sf::Time elapsed, sf::RenderWindow& window)
@@ -77,7 +78,11 @@ void WorldManager::Update(sf::Time elapsed, sf::RenderWindow& window)
             {
                 portal_in = true;
                 current_room = new_room;
-                Utilities::SetDungeonState("Explored", current_room->id);
+                if (!Utilities::CheckDungeonState("Completed", current_room->id))
+                {
+                    Utilities::RemoveDungeonState("Unexplored", current_room->id);
+                    Utilities::AddDungeonState("Explored", current_room->id);
+                }
                 player.GetSprite().setPosition(spawn);
                 loadAdjacentRooms();
             }
@@ -92,6 +97,11 @@ void WorldManager::Update(sf::Time elapsed, sf::RenderWindow& window)
         if (game_event == "Falling Boulder")
         {
             updateFallingBoulderEvent(elapsed, window);
+        }
+
+        if (game_event == "Spiny Puzzle")
+        {
+            updateSpinyPuzzle(elapsed, window);
         }
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
@@ -169,7 +179,11 @@ void WorldManager::Draw(sf::RenderWindow& window)
             ((room_transition.y > 0) ? window.getView().getCenter().y >= 1200 : window.getView().getCenter().y <= -400))
         {
             current_room = new_room;
-            Utilities::SetDungeonState("Explored", current_room->id);
+            if (!Utilities::CheckDungeonState("Completed", current_room->id))
+            {
+                Utilities::RemoveDungeonState("Unexplored", current_room->id);
+                Utilities::AddDungeonState("Explored", current_room->id);
+            }
             loadAdjacentRooms();
             player.GetSprite().move(1200 * -room_transition.x, 800 * -room_transition.y);
             sf::View view = window.getView();
@@ -206,7 +220,11 @@ void WorldManager::LoadSave(sf::RenderWindow& window)
 
     current_room = std::shared_ptr<Room>(new Room(RoomID{"Dungeon1", 2, 1}));
     current_room->Load();
-    Utilities::SetDungeonState("Explored", current_room->id);
+    if (!Utilities::CheckDungeonState("Completed", current_room->id))
+    {
+        Utilities::RemoveDungeonState("Unexplored", current_room->id);
+        Utilities::AddDungeonState("Explored", current_room->id);
+    }
     Resize(sf::Vector2u(Settings::video_resolution.x, Settings::video_resolution.y), window);
 
     loadAdjacentRooms();
@@ -445,6 +463,7 @@ sf::Vector2f WorldManager::moveEntity(sf::FloatRect hitbox, sf::Vector2f displac
 
 void WorldManager::changeRoom(sf::Vector2i room_offset)
 {
+    game_event = "";
     RoomID id = current_room->id;
     id.x += room_offset.x;
     id.y += room_offset.y;
@@ -514,6 +533,21 @@ void WorldManager::fallingBoulder(void*)
     while (it != current_room->triggers.end())
     {
         if (it->callback_key == "fallingBoulder")
+        {
+            current_room->triggers.erase(it);
+            break;
+        }
+        ++it;
+    }
+}
+
+void WorldManager::spinyPuzzle(void*)
+{
+    game_event = "Spiny Puzzle";
+    auto it = current_room->triggers.begin();
+    while (it != current_room->triggers.end())
+    {
+        if (it->callback_key == "spinyPuzzle")
         {
             current_room->triggers.erase(it);
             break;
@@ -592,6 +626,58 @@ void WorldManager::updateFallingBoulderEvent(sf::Time elapsed, sf::RenderWindow&
             break;
         }
         ++it;
+    }
+}
+
+void WorldManager::updateSpinyPuzzle(sf::Time elapsed, sf::RenderWindow& window)
+{
+    static std::string phase = "Waiting";
+
+    if (phase == "Waiting")
+    {
+        for (auto& entity : current_room->entities)
+        {
+            if (entity.GetLabel() == "Spiny")
+            {
+                return;
+            }
+        }
+
+        phase = "Success";
+    }
+    else if (phase == "Success")
+    {
+        player.SetFrozen(true);
+        player.SetAnimation("IdleUp");
+        phase = "Fading";
+    }
+    else if (phase == "Fading")
+    {
+        static float timer = 0;
+        timer += elapsed.asSeconds();
+
+        for (auto& entity : current_room->entities)
+        {
+            if (entity.GetLabel() == "fakeWall")
+            {
+                uint8_t opacity = static_cast<uint8_t>(255 - ((timer / 2) * 255));
+                entity.GetSprite().setColor(sf::Color{255, 255, 255, opacity});
+                if (timer > 2)
+                {
+                    entity.Kill();
+                }
+            }
+        }
+
+        if (timer > 2)
+        {
+            player.SetFrozen(false);
+            phase = "Waiting";
+            game_event = "";
+            timer = 0;
+            Utilities::RemoveDungeonState("Explored", current_room->id);
+            Utilities::AddDungeonState("Completed", current_room->id);
+        }
     }
 }
 

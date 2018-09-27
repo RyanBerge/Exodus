@@ -140,6 +140,7 @@ namespace Utilities
 
     bool CheckDungeonState(std::string dungeon_state, RoomID id)
     {
+        Room::state_mutex.lock();
         std::list<std::string> states;
         auto sit = dungeon_state.begin();
         std::string temp;
@@ -160,28 +161,55 @@ namespace Utilities
 
         for (auto& state : states)
         {
-            if (Room::dungeon_states[id] == state)
+            for (auto& existing_state : Room::dungeon_states[id])
             {
-                return true;
+                if (existing_state == state)
+                {
+                    Room::state_mutex.unlock();
+                    return true;
+                }
             }
         }
 
+        Room::state_mutex.unlock();
         return false;
     }
 
-    void SetDungeonState(std::string dungeon_state, RoomID id)
+    void AddDungeonState(std::string dungeon_state, RoomID id)
     {
-        Room::dungeon_states[id] = dungeon_state;
+        Room::state_mutex.lock();
+        Room::dungeon_states[id].insert(dungeon_state);
+        Room::state_mutex.unlock();
+    }
+
+    void RemoveDungeonState(std::string dungeon_state, RoomID id)
+    {
+        Room::state_mutex.lock();
+        auto it = Room::dungeon_states[id].begin();
+        while (it != Room::dungeon_states[id].end())
+        {
+            if (*it == dungeon_state)
+            {
+                Room::dungeon_states[id].erase(it);
+                Room::state_mutex.unlock();
+                return;
+            }
+            ++it;
+        }
+        Room::state_mutex.unlock();
     }
 
     void SetAllDungeonStates(std::string dungeon_state, RoomID id)
     {
+        Room::state_mutex.lock();
         for (auto& state : Room::dungeon_states)
         {
             if (state.first.area == id.area)
             {
-                state.second = dungeon_state;
+                state.second.clear();
+                state.second.insert(dungeon_state);
             }
         }
+        Room::state_mutex.unlock();
     }
 }

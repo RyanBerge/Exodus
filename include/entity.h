@@ -44,6 +44,7 @@ public:
     int GetKnockback();
     sf::FloatRect GetHitbox();
     bool IsDead();
+    void Kill();
 
     bool SetBurning();
 
