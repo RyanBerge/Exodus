@@ -1,7 +1,12 @@
 Sprite: Spiny.png
 Collisions: 0
-Frames: [0 0 42 42 21 21]
+EntityCollisions: 1
+Frames: [0 0 42 41 21 20] [42 0 123 127 62 74] [165 0 124 127 63 73] [289 0 123 127 64 75]
+Lights: [] [62 74 torchlight Flicker] [63 73 torchlight Flicker] [64 75 torchlight Flicker]
+Hitbox: [0 0 42 41] [41 54 42 41] [42 53 42 41] [43 55 42 41]
+Animation: Burning 1 3 0.2
 Behavior: Spiny
 Damage: 1
+Health: 3
 Knockback: 1500
-Movespeed: 40
+Movespeed: 60

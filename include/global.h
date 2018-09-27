@@ -1,14 +1,14 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-#include <SFML/Graphics/Rect.hpp>
 #include <functional>
+#include "entity.h"
 
 class Global
 {
 public:
     static std::function<sf::Vector2f(sf::FloatRect, sf::Vector2f)> MovePlayer;
-    static std::function<sf::Vector2f(sf::FloatRect, sf::Vector2f, int)> MoveEntity;
+    static std::function<sf::Vector2f(sf::FloatRect, sf::Vector2f, Entity&)> MoveEntity;
     static std::function<void(sf::Vector2i)> ChangeRoom;
     static std::function<void(void)> Death;
     static std::function<void(void)> Resume;

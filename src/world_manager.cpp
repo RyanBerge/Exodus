@@ -116,6 +116,17 @@ void WorldManager::Update(sf::Time elapsed, sf::RenderWindow& window)
         }
 
         trigger_flags.clear();
+
+        auto it = current_room->entities.begin();
+        while (it != current_room->entities.end())
+        {
+            if (it->IsDead())
+            {
+                current_room->entities.erase(it);
+                it = current_room->entities.begin();
+            }
+            ++it;
+        }
     }
 }
 
@@ -372,14 +383,14 @@ sf::Vector2f WorldManager::movePlayer(sf::FloatRect hitbox, sf::Vector2f displac
     return final_displacement;
 }
 
-sf::Vector2f WorldManager::moveEntity(sf::FloatRect hitbox, sf::Vector2f displacement, int id)
+sf::Vector2f WorldManager::moveEntity(sf::FloatRect hitbox, sf::Vector2f displacement, Entity& original_entity)
 {
     bool vertical = true;
     bool horizontal = true;
 
     for (auto& entity : current_room->entities)
     {
-        if (entity.GetId() == id)
+        if (entity.GetId() == original_entity.GetId())
         {
             continue;
         }
@@ -400,39 +411,7 @@ sf::Vector2f WorldManager::moveEntity(sf::FloatRect hitbox, sf::Vector2f displac
 
         if (!temp_horizontal || !temp_vertical)
         {
-            Collision collision = entity.Collide(elapsed_seconds, player);
-
-            // for (auto& trigger : entity.GetTriggers())
-            // {
-            //     if (trigger.type == "duration" && collision.collision_timer >= PUSH_TRIGGER_DURATION)
-            //     {
-            //         bool found = false;
-            //         for (auto& entity_id : trigger_flags[trigger.callback_key])
-            //         {
-            //             if (*reinterpret_cast<int*>(entity_id) == entity.GetId())
-            //             {
-            //                 found = true;
-            //                 break;
-            //             }
-            //         }
-
-            //         if (!found)
-            //         {
-            //             trigger_flags[trigger.callback_key].push_back(new int(entity.GetId()));
-            //         }
-            //     }
-            // }
-
-            // if (collision.damage != 0 || collision.knockback != 0)
-            // {
-            //     sf::Vector2f direction{0, 0};
-            //     if (collision.knockback != 0)
-            //     {
-            //         direction = entity.GetKnockbackDirection(player);
-            //     }
-
-            //     player.Damage(collision.damage, collision.knockback, direction);
-            // }
+            Collision collision = entity.EntityCollide(elapsed_seconds, original_entity);
 
             if (collision.blocking)
             {

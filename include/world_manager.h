@@ -30,7 +30,7 @@ private:
     void setNewRoom(RoomID id);
 
     sf::Vector2f movePlayer(sf::FloatRect hitbox, sf::Vector2f displacement);
-    sf::Vector2f moveEntity(sf::FloatRect hitbox, sf::Vector2f displacement, int id);
+    sf::Vector2f moveEntity(sf::FloatRect hitbox, sf::Vector2f displacement, Entity& original_entity);
     void changeRoom(sf::Vector2i position);
 
     void collapseTorch(void*);

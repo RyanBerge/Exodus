@@ -53,6 +53,12 @@ void Entity::load(std::string filepath)
 
             *ss >> collisions;
         }
+        else if (data.key == "EntityCollisions")
+        {
+            auto ss = data.ss;
+
+            *ss >> entity_collisions;
+        }
         else if (data.key == "Frames")
         {
             auto ss = data.ss;
@@ -77,6 +83,11 @@ void Entity::load(std::string filepath)
         {
             auto ss = data.ss;
             *ss >> damage;
+        }
+        else if (data.key == "Health")
+        {
+            auto ss = data.ss;
+            *ss >> health;
         }
         else if (data.key == "Knockback")
         {
@@ -213,6 +224,21 @@ void Entity::Update(sf::Time elapsed, sf::RenderWindow& window, Player& player)
         collision_timer = 0;
     }
     colliding = false;
+
+    if (is_burning)
+    {
+        burn_duration += elapsed.asSeconds();
+        if (burn_duration > 1)
+        {
+            health -= 1;
+            burn_duration = 0;
+        }
+    }
+
+    if (health <= 0)
+    {
+        dead = true;
+    }
 }
 
 void Entity::Draw(sf::RenderWindow& window)
@@ -264,11 +290,35 @@ void Entity::SetAnimation(std::string animation_name)
     sprite.SetAnimation(animation_name);
 }
 
+bool Entity::SetBurning()
+{
+    if (!sprite.SetAnimation("Burning"))
+    {
+        return false;
+    }
+    is_burning = true;
+    burn_duration = 0;
+    return true;
+}
+
 Collision Entity::Collide(sf::Time elapsed, Player& player)
 {
     collision_timer += elapsed.asSeconds();
     colliding = true;
     return Collision{collisions, collision_timer, damage, knockback};
+}
+
+Collision Entity::EntityCollide(sf::Time elapsed, Entity& other)
+{
+    if (this->type == "falling_torch" && other.type == "spiny")
+    {
+        if ((sprite.GetAnimation() == "BurnRight" || sprite.GetAnimation() == "BurnLeft") && other.GetAnimation() != "Burning")
+        {
+            other.SetBurning();
+        }
+    }
+
+    return Collision{entity_collisions, 0, 0, 0};
 }
 
 sf::Vector2f Entity::GetKnockbackDirection(Player& player)
@@ -308,7 +358,7 @@ sf::Vector2f Entity::follow(sf::Vector2f player_position, sf::Time elapsed)
     velocity.x = direction.x * movespeed * elapsed.asSeconds();
     velocity.y = direction.y * movespeed * elapsed.asSeconds();
 
-    velocity = Global::MoveEntity(sprite.GetHitbox(), velocity, id);
+    velocity = Global::MoveEntity(sprite.GetHitbox(), velocity, *this);
     sprite.GetSprite().move(velocity);
     return direction;
 }
@@ -444,4 +494,9 @@ bool Entity::HasCollisions()
 sf::FloatRect Entity::GetHitbox()
 {
     return sprite.GetHitbox();
+}
+
+bool Entity::IsDead()
+{
+    return dead;
 }
