@@ -186,6 +186,23 @@ void Player::Damage(int damage, int knockback, sf::Vector2f direction)
     }
 }
 
+bool Player::Heal(int amount)
+{
+    if (health == max_health)
+    {
+        return false;
+    }
+
+    health += amount;
+    if (health > max_health)
+    {
+        health = max_health;
+    }
+
+    hud.SetHealth(health);
+    return true;
+}
+
 sf::Sprite& Player::GetSprite()
 {
     return sprite.GetSprite();

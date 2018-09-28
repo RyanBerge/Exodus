@@ -10,3 +10,4 @@ Damage: 1
 Health: 3
 Knockback: 1500
 Movespeed: 60
+Loot: heart 0.3

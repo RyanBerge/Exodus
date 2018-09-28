@@ -78,7 +78,7 @@ void WorldManager::Update(sf::Time elapsed, sf::RenderWindow& window)
             {
                 portal_in = true;
                 current_room = new_room;
-                if (!Utilities::CheckDungeonState("Completed", current_room->id))
+                if (Utilities::CheckDungeonState("Unexplored", current_room->id))
                 {
                     Utilities::RemoveDungeonState("Unexplored", current_room->id);
                     Utilities::AddDungeonState("Explored", current_room->id);
@@ -132,6 +132,17 @@ void WorldManager::Update(sf::Time elapsed, sf::RenderWindow& window)
         {
             if (it->IsDead())
             {
+                for (auto& loot : it->GetLootTable())
+                {
+                    float roll = static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
+                    if (roll < loot.drop_chance)
+                    {
+                        Entity drop(loot.identifer, "");
+                        drop.GetSprite().setPosition(it->GetSprite().getPosition());
+                        current_room->entities.push_back(drop);
+                    }
+                }
+
                 current_room->entities.erase(it);
                 it = current_room->entities.begin();
             }
@@ -179,7 +190,7 @@ void WorldManager::Draw(sf::RenderWindow& window)
             ((room_transition.y > 0) ? window.getView().getCenter().y >= 1200 : window.getView().getCenter().y <= -400))
         {
             current_room = new_room;
-            if (!Utilities::CheckDungeonState("Completed", current_room->id))
+            if (Utilities::CheckDungeonState("Unexplored", current_room->id))
             {
                 Utilities::RemoveDungeonState("Unexplored", current_room->id);
                 Utilities::AddDungeonState("Explored", current_room->id);
@@ -218,9 +229,9 @@ void WorldManager::LoadSave(sf::RenderWindow& window)
 {
     Room::InitDungeonStates();
 
-    current_room = std::shared_ptr<Room>(new Room(RoomID{"Dungeon1", 2, 1}));
+    current_room = std::shared_ptr<Room>(new Room(RoomID{"Overworld", 6, 3}));
     current_room->Load();
-    if (!Utilities::CheckDungeonState("Completed", current_room->id))
+    if (Utilities::CheckDungeonState("Unexplored", current_room->id))
     {
         Utilities::RemoveDungeonState("Unexplored", current_room->id);
         Utilities::AddDungeonState("Explored", current_room->id);

@@ -17,6 +17,7 @@ public:
     void Draw(sf::RenderWindow& window);
 
     void Damage(int damage, int knockback, sf::Vector2f direction);
+    bool Heal(int health);
 
     sf::Sprite& GetSprite();
     sf::FloatRect GetHitbox();
@@ -33,7 +34,8 @@ private:
     Spritesheet::Direction direction;
     sf::Vector2f velocity;
 
-    int health{5};
+    int max_health{5};
+    int health{max_health};
     int movespeed{0};
     float knockback_magnitude{0};
     sf::Vector2f knockback_direction{0, 0};

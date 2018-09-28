@@ -1,0 +1,4 @@
+Sprite: HealingHeart.png
+Frames: [0 0 16 15 8 7]
+Collisions: 0
+Healing: 1

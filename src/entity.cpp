@@ -84,6 +84,11 @@ void Entity::load(std::string filepath)
             auto ss = data.ss;
             *ss >> damage;
         }
+        else if (data.key == "Healing")
+        {
+            auto ss = data.ss;
+            *ss >> healing;
+        }
         else if (data.key == "Health")
         {
             auto ss = data.ss;
@@ -168,6 +173,17 @@ void Entity::load(std::string filepath)
         {
             auto ss = data.ss;
             *ss >> movespeed;
+        }
+        else if (data.key == "Loot")
+        {
+            auto ss = data.ss;
+            std::string identifier;
+            float drop_chance;
+            *ss >> identifier;
+            *ss >> drop_chance;
+
+            Loot loot{identifier, drop_chance};
+            loot_table.push_back(loot);
         }
     }
 
@@ -303,6 +319,19 @@ bool Entity::SetBurning()
 
 Collision Entity::Collide(sf::Time elapsed, Player& player)
 {
+    if (dead)
+    {
+        return Collision{false, 0, 0, 0};
+    }
+
+    if (type == "heart")
+    {
+        if (player.Heal(healing))
+        {
+            dead = true;
+        }
+    }
+
     collision_timer += elapsed.asSeconds();
     colliding = true;
     return Collision{collisions, collision_timer, damage, knockback};
@@ -484,6 +513,11 @@ std::list<Entity>& Entity::GetLights()
 std::list<Trigger>& Entity::GetTriggers()
 {
     return triggers;
+}
+
+std::list<Loot>& Entity::GetLootTable()
+{
+    return loot_table;
 }
 
 bool Entity::HasCollisions()

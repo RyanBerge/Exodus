@@ -224,6 +224,7 @@ bool Room::Load()
 
 void Room::InitDungeonStates()
 {
+    Room::dungeon_states.clear();
     Room::dungeon_states[RoomID{"Overworld", 5, 3}].insert("Unexplored");
     Room::dungeon_states[RoomID{"Overworld", 5, 4}].insert("Unexplored");
     Room::dungeon_states[RoomID{"Overworld", 5, 5}].insert("Unexplored");

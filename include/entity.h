@@ -18,6 +18,12 @@ struct Trigger
     std::string type;
 };
 
+struct Loot
+{
+    std::string identifer;
+    float drop_chance;
+};
+
 class Entity
 {
 public:
@@ -39,6 +45,7 @@ public:
     std::string GetLabel();
     std::list<Entity>& GetLights();
     std::list<Trigger>& GetTriggers();
+    std::list<Loot>& GetLootTable();
     bool HasCollisions();
     int GetDamage();
     int GetKnockback();
@@ -66,6 +73,7 @@ private:
     Spritesheet sprite{};
     std::list<Entity> lights{};
     std::list<Trigger> triggers{};
+    std::list<Loot> loot_table{};
     bool collisions{false};
     bool entity_collisions{false};
     bool colliding{false};
@@ -73,6 +81,7 @@ private:
     sf::Vector2f velocity{0, 0};
     float movespeed;
     int damage{0};
+    int healing{0};
     int health{1};
     int knockback{0};
     std::string behavior;
